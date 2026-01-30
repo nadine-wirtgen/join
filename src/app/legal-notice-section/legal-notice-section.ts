@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-legal-notice-section',
   imports: [],
   templateUrl: './legal-notice-section.html',
-  styleUrl: './legal-notice-section.css',
+  styleUrl: './legal-notice-section.scss',
 })
 export class LegalNoticeSection {
 

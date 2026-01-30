@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-help-section',
   imports: [],
   templateUrl: './help-section.html',
-  styleUrl: './help-section.css',
+  styleUrl: './help-section.scss',
 })
 export class HelpSection {
 

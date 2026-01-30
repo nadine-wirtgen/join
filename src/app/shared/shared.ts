@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-shared',
   imports: [],
   templateUrl: './shared.html',
-  styleUrl: './shared.css',
+  styleUrl: './shared.scss',
 })
 export class Shared {
 

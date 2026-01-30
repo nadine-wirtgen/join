@@ -6,7 +6,7 @@ import { ContactInfo } from './contact-info/contact-info';
   selector: 'app-contact-section',
   imports: [ContactList, ContactInfo],
   templateUrl: './contact-section.html',
-  styleUrl: './contact-section.css',
+  styleUrl: './contact-section.scss',
 })
 export class ContactSection {
 

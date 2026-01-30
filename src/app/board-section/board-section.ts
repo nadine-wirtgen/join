@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-board-section',
   imports: [],
   templateUrl: './board-section.html',
-  styleUrl: './board-section.css',
+  styleUrl: './board-section.scss',
 })
 export class BoardSection {
 

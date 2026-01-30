@@ -10,7 +10,7 @@ import { HelpSection } from './help-section/help-section';
   selector: 'app-root',
   imports: [RouterOutlet, Header, NavBar, ContactSection, HelpSection],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.scss'
 })
 export class App {
   protected readonly title = signal('join');

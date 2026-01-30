@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-summary-section',
   imports: [],
   templateUrl: './summary-section.html',
-  styleUrl: './summary-section.css',
+  styleUrl: './summary-section.scss',
 })
 export class SummarySection {
 
