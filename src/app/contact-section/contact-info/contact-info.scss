@@ -1,0 +1,25 @@
+.headlineContainer {
+  display: flex;
+  //   justify-content: space-between;
+  align-items: center;
+  h3 {
+    color: #2a3647;
+  }
+}
+
+.contactNameContainer {
+  display: flex;
+  .editContainer {
+    display: flex;
+  }
+}
+
+.contactInfo {
+  h4 {
+    font-size: 24px;
+    font-weight: 400;
+  }
+  p {
+    font-weight: bold;
+  }
+}
