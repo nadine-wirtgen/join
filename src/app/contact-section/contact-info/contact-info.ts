@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrl: './contact-info.scss',
 })
 export class ContactInfo {
-
+  hoveredIcon: string | null = null;
 }
