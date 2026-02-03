@@ -2,13 +2,13 @@
 .navbar {
   display: flex;
   flex-direction: column;
-  justify-content: space-around; 
-    align-items: center; 
+  justify-content: space-around;
+  align-items: center;
   height: 100vh;
   width: 232px;
   background-color: #2A3647;
-  
 }
+
 
 .logo img {
   width: 100px;
@@ -21,7 +21,7 @@
 
 .navbar-main-links a {
   display: flex;
-  align-items: center; 
+  align-items: center;
   gap: 12px;
   color: white;
   text-decoration: none;
@@ -58,44 +58,60 @@
 }
 
 
+.desktop-only {
+  display: block;
+}
+
+.mobile-only {
+  display: none;
+}
+
+
 @media (max-width: 768px) {
   .navbar {
-    flex-direction: row;      
-    justify-content: space-around; 
-    height: 64px;            
+    position: fixed;
+    bottom: 0;
+    left: 0;
     width: 100%;
-    padding: 0;
+    height: 64px;
+    flex-direction: row;
+    justify-content: space-around;
     align-items: center;
+    padding: 0;
+    z-index: 1000;
   }
 
   .navbar-main-links {
+    flex: 1;
     display: flex;
-    flex-direction: row;     
-    gap: 16px;
+    flex-direction: row; 
     justify-content: space-around;
     align-items: center;
+    gap: 0;
+    width: 100%;
   }
 
   .navbar-main-links a {
-    display: flex;
-    flex-direction: column;   
+    flex: 1;              
+    flex-direction: column; 
     align-items: center;
-    gap: 4px;
-    padding: 4px 8px;
+    justify-content: center;
+    gap: 2px;
+    padding: 2px 0;
   }
 
   .navbar-main-links a img {
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
   }
 
  
   .desktop-only {
-    display: none;
+    display: none !important;
   }
 
- 
   .navbar-footer-links {
-    display: none;
+    display: none !important;
   }
 }
+
