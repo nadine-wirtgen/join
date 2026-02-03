@@ -7,7 +7,7 @@
     @for (group of getContactGroups(); track group.letter) {
       <p class="start-letter">{{ group.letter }}</p>
       @for (contact of group.contacts; track $index) {
-        <div class="singleContactContainer">
+        <div class="singleContactContainer" (click)="selectContact(contact)">
           <div class="avatarLetterBox"><P>MM</P></div>
           <div class="contactSingleInfo">
             <p>{{ contact.name }}</p>
