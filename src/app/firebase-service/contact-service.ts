@@ -1,4 +1,5 @@
 import { inject, Injectable, OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs';
 import {
   Firestore,
   collection,
@@ -17,6 +18,8 @@ export class ContactService implements OnDestroy {
   unsubscribe;
   firebaseDB: Firestore = inject(Firestore);
   contactList: Contacts[] = [];
+  selectedContact: Contacts | null = null;
+  editRequest$ = new Subject<void>();
   //contacts$;
 
   constructor() {
@@ -40,6 +43,14 @@ export class ContactService implements OnDestroy {
     } catch (error) {
       console.error('Error adding contact: ', error);
     }
+  }
+
+  setSelectedContact(contact: Contacts): void {
+    this.selectedContact = contact;
+  }
+
+  requestEdit(): void {
+    this.editRequest$.next();
   }
 
   async deleteContactOnDatabase(vocabulary: Contacts) {

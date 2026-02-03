@@ -1,5 +1,6 @@
 
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, ViewChild } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { ContactDialogTemplate } from '../contact-dialog-template/contact-dialog-template';
 import { ContactService } from '../../firebase-service/contact-service';
 import { Contacts } from '../../interfaces/contacts';
@@ -15,9 +16,11 @@ type ContactGroup = {
   templateUrl: './contact-list.html',
   styleUrl: './contact-list.scss',
 })
-export class ContactList {
+export class ContactList implements OnInit, OnDestroy {
   contactService = inject(ContactService);
   dialogMode: 'open' | 'change' = 'open';
+
+  private editSubscription?: Subscription;
 
   @ViewChild('contactDialog') contactDialog?: ContactDialogTemplate;
 
@@ -26,9 +29,23 @@ export class ContactList {
 
   }
 
+  ngOnInit(): void {
+    this.editSubscription = this.contactService.editRequest$.subscribe(() => {
+      this.openContactDia('change');
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.editSubscription?.unsubscribe();
+  }
+
   openContactDia(action: 'open' | 'change') {
     this.dialogMode = action;
     this.contactDialog?.open();
+  }
+
+  selectContact(contact: Contacts): void {
+    this.contactService.setSelectedContact(contact);
   }
 
   getContactGroups(): ContactGroup[] {

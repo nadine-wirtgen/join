@@ -6,11 +6,16 @@
   </div>
 
   <div class="contactNameContainer">
-    <div class="avatarLetterBox"><p>TW</p></div>
+    <div class="avatarLetterBox"><p>{{ getInitials(selectedContact?.name) }}</p></div>
     <div>
-      <h2>Tatjana Wolf</h2>
+      <h2>{{ selectedContact?.name }}</h2>
       <div class="editContainer">
-        <div class="editBox" (mouseenter)="hoveredIcon = 'edit'" (mouseleave)="hoveredIcon = null">
+        <div
+          class="editBox"
+          (mouseenter)="hoveredIcon = 'edit'"
+          (mouseleave)="hoveredIcon = null"
+          (click)="editContact()"
+        >
           <img
             [src]="
               hoveredIcon === 'edit'
@@ -43,11 +48,15 @@
     <div>
       <div>
         <p>Email</p>
-        <a class="emailLink" href="">wolf@gmail.com</a>
+        <a class="emailLink" [href]="selectedContact ? 'mailto:' + selectedContact.email : ''">
+          {{ selectedContact?.email }}
+        </a>
       </div>
       <div>
         <p>Phone</p>
-        <a class="phoneLink" href="">+49 2222 222 22 2</a>
+        <a class="phoneLink" [href]="selectedContact ? 'tel:' + selectedContact.phone : ''">
+          {{ selectedContact?.phone }}
+        </a>
       </div>
     </div>
   </div>
