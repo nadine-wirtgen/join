@@ -4,15 +4,15 @@
       Add new contact 
       <img src="assets/imgs/contact-list/person_add.png">
     </a>
-    <ul>
-      @for(contact of (this.contactService.contacts$ | async); track contact){
-        <li>
-          {{contact['name']}}
-          {{contact['email']}}
-          {{contact['phone']}}
-        </li>
+    @for ( group of getContactGroups(); track group.letter){
+      <p class="start-letter">{{ group.letter }}</p>
+      @for ( contact of group.contacts; track $index){
+        <div>
+          <p>{{contact.name}}</p>
+          <p>{{contact.email}}</p>
+        </div>
       }
-    </ul>
+    }
   </div>
   <app-contact-dialog-template #contactDialog [mode]="dialogMode"></app-contact-dialog-template>
 </section>
