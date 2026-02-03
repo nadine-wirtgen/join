@@ -1,1 +1,33 @@
-<p>contact-dialog-template works!</p>
+<dialog #dialog (click)="onBackdropClick($event)">
+  <section class="dialog-left">
+    <img src="assets/imgs/contact-list/logo.png" alt="Join Logo" class="join-logo">
+    <h2>{{ getText('Add contact||Edit contact') }}</h2>
+    <p>{{ getText('Tasks are better with a team!||') }}</p>
+    <div class="stripe-div"></div>
+  </section>
+  <section class="dialog-right">
+    <div class="profile-image-div">
+      <p class="profile-letters"><img src="assets/imgs/contact-list/person.png"></p>
+    </div>
+    <form>
+      <div class="form-div">
+        <div>
+          <input type="text" placeholder="Name" required>
+          <img src="" alt="PROFILEICON">
+        </div>
+        <div>
+          <input type="text" placeholder="Email">
+          <img src="" alt="MAILICON">
+        </div>
+        <div>
+          <input type="text" placeholder="Phone">
+          <img src="" alt="PHONEICON">
+        </div>
+        <div class="dialog-buttons">
+          <a class="cancelDelete">{{ getText('Cancel||Delete') }} <img src="assets/imgs/contact-list/cancel.png" alt="X"></a>
+          <a class="createSave">{{ getText('Create Contact||Save') }} <img src="assets/imgs/contact-list/check.png" alt="CHECK"></a>
+        </div>
+      </div>
+    </form>
+  </section>
+</dialog>
