@@ -1,1 +1,18 @@
-<p>contact-list works! HELLOOOO WOOOORK</p>
+<section class="contact-list-section">
+  <div class="contact-list-div">
+    <a (click)="openContactDia('open')" class="addButton">
+      Add new contact 
+      <img src="assets/imgs/contact-list/person_add.png">
+    </a>
+    <ul>
+      @for(contact of (this.contactService.contacts$ | async); track contact){
+        <li>
+          {{contact['name']}}
+          {{contact['email']}}
+          {{contact['phone']}}
+        </li>
+      }
+    </ul>
+  </div>
+  <app-contact-dialog-template #contactDialog [mode]="dialogMode"></app-contact-dialog-template>
+</section>
