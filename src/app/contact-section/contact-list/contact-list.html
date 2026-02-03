@@ -1,8 +1,8 @@
 <section class="contact-list-section">
   <div class="contact-list-div">
     <a (click)="openContactDia('open')" class="addButton">
-      Add new contact 
-      <img src="assets/imgs/contact-list/person_add.png">
+      Add new contact
+      <img src="assets/imgs/contact-list/person_add.png" />
     </a>
     @for ( group of getContactGroups(); track group.letter){
       <p class="start-letter">{{ group.letter }}</p>
