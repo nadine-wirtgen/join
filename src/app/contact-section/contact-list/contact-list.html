@@ -4,12 +4,15 @@
       Add new contact
       <img src="assets/imgs/contact-list/person_add.png" />
     </a>
-    @for ( group of getContactGroups(); track group.letter){
+    @for (group of getContactGroups(); track group.letter) {
       <p class="start-letter">{{ group.letter }}</p>
-      @for ( contact of group.contacts; track $index){
-        <div>
-          <p>{{contact.name}}</p>
-          <p>{{contact.email}}</p>
+      @for (contact of group.contacts; track $index) {
+        <div class="singleContactContainer">
+          <div class="avatarLetterBox"><P>MM</P></div>
+          <div class="contactSingleInfo">
+            <p>{{ contact.name }}</p>
+            <a>{{ contact.email }}</a>
+          </div>
         </div>
       }
     }
