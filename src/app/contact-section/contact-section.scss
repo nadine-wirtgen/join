@@ -1,0 +1,11 @@
+section {
+  display: flex;
+  max-width: 1440px;
+  width: 100%;
+  app-contact-list {
+    max-width: 456px;
+  }
+  app-contact-info {
+    width: 100%;
+  }
+}

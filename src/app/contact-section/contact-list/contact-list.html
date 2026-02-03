@@ -1,15 +1,20 @@
 <section class="contact-list-section">
   <div class="contact-list-div">
     <a (click)="openContactDia('open')" class="addButton">
-      Add new contact 
-      <img src="assets/imgs/contact-list/person_add.png">
+      Add new contact
+      <img src="assets/imgs/contact-list/person_add.png" />
     </a>
     <ul>
-      @for(contact of (this.contactService.contacts$ | async); track contact){
+      @for (contact of this.contactService.contacts$ | async; track contact) {
         <li>
-          {{contact['name']}}
-          {{contact['email']}}
-          {{contact['phone']}}
+          <div class="avatarLetterBox">
+            <p>MM</p>
+          </div>
+          <div class="contactSingleInfo">
+            <p>{{ contact['name'] }}</p>
+            <a>{{ contact['email'] }}</a>
+            <!-- {{contact['phone']}} -->
+          </div>
         </li>
       }
     </ul>
