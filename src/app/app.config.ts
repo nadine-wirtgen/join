@@ -29,7 +29,5 @@ export const appConfig: ApplicationConfig = {
         authDomain: "join-70d12.firebaseapp.com", 
         messagingSenderId: "663559193457" 
       })), 
-      provideAuth(() => getAuth()), 
-      provideFirestore(() => getFirestore())
   ]
 };
