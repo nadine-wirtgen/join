@@ -1,7 +1,6 @@
 section {
   cursor: default;
   padding: 24px;
-  background-color: #f6f7f8;
   height: 100%;
   width: 100%;
   position: relative;
@@ -117,10 +116,6 @@ section {
 }
 
 @media (max-width: 768px) {
-  // section {
-  //   visibility: hidden;
-  // }
-
   .backArrowBtn {
     display: flex;
     justify-content: center;
