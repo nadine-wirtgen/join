@@ -11,6 +11,7 @@ import { Contacts } from '../../interfaces/contacts';
 export class ContactInfo {
   contactService = inject(ContactService);
   hoveredIcon: string | null = null;
+  menuOpen = false;
 
   get selectedContact(): Contacts | null {
     return this.contactService.selectedContact;
@@ -39,5 +40,9 @@ export class ContactInfo {
 
   getSelectedColor(): string {
     return this.contactService.getContactColor(this.selectedContact);
+  }
+
+  toggleMenu() {
+    this.menuOpen = !this.menuOpen;
   }
 }

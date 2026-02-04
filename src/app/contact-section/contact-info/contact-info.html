@@ -4,13 +4,18 @@
     <img src="assets/icon/contact-info/borderline.png" />
     <h3>Better with a team</h3>
   </div>
+
+  <div class="backArrowBtn">
+    <img src="assets/icon/contact-info/back-arrow.png" alt="Back Arrow" />
+  </div>
+
   @if (selectedContact?.name) {
-    <div>
+    <div class="contactContant">
       <div class="contactNameContainer">
         <div class="avatarLetterBox" [style.backgroundColor]="getSelectedColor()">
           <p>{{ getInitials(selectedContact?.name) }}</p>
         </div>
-        <div>
+        <div class="nameEditContant">
           <h2>{{ selectedContact?.name }}</h2>
           <div class="editContainer">
             <div
@@ -48,7 +53,7 @@
 
       <div class="contactInfo">
         <h4>Contact Infomation</h4>
-        <div>
+        <div class="emailPhoneContainer">
           <div>
             <p>Email</p>
             <a class="emailLink" [href]="selectedContact ? 'mailto:' + selectedContact.email : ''">
@@ -65,4 +70,43 @@
       </div>
     </div>
   }
+  <div class="editBurgermenu" (click)="toggleMenu()">
+    @if (!menuOpen) {
+      <div class="preview">
+        <img src="assets/icon/contact-info/burgermenu.png" alt="burgermenu" />
+      </div>
+    } @else {
+      <div class="menu">
+        <div
+          class="editBox"
+          (mouseenter)="hoveredIcon = 'edit'"
+          (mouseleave)="hoveredIcon = null"
+          (click)="editContact()"
+        >
+          <img
+            [src]="
+              hoveredIcon === 'edit'
+                ? 'assets/icon/contact-info/edit-hover.png'
+                : 'assets/icon/contact-info/edit-default.png'
+            "
+          />
+          <p>Edit</p>
+        </div>
+        <div
+          class="editBox"
+          (mouseenter)="hoveredIcon = 'delete'"
+          (mouseleave)="hoveredIcon = null"
+        >
+          <img
+            [src]="
+              hoveredIcon === 'delete'
+                ? 'assets/icon/contact-info/delete-hover.png'
+                : 'assets/icon/contact-info/delete-default.png'
+            "
+          />
+          <p>Delete</p>
+        </div>
+      </div>
+    }
+  </div>
 </section>
