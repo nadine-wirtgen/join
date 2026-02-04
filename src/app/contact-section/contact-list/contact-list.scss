@@ -33,12 +33,20 @@
       cursor: pointer;
     }
   }
+  .start-letter {
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 40px;
+    margin-top: 24px;
+    width: 100%;
+  }
   .singleContactContainer {
     display: flex;
     justify-content: flex-start;
     width: 100%;
     gap: 35px;
     padding: 8px;
+    margin-top: 8px;
     .avatarLetterBox {
       width: 42px;
       height: 42px;
