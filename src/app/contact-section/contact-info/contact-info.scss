@@ -22,12 +22,15 @@ section {
     font-weight: 400;
     color: #2a3647;
   }
+  .borderlineMobil {
+    display: none;
+  }
 }
+
 .contactContant {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-
+  gap: 24px;
   .contactNameContainer {
     display: flex;
     align-items: center;
@@ -76,11 +79,12 @@ section {
   }
 
   .contactInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
     h4 {
       font-size: 20px;
       font-weight: 400;
-      margin-top: 32px;
-      margin-bottom: 32px;
     }
     .emailPhoneContainer {
       display: flex;
@@ -172,6 +176,60 @@ section {
           color: #29abe2;
         }
       }
+    }
+  }
+
+  .headlineContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 16px;
+    width: 100%;
+    height: 120px;
+    h1 {
+      font-size: 48px;
+    }
+    h3 {
+      font-size: 20px;
+      font-weight: 400;
+      color: #2a3647;
+    }
+    .borderlineDestop {
+      display: none;
+    }
+    .borderlineMobil {
+      display: flex;
+    }
+  }
+
+  .contactContant {
+    .avatarLetterBox {
+      width: 68px;
+      height: 68px;
+    }
+    .contactNameContainer {
+      gap: 20px;
+      .nameEditContant {
+        h2 {
+          font-size: 36px;
+        }
+        .editContainer {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .contactInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    h4 {
+      font-size: 20px;
+      font-weight: 400;
+      margin-top: 0;
+      margin-bottom: 0;
     }
   }
 }
