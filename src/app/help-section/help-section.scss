@@ -1,0 +1,53 @@
+.join-highlight {
+  color: #4589ff;
+  font-weight: 700;
+}
+
+.help-steps {
+  counter-reset: step;
+  margin-left: 40px;
+  padding-left: 0;
+}
+
+.help-steps li {
+  display: flex;
+  align-items: flex-start; 
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.step-number::before {
+  counter-increment: step;
+  content: counter(step) ".";
+  font-size: 24px;
+  font-weight: 700;
+  color: #000;       
+  line-height: 1.2;  
+}
+
+.help-steps p {
+  margin: 0;
+  line-height: 1.6;
+}
+.help-header {
+  display: flex;
+  align-items: center;  
+  justify-content: space-between; 
+  margin-bottom: 24px;
+
+  h1 {
+    font-size: 2rem;
+    margin: 0;
+  }
+
+  .help-close {
+    width: 24px;   
+    height: 24px;
+    cursor: pointer;
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: scale(1.2); 
+    }
+  }
+}
