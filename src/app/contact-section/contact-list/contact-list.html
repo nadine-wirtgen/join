@@ -8,7 +8,9 @@
       <p class="start-letter">{{ group.letter }}</p>
       @for (contact of group.contacts; track $index) {
         <div class="singleContactContainer" (click)="selectContact(contact)">
-          <div class="avatarLetterBox"><P>MM</P></div>
+          <div class="avatarLetterBox" [style.backgroundColor]="getContactColor(contact)">
+            <p>{{ getInitials(contact.name) }}</p>
+          </div>
           <div class="contactSingleInfo">
             <p>{{ contact.name }}</p>
             <a>{{ contact.email }}</a>

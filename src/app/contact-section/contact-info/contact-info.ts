@@ -32,4 +32,12 @@ export class ContactInfo {
       this.contactService.requestEdit();
     }
   }
+
+  deleteContact(): void {
+    this.contactService.deleteSelectedContact();
+  }
+
+  getSelectedColor(): string {
+    return this.contactService.getContactColor(this.selectedContact);
+  }
 }

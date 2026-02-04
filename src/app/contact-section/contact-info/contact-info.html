@@ -6,7 +6,9 @@
   </div>
 
   <div class="contactNameContainer">
-    <div class="avatarLetterBox"><p>{{ getInitials(selectedContact?.name) }}</p></div>
+    <div class="avatarLetterBox" [style.backgroundColor]="getSelectedColor()">
+      <p>{{ getInitials(selectedContact?.name) }}</p>
+    </div>
     <div>
       <h2>{{ selectedContact?.name }}</h2>
       <div class="editContainer">
@@ -29,6 +31,7 @@
           class="editBox"
           (mouseenter)="hoveredIcon = 'delete'"
           (mouseleave)="hoveredIcon = null"
+          (click)="deleteContact()"
         >
           <img
             [src]="

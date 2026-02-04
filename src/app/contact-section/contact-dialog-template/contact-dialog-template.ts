@@ -38,7 +38,23 @@ export class ContactDialogTemplate {
     phone: '',
   };
 
+  openWithMode(mode: DialogMode): void {
+    this.mode = mode;
+    this.open();
+  }
+
   open(): void {
+    if (this.mode === 'change') {
+      const selected = this.contactsService.selectedContact;
+      if (selected) {
+        this.contact.name = selected.name ?? '';
+        this.contact.email = selected.email ?? '';
+        this.contact.phone = selected.phone?.toString() ?? '';
+      }
+    } else {
+      this.clearInputFields();
+    }
+
     this.dialog?.nativeElement.showModal();
   }
 
@@ -71,7 +87,8 @@ export class ContactDialogTemplate {
       return;
     }
 
-    // TODO: handle delete later
+    this.contactsService.deleteSelectedContact();
+    this.close();
   }
 
   submitContact(): void {

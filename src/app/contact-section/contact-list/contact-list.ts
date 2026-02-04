@@ -41,11 +41,26 @@ export class ContactList implements OnInit, OnDestroy {
 
   openContactDia(action: 'open' | 'change') {
     this.dialogMode = action;
-    this.contactDialog?.open();
+    this.contactDialog?.openWithMode(action);
   }
 
   selectContact(contact: Contacts): void {
     this.contactService.setSelectedContact(contact);
+  }
+
+  getInitials(name?: string): string {
+    if (!name?.trim()) {
+      return '';
+    }
+
+    const parts = name.trim().split(/\s+/);
+    const first = parts[0]?.charAt(0) ?? '';
+    const last = parts.length > 1 ? parts[parts.length - 1].charAt(0) : '';
+    return (first + last).toUpperCase();
+  }
+
+  getContactColor(contact: Contacts): string {
+    return this.contactService.getContactColor(contact);
   }
 
   getContactGroups(): ContactGroup[] {

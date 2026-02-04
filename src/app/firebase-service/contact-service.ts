@@ -20,6 +20,24 @@ export class ContactService implements OnDestroy {
   contactList: Contacts[] = [];
   selectedContact: Contacts | null = null;
   editRequest$ = new Subject<void>();
+  private readonly colorPalette = [
+    '#FF7A00',
+    '#FF5EB3',
+    '#6E52FF',
+    '#9327FF',
+    '#00BEE8',
+    '#1FD7C1',
+    '#FF745E',
+    '#FFA35E',
+    '#FC71FF',
+    '#FFC701',
+    '#0038FF',
+    '#C3FF2B',
+    '#FFE62B',
+    '#FF4646',
+    '#FFBB2B',
+  ];
+  private contactColorMap = new Map<string, string>();
   //contacts$;
 
   constructor() {
@@ -32,6 +50,7 @@ export class ContactService implements OnDestroy {
             this.getContactsObject(docObject.id, docObject.data() as Contacts)
           );
         });
+        this.rebuildColorMap();
       }
     );
   }
@@ -53,10 +72,19 @@ export class ContactService implements OnDestroy {
     this.editRequest$.next();
   }
 
+  getContactColor(contact: Contacts | null | undefined): string {
+    if (!contact) {
+      return this.colorPalette[0];
+    }
+
+    const key = this.getContactKey(contact);
+    return this.contactColorMap.get(key) ?? this.colorPalette[0];
+  }
+
   async deleteContactOnDatabase(vocabulary: Contacts) {
     if (vocabulary.id) {
       await deleteDoc(
-        doc(this.firebaseDB, 'vocabulary', vocabulary.id)
+        doc(this.firebaseDB, 'contacts', vocabulary.id)
       );
     }
   }
@@ -64,6 +92,15 @@ export class ContactService implements OnDestroy {
   deleteContact(index: number) {
     const vocable = this.contactList[index];
     this.deleteContactOnDatabase(vocable);
+  }
+
+  deleteSelectedContact(): void {
+    if (!this.selectedContact) {
+      return;
+    }
+
+    this.deleteContactOnDatabase(this.selectedContact);
+    this.selectedContact = null;
   }
 
   ngOnDestroy() {
@@ -88,5 +125,22 @@ export class ContactService implements OnDestroy {
 
   getSingleDoc(colId: string, docId: string) {
     return doc(collection(this.firebaseDB, colId), docId);
+  }
+
+  private rebuildColorMap(): void {
+    const sorted = [...this.contactList].sort((a, b) =>
+      a.name.localeCompare(b.name, 'de', { sensitivity: 'base' })
+    );
+
+    this.contactColorMap.clear();
+    sorted.forEach((contact, index) => {
+      const key = this.getContactKey(contact);
+      const color = this.colorPalette[index % this.colorPalette.length];
+      this.contactColorMap.set(key, color);
+    });
+  }
+
+  private getContactKey(contact: Contacts): string {
+    return contact.id ?? `${contact.name}|${contact.email}`;
   }
 }
