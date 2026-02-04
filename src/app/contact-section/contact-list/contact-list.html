@@ -1,18 +1,24 @@
 <section class="contact-list-section">
   <div class="contact-list-div">
     <a (click)="openContactDia('open')" class="addButton">
-      Add new contact 
-      <img src="assets/imgs/contact-list/person_add.png">
+      Add new contact
+      <img src="assets/imgs/contact-list/person_add.png" />
     </a>
-    <ul>
-      @for(contact of (this.contactService.contacts$ | async); track contact){
-        <li>
-          {{contact['name']}}
-          {{contact['email']}}
-          {{contact['phone']}}
-        </li>
+    @for (group of getContactGroups(); track group.letter) {
+      <p class="start-letter">{{ group.letter }}</p>
+      <img src="assets/icon/contact-list/borderline.png" alt="borderline" />
+      @for (contact of group.contacts; track $index) {
+        <div class="singleContactContainer" (click)="selectContact(contact)">
+          <div class="avatarLetterBox" [style.backgroundColor]="getContactColor(contact)">
+            <p>{{ getInitials(contact.name) }}</p>
+          </div>
+          <div class="contactSingleInfo">
+            <p>{{ contact.name }}</p>
+            <a>{{ contact.email }}</a>
+          </div>
+        </div>
       }
-    </ul>
+    }
   </div>
   <app-contact-dialog-template #contactDialog [mode]="dialogMode"></app-contact-dialog-template>
 </section>

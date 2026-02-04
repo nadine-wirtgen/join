@@ -4,51 +4,65 @@
     <img src="assets/icon/contact-info/borderline.png" />
     <h3>Better with a team</h3>
   </div>
-
-  <div class="contactNameContainer">
-    <div class="avatarLetterBox"><p>TW</p></div>
+  @if (selectedContact?.name) {
     <div>
-      <h2>Tatjana Wolf</h2>
-      <div class="editContainer">
-        <div class="editBox" (mouseenter)="hoveredIcon = 'edit'" (mouseleave)="hoveredIcon = null">
-          <img
-            [src]="
-              hoveredIcon === 'edit'
-                ? 'assets/icon/contact-info/edit-hover.png'
-                : 'assets/icon/contact-info/edit-default.png'
-            "
-          />
-          <p>Edit</p>
+      <div class="contactNameContainer">
+        <div class="avatarLetterBox" [style.backgroundColor]="getSelectedColor()">
+          <p>{{ getInitials(selectedContact?.name) }}</p>
         </div>
-        <div
-          class="editBox"
-          (mouseenter)="hoveredIcon = 'delete'"
-          (mouseleave)="hoveredIcon = null"
-        >
-          <img
-            [src]="
-              hoveredIcon === 'delete'
-                ? 'assets/icon/contact-info/delete-hover.png'
-                : 'assets/icon/contact-info/delete-default.png'
-            "
-          />
-          <p>Delete</p>
+        <div>
+          <h2>{{ selectedContact?.name }}</h2>
+          <div class="editContainer">
+            <div
+              class="editBox"
+              (mouseenter)="hoveredIcon = 'edit'"
+              (mouseleave)="hoveredIcon = null"
+              (click)="editContact()"
+            >
+              <img
+                [src]="
+                  hoveredIcon === 'edit'
+                    ? 'assets/icon/contact-info/edit-hover.png'
+                    : 'assets/icon/contact-info/edit-default.png'
+                "
+              />
+              <p>Edit</p>
+            </div>
+            <div
+              class="editBox"
+              (mouseenter)="hoveredIcon = 'delete'"
+              (mouseleave)="hoveredIcon = null"
+            >
+              <img
+                [src]="
+                  hoveredIcon === 'delete'
+                    ? 'assets/icon/contact-info/delete-hover.png'
+                    : 'assets/icon/contact-info/delete-default.png'
+                "
+              />
+              <p>Delete</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contactInfo">
+        <h4>Contact Infomation</h4>
+        <div>
+          <div>
+            <p>Email</p>
+            <a class="emailLink" [href]="selectedContact ? 'mailto:' + selectedContact.email : ''">
+              {{ selectedContact?.email }}
+            </a>
+          </div>
+          <div>
+            <p>Phone</p>
+            <a class="phoneLink" [href]="selectedContact ? 'tel:' + selectedContact.phone : ''">
+              {{ selectedContact?.phone }}
+            </a>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-
-  <div class="contactInfo">
-    <h4>Contact Infomation</h4>
-    <div>
-      <div>
-        <p>Email</p>
-        <a class="emailLink" href="">wolf@gmail.com</a>
-      </div>
-      <div>
-        <p>Phone</p>
-        <a class="phoneLink" href="">+49 2222 222 22 2</a>
-      </div>
-    </div>
-  </div>
+  }
 </section>
