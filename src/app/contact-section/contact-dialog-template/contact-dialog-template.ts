@@ -78,9 +78,25 @@ export class ContactDialogTemplate {
       return;
     }
 
-    // TODO: handle save changes later
+    this.saveChanges();
   }
 
+  async saveChanges(): Promise<void> {
+    const selected = this.contactsService.selectedContact;
+    if (!selected?.id) {
+      return;
+    }
+
+    await this.contactsService.updateContact({
+      id: selected.id,
+      name: this.contact.name,
+      email: this.contact.email,
+      phone: this.contact.phone,
+    });
+
+    this.close();
+  }
+  
   handleSecondaryAction(): void {
     if (this.mode === 'open') {
       this.close();

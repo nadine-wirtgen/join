@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import {
   Firestore,
   collection,
-  collectionData,
+  updateDoc,
   doc,
   addDoc,
   deleteDoc,
@@ -64,6 +64,45 @@ export class ContactService implements OnDestroy {
     }
   }
 
+  async deleteContactOnDatabase(vocabulary: Contacts) {
+    if (vocabulary.id) {
+      await deleteDoc(
+        doc(this.firebaseDB, 'contacts', vocabulary.id)
+      );
+    }
+  }
+
+  async updateContact(contact: Contacts) {
+    if (!contact.id) {
+      console.error('Kein contact.id vorhanden');
+      return;
+    }
+
+    try {
+      const docRef = this.getSingleDoc('contacts', contact.id);
+      await updateDoc(docRef, this.getCleanJson(contact));
+      if (this.selectedContact?.id === contact.id) {
+        this.selectedContact = {
+          ...this.selectedContact,
+          name: contact.name,
+          email: contact.email,
+          phone: contact.phone,
+        };
+      }
+      console.log('Contact erfolgreich aktualisiert');
+    } catch (error) {
+      console.error('Fehler beim Update Contact:', error);
+    }
+  }
+
+  getCleanJson(contact: Contacts): {} {
+    return {
+      name: contact.name,
+      email: contact.email,
+      phone: contact.phone,
+    };
+  }
+
   setSelectedContact(contact: Contacts): void {
     this.selectedContact = contact;
   }
@@ -79,14 +118,6 @@ export class ContactService implements OnDestroy {
 
     const key = this.getContactKey(contact);
     return this.contactColorMap.get(key) ?? this.colorPalette[0];
-  }
-
-  async deleteContactOnDatabase(vocabulary: Contacts) {
-    if (vocabulary.id) {
-      await deleteDoc(
-        doc(this.firebaseDB, 'contacts', vocabulary.id)
-      );
-    }
   }
 
   deleteContact(index: number) {
