@@ -1,14 +1,16 @@
-@if (!isMobile) {
-  <div class="desktop-view">
-    <app-contact-list></app-contact-list>
-    <app-contact-info></app-contact-info>
-  </div>
-} @else {
-  <div class="mobile-view">
-    @if (showList) {
-      <app-contact-list (switch)="switchView()"> </app-contact-list>
-    } @else {
-      <app-contact-info (switch)="switchView()"> </app-contact-info>
-    }
-  </div>
-}
+<section>
+  @if (!isMobile) {
+    <div class="desktop-view">
+      <app-contact-list></app-contact-list>
+      <app-contact-info></app-contact-info>
+    </div>
+  } @else {
+    <div class="mobile-view">
+      @if (showList) {
+        <app-contact-list (switch)="switchView()"> </app-contact-list>
+      } @else {
+        <app-contact-info (switch)="switchView()"> </app-contact-info>
+      }
+    </div>
+  }
+</section>
