@@ -4,7 +4,7 @@ header {
   align-items: center;
   padding: 20px 40px;
   background: white;
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 6px -4px rgba(0, 0, 0, 0.1);
   height: 96px;
   position: relative;
 }
@@ -27,7 +27,7 @@ header {
   font-size: 20px;
   color: #000000;
   margin: 0;
-  display: block; 
+  display: block;
 }
 
 .header-left .mobile-logo {
@@ -77,10 +77,10 @@ header {
 .header-popup.desktop-popup {
   position: absolute;
   top: 100%;
-  right: 40px;
-  background: #2A3647;
+  right: 20px;
+  background: #2a3647;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+  border-radius: 20px 0px 20px 20px;
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -91,11 +91,11 @@ header {
 
 .header-popup.mobile-popup {
   position: absolute;
-  top: 100%;
+  top: 65px;
   right: 10px;
-  background: #2A3647;
+  background: #2a3647;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+  border-radius: 10px 0px 10px 10px;
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -126,12 +126,11 @@ header {
 }
 
 .header-popup a:hover {
-  background: #f6f7f8;
+  background-color: rgba(0, 0, 0, 0.3);
 }
 
 .header-popup .help-in-popup {
-  color: #29abe2;
-  font-weight: bold;
+  color: white;
 }
 
 @media (max-width: 768px) {
