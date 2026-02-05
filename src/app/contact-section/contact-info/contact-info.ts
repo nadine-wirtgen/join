@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Output, EventEmitter, HostListener } from '@angular/core';
 import { ContactService } from '../../firebase-service/contact-service';
 import { Contacts } from '../../interfaces/contacts';
 
@@ -10,7 +10,9 @@ import { Contacts } from '../../interfaces/contacts';
 })
 export class ContactInfo {
   contactService = inject(ContactService);
+  @Output() switch = new EventEmitter<void>();
   hoveredIcon: string | null = null;
+  menuOpen = false;
 
   get selectedContact(): Contacts | null {
     return this.contactService.selectedContact;
@@ -39,5 +41,26 @@ export class ContactInfo {
 
   getSelectedColor(): string {
     return this.contactService.getContactColor(this.selectedContact);
+  }
+
+  toggleMenu() {
+    this.menuOpen = !this.menuOpen;
+  }
+
+  @HostListener('click')
+  onComponentClick() {
+    if (this.menuOpen) {
+      this.menuOpen = false;
+    }
+  }
+
+  onEditFromMenu(event: Event) {
+    event.stopPropagation();
+    this.editContact();
+    this.menuOpen = false;
+  }
+
+  backToList() {
+    this.switch.emit();
   }
 }

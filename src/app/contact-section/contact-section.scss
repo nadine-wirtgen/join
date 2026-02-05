@@ -1,11 +1,22 @@
 section {
-  display: flex;
-  max-width: 1440px;
   width: 100%;
-  app-contact-list {
-    max-width: 456px;
-  }
-  app-contact-info {
+  height: 100%;
+  .desktop-view {
+    display: flex;
+    max-width: 1440px;
     width: 100%;
+    background-color: #f6f7f8;
+    app-contact-list {
+      max-width: 456px;
+    }
+    app-contact-info {
+      width: 100%;
+    }
+  }
+
+  .mobile-view {
+    app-contact-info {
+      background-color: #f6f7f8;
+    }
   }
 }

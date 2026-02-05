@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { ContactInfo } from './contact-info/contact-info';
 import { ContactList } from './contact-list/contact-list';
 
@@ -9,5 +9,20 @@ import { ContactList } from './contact-list/contact-list';
   styleUrl: './contact-section.scss',
 })
 export class ContactSection {
+  isMobile = window.innerWidth <= 768;
+  showList = true;
 
+  @HostListener('window:resize')
+  onResize() {
+    this.isMobile = window.innerWidth <= 768;
+    if (!this.isMobile) {
+      this.showList = true;
+    }
+  }
+
+  switchView() {
+    if (this.isMobile) {
+      this.showList = !this.showList;
+    }
+  }
 }

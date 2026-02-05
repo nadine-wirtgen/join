@@ -1,5 +1,12 @@
-
-import { Component, OnDestroy, OnInit, inject, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  inject,
+  ViewChild,
+  Output,
+  EventEmitter,
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ContactDialogTemplate } from '../contact-dialog-template/contact-dialog-template';
 import { ContactService } from '../../firebase-service/contact-service';
@@ -12,22 +19,20 @@ type ContactGroup = {
 
 @Component({
   selector: 'app-contact-list',
-  imports: [ ContactDialogTemplate],
+  imports: [ContactDialogTemplate],
   templateUrl: './contact-list.html',
   styleUrl: './contact-list.scss',
 })
 export class ContactList implements OnInit, OnDestroy {
   contactService = inject(ContactService);
   dialogMode: 'open' | 'change' = 'open';
+  @Output() switch = new EventEmitter<void>();
 
   private editSubscription?: Subscription;
 
   @ViewChild('contactDialog') contactDialog?: ContactDialogTemplate;
 
-  
-  constructor(/*public contactService: ContactService*/) {
-
-  }
+  constructor(/*public contactService: ContactService*/) {}
 
   ngOnInit(): void {
     this.editSubscription = this.contactService.editRequest$.subscribe(() => {
@@ -46,6 +51,7 @@ export class ContactList implements OnInit, OnDestroy {
 
   selectContact(contact: Contacts): void {
     this.contactService.setSelectedContact(contact);
+    this.openContact();
   }
 
   getInitials(name?: string): string {
@@ -82,5 +88,9 @@ export class ContactList implements OnInit, OnDestroy {
     }
 
     return groups;
+  }
+
+  openContact() {
+    this.switch.emit();
   }
 }
