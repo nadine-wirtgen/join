@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { Router, RouterLink, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 
@@ -9,7 +9,7 @@ import { filter } from 'rxjs/operators';
   templateUrl: './header.html',
   styleUrls: ['./header.scss'],
 })
-export class Header {
+export class Header implements AfterViewInit {
   userInitials: string = '';
   
   isMobile = false;
@@ -27,6 +27,9 @@ export class Header {
   logoPath: string = 'assets/icon/header/logo_grey.png';
   helpIconPath: string = 'assets/icon/header/help.png';
 
+  @ViewChild('desktopPopup') desktopPopup?: ElementRef;
+  @ViewChild('mobilePopup') mobilePopup?: ElementRef;
+
   constructor(private router: Router) {
     this.initializeUser();
     this.checkScreenSize();
@@ -40,6 +43,10 @@ export class Header {
       });
   }
 
+  ngAfterViewInit() {
+    this.setupPopupAutoClose();
+  }
+
   checkScreenSize() {
     this.isMobile = window.innerWidth < 768;
   }
@@ -51,6 +58,33 @@ export class Header {
 
   toggleHeaderPopup() {
     this.showPopup = !this.showPopup;
+    if (this.showPopup) {
+      // Jep kohë për DOM të përditësohet
+      setTimeout(() => {
+        this.setupPopupAutoClose();
+      }, 0);
+    }
+  }
+
+  setupPopupAutoClose() {
+    // Gjej popup aktual (desktop ose mobile)
+    const popup = this.isMobile ? this.mobilePopup?.nativeElement : this.desktopPopup?.nativeElement;
+    
+    if (popup && this.showPopup) {
+      // Merr të gjitha link-et brenda popup
+      const links = popup.querySelectorAll('a');
+      
+      links.forEach((link: HTMLAnchorElement) => {
+        // Shto click event për të mbyllur popup
+        link.addEventListener('click', () => {
+          this.showPopup = false;
+        });
+      });
+    }
+  }
+
+  closePopup() {
+    this.showPopup = false;
   }
 
   logout() {

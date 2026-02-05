@@ -19,23 +19,18 @@
   </div>
 
   @if (showPopup && !isMobile) {
-    <div class="header-popup desktop-popup" (click)="$event.stopPropagation()">
+    <div #desktopPopup class="header-popup desktop-popup" (click)="$event.stopPropagation()">
       <a [routerLink]="legalNoticeRoute">Legal Notice</a>
-
       <a [routerLink]="privacyPolicyRoute">Privacy Policy</a>
-
       <a (click)="logout()">Logout</a>
     </div>
   }
 
   @if (showPopup && isMobile) {
-    <div class="header-popup mobile-popup" (click)="$event.stopPropagation()">
+    <div #mobilePopup class="header-popup mobile-popup" (click)="$event.stopPropagation()">
       <a class="help-in-popup" [routerLink]="helpRoute">Help</a>
-
       <a [routerLink]="legalNoticeRoute">Legal Notice</a>
-
       <a [routerLink]="privacyPolicyRoute">Privacy Policy</a>
-
       <a (click)="logout()">Logout</a>
     </div>
   }
