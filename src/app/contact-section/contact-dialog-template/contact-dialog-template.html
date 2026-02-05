@@ -16,7 +16,7 @@
           <img src="" alt="PROFILEICON">
         </div>
         <div>
-          <input type="text" [(ngModel)]="contact.email" name="email" placeholder="Email" required>
+          <input type="email" [(ngModel)]="contact.email" name="email" placeholder="Email" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" required>
           <img src="" alt="MAILICON">
         </div>
         <div>
@@ -24,8 +24,12 @@
           <img src="" alt="PHONEICON">
         </div>
         <div class="dialog-buttons">
-          <a class="cancelDelete" (click)="handleSecondaryAction()">{{ getText('secondaryAction') }} <img src="assets/imgs/contact-list/cancel.png" alt="X"></a>
-          <a class="createSave" (click)="handlePrimaryAction()">{{ getText('primaryAction') }} <img src="assets/imgs/contact-list/check.png" alt="CHECK"></a>
+          <button type="button" class="cancelDelete" (click)="handleSecondaryAction()">
+            {{ getText('secondaryAction') }} <img src="assets/imgs/contact-list/cancel.png" alt="X">
+          </button>
+          <button type="submit" class="createSave">
+            {{ getText('primaryAction') }} <img src="assets/imgs/contact-list/check.png" alt="CHECK">
+          </button>
         </div>
       </div>
     </form>
