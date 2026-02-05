@@ -3,6 +3,7 @@
   display: flex;
   justify-content: center;
   background-color: #ffffff;
+  position: relative;
   .contact-list-div {
     display: flex;
     flex-direction: column;
@@ -77,6 +78,37 @@
       cursor: pointer;
       background-color: #f6f7f8;
       border-radius: 10px;
+    }
+  }
+  .addButtonMobil {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .contact-list-section {
+    .addButton {
+      display: none;
+    }
+    .addButtonMobil {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50px;
+      background-color: #2a3647;
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      height: 40px;
+      width: 40px;
+      img {
+        height: 24px;
+        width: 24px;
+      }
+      &:hover {
+        cursor: pointer;
+        background-color: #007cee;
+      }
     }
   }
 }

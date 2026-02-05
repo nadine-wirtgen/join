@@ -71,7 +71,7 @@
       </div>
     </div>
   }
-  <div class="editBurgermenu" (click)="toggleMenu()">
+  <div class="editBurgermenu" (click)="toggleMenu(); $event.stopPropagation()">
     @if (!menuOpen) {
       <div class="preview">
         <img src="assets/icon/contact-info/burgermenu.png" alt="burgermenu" />
@@ -82,7 +82,7 @@
           class="editBox"
           (mouseenter)="hoveredIcon = 'edit'"
           (mouseleave)="hoveredIcon = null"
-          (click)="editContact()"
+          (click)="onEditFromMenu($event)"
         >
           <img
             [src]="
