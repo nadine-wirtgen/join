@@ -1,11 +1,16 @@
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-privacy-policy-section',
-  imports: [],
+  standalone: true,
   templateUrl: './privacy-policy-section.html',
-  styleUrl: './privacy-policy-section.scss',
+  styleUrls: ['./privacy-policy-section.scss'],
 })
 export class PrivacyPolicySection {
+  constructor(private location: Location) {}
 
+  closeHelp() {
+    this.location.back();
+  }
 }
