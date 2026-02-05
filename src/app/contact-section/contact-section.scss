@@ -10,8 +10,14 @@ section {
       height: 100%;
       max-width: 456px;
     }
-    app-contact-info {
-      width: 100%;
+    .fixed {
+      position: relative;
+      app-contact-info {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 96px;
+      }
     }
   }
 

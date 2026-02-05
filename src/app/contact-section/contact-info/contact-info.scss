@@ -189,7 +189,7 @@ section {
 
   .editBurgermenu {
     display: flex;
-    position: absolute;
+    position: fixed;
     bottom: 20px;
     right: 20px;
     .preview {
@@ -228,5 +228,13 @@ section {
         }
       }
     }
+  }
+}
+
+@media (max-width: 1000px) {
+  .editBurgermenu {
+    position: fixed;
+    bottom: 84px;
+    right: 20px;
   }
 }
