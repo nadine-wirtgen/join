@@ -37,6 +37,7 @@ export class ContactInfo {
 
   deleteContact(): void {
     this.contactService.deleteSelectedContact();
+    this.switch.emit();
   }
 
   getSelectedColor(): string {
@@ -56,7 +57,14 @@ export class ContactInfo {
 
   onEditFromMenu(event: Event) {
     event.stopPropagation();
-    this.editContact();
+    this.switch.emit();
+    setTimeout(() => this.editContact());
+    this.menuOpen = false;
+  }
+
+  onDeleteFromMenu(event: Event) {
+    event.stopPropagation();
+    this.deleteContact();
     this.menuOpen = false;
   }
 

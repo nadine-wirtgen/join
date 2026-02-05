@@ -107,9 +107,10 @@ export class ContactDialogTemplate {
     this.close();
   }
 
-  submitContact(): void {
-    this.contactsService.addContactToDataBase(this.contact);
+  async submitContact(): Promise<void> {
+    await this.contactsService.addContactToDataBase(this.contact);
     this.clearInputFields();
+    this.close();
   }
 
   clearInputFields(): void {
