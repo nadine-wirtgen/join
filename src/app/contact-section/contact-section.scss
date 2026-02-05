@@ -1,12 +1,13 @@
 section {
   width: 100%;
-  height: 100%;
   .desktop-view {
     display: flex;
     max-width: 1440px;
     width: 100%;
+    min-height: calc(100vh - var(--header-height, 96px));
     background-color: #f6f7f8;
     app-contact-list {
+      height: 100%;
       max-width: 456px;
     }
     app-contact-info {
@@ -15,6 +16,7 @@ section {
   }
 
   .mobile-view {
+    min-height: calc(100vh - var(--header-height, 96px) - var(--nav-height, 64px));
     app-contact-info {
       background-color: #f6f7f8;
     }

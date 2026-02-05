@@ -8,7 +8,11 @@
       <p class="start-letter">{{ group.letter }}</p>
       <img src="assets/icon/contact-list/borderline.png" alt="borderline" />
       @for (contact of group.contacts; track $index) {
-        <div class="singleContactContainer" (click)="selectContact(contact)">
+        <div
+          class="singleContactContainer"
+          (click)="selectContact(contact)"
+          [class.active]="contactService.selectedContact === contact"
+        >
           <div class="avatarLetterBox" [style.backgroundColor]="getContactColor(contact)">
             <p>{{ getInitials(contact.name) }}</p>
           </div>
