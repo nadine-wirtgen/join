@@ -9,12 +9,12 @@ import { ContactList } from './contact-list/contact-list';
   styleUrl: './contact-section.scss',
 })
 export class ContactSection {
-  isMobile = window.innerWidth <= 768;
+  isMobile = window.innerWidth <= 1000;
   showList = true;
 
   @HostListener('window:resize')
   onResize() {
-    this.isMobile = window.innerWidth <= 768;
+    this.isMobile = window.innerWidth <= 1000;
     if (!this.isMobile) {
       this.showList = true;
     }
