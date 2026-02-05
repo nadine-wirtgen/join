@@ -1,8 +1,44 @@
 <header>
-  <h1 class="header-title">Kanban Project Management Tool</h1>
+  <div class="header-left">
+    <img [src]="logoPath" alt="JOIN Logo" class="logo-mobile" />
+
+    <h1>{{ appTitle }}</h1>
+    <span class="mobile-logo"></span>
+  </div>
 
   <div class="header-right">
-    <a routerLink="/help" class="help-btn">?</a>
-    <div class="user-profile">{{ userInitials }}</div>
+    @if (!isHelpOpen && !isMobile) {
+      <a [routerLink]="helpRoute">
+        <img class="help" [src]="helpIconPath" alt="Help Icon" />
+      </a>
+    }
+
+    <span class="initials" (click)="toggleHeaderPopup()">
+      {{ userInitials }}
+    </span>
   </div>
+
+  @if (showPopup && !isMobile) {
+    <div class="header-popup desktop-popup" (click)="$event.stopPropagation()">
+      <a [routerLink]="legalNoticeRoute">Legal Notice</a>
+
+      <a [routerLink]="privacyPolicyRoute">Privacy Policy</a>
+
+      <a (click)="logout()">Logout</a>
+    </div>
+  }
+
+  @if (showPopup && isMobile) {
+    <div class="header-popup mobile-popup" (click)="$event.stopPropagation()">
+      <a class="help-in-popup" [routerLink]="helpRoute">Help</a>
+
+      <a [routerLink]="legalNoticeRoute">Legal Notice</a>
+
+      <a [routerLink]="privacyPolicyRoute">Privacy Policy</a>
+
+      <a (click)="logout()">Logout</a>
+    </div>
+  }
+
+  <div id="popup-message-box"></div>
 </header>
