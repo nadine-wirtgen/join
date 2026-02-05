@@ -1,11 +1,20 @@
-<div class="app-layout">
-  <app-nav-bar></app-nav-bar> 
+ <div class="wrapper">
 
-  <div class="main-area">
-    <app-header></app-header>
+  <div class="app-layout">
+    <app-nav-bar></app-nav-bar>
 
-    <main class="content">
-      <router-outlet></router-outlet>
-    </main>
+    <div class="main-area">
+      <app-header></app-header>
+
+      <main class="content">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
   </div>
+
+
+<div class="extra-header-placeholder">
+  <div class="header-sim"></div>
+  <div class="body-sim"></div>
+</div>
 </div>
