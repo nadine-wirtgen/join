@@ -38,6 +38,7 @@
               class="editBox"
               (mouseenter)="hoveredIcon = 'delete'"
               (mouseleave)="hoveredIcon = null"
+              (click)="deleteContact()"
             >
               <img
                 [src]="
@@ -97,6 +98,7 @@
           class="editBox"
           (mouseenter)="hoveredIcon = 'delete'"
           (mouseleave)="hoveredIcon = null"
+          (click)="onDeleteFromMenu($event)"
         >
           <img
             [src]="
