@@ -1,6 +1,7 @@
 section {
   cursor: default;
-  padding: 24px;
+  padding-left: 40px;
+  padding-top: 80px;
   height: 100%;
   width: 100%;
   position: relative;
@@ -29,13 +30,14 @@ section {
 .contactContant {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 32px;
   .contactNameContainer {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: 32px;
     padding-top: 24px;
+    width: 520px;
     .avatarLetterBox {
       width: 100px;
       height: 100px;
@@ -57,6 +59,7 @@ section {
         font-size: 36px;
         font-weight: 600;
         margin: 0;
+        word-break: break-all;
       }
       .editContainer {
         display: flex;
@@ -65,12 +68,14 @@ section {
           display: flex;
           align-items: center;
           gap: 8px;
+          transition: all 125ms ease-in;
           img {
             height: 24px;
           }
           &:hover {
             cursor: pointer;
             color: #29abe2;
+            transform: scale(1.05);
           }
         }
       }
@@ -80,7 +85,7 @@ section {
   .contactInfo {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 32px;
     h4 {
       font-size: 20px;
       font-weight: 400;
@@ -147,6 +152,8 @@ section {
     }
     .contactNameContainer {
       gap: 20px;
+      flex-wrap: wrap;
+      width: 380px;
       .nameEditContant {
         h2 {
           font-size: 32px;
@@ -179,8 +186,15 @@ section {
     right: 20px;
     height: 32px;
     width: 32px;
+    transition: all 125ms ease-in;
     &:hover {
       cursor: pointer;
+    }
+    &:active {
+      transform: scale(1.1);
+      background-color: #eeeded;
+      padding: 2px;
+      border-radius: 50px;
     }
   }
 
@@ -197,6 +211,7 @@ section {
       width: 40px;
       background-color: #2a3647;
       border-radius: 50px;
+      transition: all 125ms ease-in;
       &:hover {
         cursor: pointer;
         background-color: #007cee;
@@ -219,6 +234,7 @@ section {
         align-items: center;
         gap: 8px;
         width: 100%;
+        transition: all 125ms ease-in;
         &:hover {
           cursor: pointer;
           color: #29abe2;
@@ -229,9 +245,32 @@ section {
 }
 
 @media (max-width: 1000px) {
+  .contactContant {
+    .contactNameContainer {
+      width: 100%;
+      .nameEditContant {
+        .editContainer {
+          display: none;
+        }
+      }
+    }
+  }
   .editBurgermenu {
     position: fixed;
     bottom: 84px;
     right: 20px;
+  }
+}
+
+@media (max-width: 500px) {
+  .contactContant {
+    .contactNameContainer {
+      width: 100%;
+      .nameEditContant {
+        h2 {
+          font-size: 28px;
+        }
+      }
+    }
   }
 }
