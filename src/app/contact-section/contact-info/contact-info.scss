@@ -65,12 +65,14 @@ section {
           display: flex;
           align-items: center;
           gap: 8px;
+          transition: all 125ms ease-in;
           img {
             height: 24px;
           }
           &:hover {
             cursor: pointer;
             color: #29abe2;
+            transform: scale(1.05);
           }
         }
       }
@@ -179,8 +181,15 @@ section {
     right: 20px;
     height: 32px;
     width: 32px;
+    transition: all 125ms ease-in;
     &:hover {
       cursor: pointer;
+    }
+    &:active {
+      transform: scale(1.1);
+      background-color: #eeeded;
+      padding: 2px;
+      border-radius: 50px;
     }
   }
 
@@ -197,6 +206,7 @@ section {
       width: 40px;
       background-color: #2a3647;
       border-radius: 50px;
+      transition: all 125ms ease-in;
       &:hover {
         cursor: pointer;
         background-color: #007cee;
@@ -219,6 +229,7 @@ section {
         align-items: center;
         gap: 8px;
         width: 100%;
+        transition: all 125ms ease-in;
         &:hover {
           cursor: pointer;
           color: #29abe2;
