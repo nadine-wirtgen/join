@@ -7,7 +7,7 @@ section {
     min-height: calc(100vh - var(--header-height, 96px));
     background-color: #f6f7f8;
     app-contact-list {
-      height: 100%;
+      height: calc(100vh - var(--header-height, 96px));
       max-width: 456px;
     }
     .fixed {
@@ -22,7 +22,7 @@ section {
   }
 
   .mobile-view {
-    min-height: calc(100vh - var(--header-height, 96px) - var(--nav-height, 64px));
+    height: 100%;
     app-contact-info {
       background-color: #f6f7f8;
     }
