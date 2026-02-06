@@ -36,6 +36,7 @@ section {
     flex-wrap: wrap;
     gap: 32px;
     padding-top: 24px;
+    width: 520px;
     .avatarLetterBox {
       width: 100px;
       height: 100px;
@@ -149,6 +150,8 @@ section {
     }
     .contactNameContainer {
       gap: 20px;
+      flex-wrap: wrap;
+      width: 380px;
       .nameEditContant {
         h2 {
           font-size: 32px;
