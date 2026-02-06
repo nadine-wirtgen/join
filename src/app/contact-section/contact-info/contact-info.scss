@@ -1,6 +1,7 @@
 section {
   cursor: default;
-  padding: 24px;
+  padding-left: 40px;
+  padding-top: 80px;
   height: 100%;
   width: 100%;
   position: relative;
@@ -29,7 +30,7 @@ section {
 .contactContant {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 32px;
   .contactNameContainer {
     display: flex;
     align-items: center;
@@ -58,6 +59,7 @@ section {
         font-size: 36px;
         font-weight: 600;
         margin: 0;
+        word-break: break-all;
       }
       .editContainer {
         display: flex;
@@ -83,7 +85,7 @@ section {
   .contactInfo {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 32px;
     h4 {
       font-size: 20px;
       font-weight: 400;
@@ -243,9 +245,32 @@ section {
 }
 
 @media (max-width: 1000px) {
+  .contactContant {
+    .contactNameContainer {
+      width: 100%;
+      .nameEditContant {
+        .editContainer {
+          display: none;
+        }
+      }
+    }
+  }
   .editBurgermenu {
     position: fixed;
     bottom: 84px;
     right: 20px;
+  }
+}
+
+@media (max-width: 500px) {
+  .contactContant {
+    .contactNameContainer {
+      width: 100%;
+      .nameEditContant {
+        h2 {
+          font-size: 28px;
+        }
+      }
+    }
   }
 }
