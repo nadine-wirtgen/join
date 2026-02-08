@@ -1,16 +1,18 @@
-import { Component, inject, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, inject, Output, EventEmitter, HostListener, ViewChild } from '@angular/core';
 import { ContactService } from '../../firebase-service/contact-service';
 import { Contacts } from '../../interfaces/contacts';
+import { ContactDialogTemplate } from '../contact-dialog-template/contact-dialog-template';
 
 @Component({
   selector: 'app-contact-info',
-  imports: [],
+  imports: [ContactDialogTemplate],
   templateUrl: './contact-info.html',
   styleUrl: './contact-info.scss',
 })
 export class ContactInfo {
   contactService = inject(ContactService);
   @Output() switch = new EventEmitter<void>();
+  @ViewChild('contactDialog') contactDialog?: ContactDialogTemplate;
   hoveredIcon: string | null = null;
   menuOpen = false;
 
@@ -18,20 +20,9 @@ export class ContactInfo {
     return this.contactService.selectedContact;
   }
 
-  getInitials(name?: string): string {
-    if (!name?.trim()) {
-      return '';
-    }
-
-    const parts = name.trim().split(/\s+/);
-    const first = parts[0]?.charAt(0) ?? '';
-    const last = parts.length > 1 ? parts[parts.length - 1].charAt(0) : '';
-    return (first + last).toUpperCase();
-  }
-
   editContact(): void {
     if (this.selectedContact) {
-      this.contactService.requestEdit();
+      this.contactDialog?.openWithMode('change');
     }
   }
 
@@ -42,6 +33,10 @@ export class ContactInfo {
 
   getSelectedColor(): string {
     return this.contactService.getContactColor(this.selectedContact);
+  }
+
+  getInitials(name?: string): string {
+    return this.contactService.getInitials(name);
   }
 
   toggleMenu() {
@@ -57,8 +52,7 @@ export class ContactInfo {
 
   onEditFromMenu(event: Event) {
     event.stopPropagation();
-    this.switch.emit();
-    setTimeout(() => this.editContact());
+    this.editContact();
     this.menuOpen = false;
   }
 

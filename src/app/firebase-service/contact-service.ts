@@ -120,6 +120,16 @@ export class ContactService implements OnDestroy {
     return this.contactColorMap.get(key) ?? this.colorPalette[0];
   }
 
+  getInitials(name?: string): string {
+    if (!name?.trim()) {
+      return '';
+    }
+    const parts = name.trim().split(/\s+/);
+    const first = parts[0]?.charAt(0) ?? '';
+    const last = parts.length > 1 ? parts[parts.length - 1].charAt(0) : '';
+    return (first + last).toUpperCase();
+  }
+
   deleteContact(index: number) {
     const vocable = this.contactList[index];
     this.deleteContactOnDatabase(vocable);
