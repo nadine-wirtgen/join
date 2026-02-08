@@ -1,0 +1,45 @@
+<nav class="navbar">
+
+  <!-- =========================
+       LOGO Desktop
+  ========================= -->
+  <div class="logo desktop-only">
+    <img src="assets/icon/nav-bar/logo.png" alt="Logo">
+  </div>
+
+  <!-- =========================
+       DESKTOP LINKS
+  ========================= -->
+  <div class="desktop-links-wrapper desktop-only">
+    <div class="navbar-main-links">
+      <a routerLink="/login" routerLinkActive="active" class="login-link" [routerLinkActiveOptions]="{ exact: true }">
+        <img src="assets/icon/nav-bar/login.png" alt="Login">
+        <span>Log in</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- =========================
+       DESKTOP FOOTER
+  ========================= -->
+  <div class="navbar-footer-links desktop-only">
+    <a routerLink="/legal" routerLinkActive="active-footer">Legal Policy</a>
+    <a routerLink="/privacy" routerLinkActive="active-footer">Privacy Policy</a>
+  </div>
+
+  <!-- =========================
+       MOBILE LINKS
+  ========================= -->
+  <div class="navbar-main-links mobile-only logged-out">
+    <a routerLink="/login" routerLinkActive="active" class="login-link" [routerLinkActiveOptions]="{ exact: true }">
+      <img src="assets/icon/nav-bar/login.png" alt="Login">
+      <span>Log in</span>
+    </a>
+
+    <div class="footer-links">
+      <a routerLink="/legal" routerLinkActive="active-footer">Legal Policy</a>
+      <a routerLink="/privacy" routerLinkActive="active-footer">Privacy Policy</a>
+    </div>
+  </div>
+
+</nav>

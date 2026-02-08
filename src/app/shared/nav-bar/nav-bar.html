@@ -1,33 +1,5 @@
-<nav class="navbar">
-  <div class="logo desktop-only">
-    <img src="assets/icon/nav-bar/logo.png" alt="Logo">
-  </div>
-
-  <div class="navbar-main-links">
-    <a routerLink="/summary">
-      <img src="assets/icon/nav-bar/summary.png" alt="Summary">
-      <span>Summary</span>
-    </a>
-
-    <a routerLink="/add-task">
-      <img src="assets/icon/nav-bar/addTask.png" alt="Add Task">
-      <span>Add Task</span>
-    </a>
-
-    <a routerLink="/board">
-      <img src="assets/icon/nav-bar/board.png" alt="Board">
-      <span>Board</span>
-    </a>
-
-    <a routerLink="/contacts">
-      <img src="assets/icon/nav-bar/contacts.png" alt="Contacts">
-      <span>Contacts</span>
-    </a>
-  </div>
-
-  <div class="navbar-footer-links desktop-only">
-    <a routerLink="/legal" class="footer-link">Legal Policy</a>
-    <a routerLink="/privacy" class="footer-link">Privacy Policy</a>
-
-  </div>
-</nav>
+@if (isLoggedIn$ | async) {
+  <app-nav-bar-logged-in></app-nav-bar-logged-in>
+} @else {
+  <app-nav-bar-logged-out></app-nav-bar-logged-out>
+}

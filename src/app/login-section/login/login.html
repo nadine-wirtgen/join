@@ -1,0 +1,35 @@
+<div class="login-form">
+<div class="login-header">
+  <h1>Log in</h1>
+  <div class="underline-container">
+    <img src="assets/icon/login/underline.png" alt="Underline" />
+  </div>
+</div>
+  <div class="contact-input">
+    <input
+      class="contact-input-field"
+      type="email"
+      placeholder="Email"
+    />
+    <img src="assets/icon/login/mail.png" alt="Mail Icon" />
+  </div>
+
+  <div class="contact-input">
+    <input
+      class="contact-input-field"
+      type="password"
+      placeholder="Password"
+    />
+    <img src="assets/icon/login/lock.png" alt="Lock Icon" />
+  </div>
+
+  <div class="login-section-buttons">
+    <button class="login-btn" (click)="login()">
+      Log in
+    </button>
+
+    <button class="guest-btn" (click)="guestLogin()">
+      Guest Log in
+    </button>
+  </div>
+</div>
