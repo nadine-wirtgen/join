@@ -59,7 +59,6 @@ export class Header implements AfterViewInit {
   toggleHeaderPopup() {
     this.showPopup = !this.showPopup;
     if (this.showPopup) {
-      // Jep kohë për DOM të përditësohet
       setTimeout(() => {
         this.setupPopupAutoClose();
       }, 0);
@@ -67,15 +66,13 @@ export class Header implements AfterViewInit {
   }
 
   setupPopupAutoClose() {
-    // Gjej popup aktual (desktop ose mobile)
     const popup = this.isMobile ? this.mobilePopup?.nativeElement : this.desktopPopup?.nativeElement;
     
     if (popup && this.showPopup) {
-      // Merr të gjitha link-et brenda popup
+
       const links = popup.querySelectorAll('a');
       
       links.forEach((link: HTMLAnchorElement) => {
-        // Shto click event për të mbyllur popup
         link.addEventListener('click', () => {
           this.showPopup = false;
         });

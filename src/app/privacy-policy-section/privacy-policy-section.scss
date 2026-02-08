@@ -5,7 +5,6 @@
   padding: 24px;
   box-sizing: border-box;
 
-
   .privacy-header {
     display: flex;
     align-items: center;
@@ -22,7 +21,7 @@
     }
 
     img.help-close {
-      display: none; 
+      display: none;
       width: 24px;
       height: 24px;
       cursor: pointer;
@@ -38,9 +37,6 @@
     flex: 1;
     overflow-y: auto;
     padding-right: 8px;
-  
-    padding: 30px;
-
   }
 
   h2 {
@@ -61,10 +57,9 @@
   }
 
   .highlight-blue {
-    color: #29ABE2;
+    color: #29abe2;
     font-weight: 700;
   }
-
 
   @media (max-width: 768px) {
     .privacy-header h1 {
@@ -72,11 +67,26 @@
     }
 
     .privacy-header img.help-close {
-      display: block; 
+      display: block;
     }
 
     .privacy-body {
       padding-bottom: calc(var(--mobile-nav-height, 64px) + 16px);
     }
+  }
+}
+
+ul,
+ol {
+  margin: 16px 0;
+  padding-left: 24px;
+
+  li {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 8px;
+    color: #333;
   }
 }
