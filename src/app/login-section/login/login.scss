@@ -1,0 +1,166 @@
+
+.login-form {
+  width: 420px;
+  max-width: 90%;
+  padding: 40px 30px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-sizing: border-box;
+}
+
+
+.login-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+
+  h1 {
+    margin: 0;
+    font-size: 24px;
+  }
+
+  .underline-container {
+    width: 50px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .underline-container img {
+    width: 50px;
+    height: 3px;
+    display: block;
+  }
+}
+
+
+.contact-input {
+  display: flex;
+  align-items: center;
+  height: 50px;
+  border: 1px solid #D1D1D1;
+  border-radius: 10px;
+  padding: 0 15px;
+  gap: 10px;
+  box-sizing: border-box;
+}
+
+.contact-input-field {
+  flex: 1;        
+  min-width: 0;   
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+
+.contact-input img {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0; 
+}
+
+
+.login-section-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+
+@media (min-width: 768px) {
+  .login-section-buttons {
+    flex-direction: row;
+  }
+
+  .login-btn,
+  .guest-btn {
+    flex: 1;
+  }
+}
+
+
+@media (max-width: 767px) {
+  .login-section-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .login-btn,
+  .guest-btn {
+    width: 50%;
+  }
+}
+
+
+.login-btn {
+  background-color: #1E2A3C;
+  color: white;
+  border-radius: 8px;
+  padding: 12px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.login-btn:hover {
+  background-color: #29ABE2;
+}
+
+.guest-btn {
+  background: transparent;
+  border: 1px solid #1E2A3C;
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.guest-btn:hover {
+  color: #29ABE2;
+  border-color: #29ABE2;
+}
+
+
+@media (max-width: 420px) {
+  .login-form {
+    width: 100%;        
+    padding: 20px 15px; 
+  }
+
+  .login-header h1 {
+    font-size: 20px;    
+  }
+
+  .contact-input {
+    height: 45px;       
+    padding: 0 10px;
+    gap: 8px;           
+  }
+
+  .contact-input-field {
+    font-size: 14px;
+    flex: 1;           
+    min-width: 0;      
+  }
+
+  .contact-input img {
+    width: 20px;        
+    height: 20px;
+    flex-shrink: 0;     
+  }
+
+  .login-section-buttons {
+    gap: 8px;
+  }
+
+  .login-btn,
+  .guest-btn {
+    width: 100%;        
+    padding: 10px;
+    font-size: 14px;
+  }
+}
