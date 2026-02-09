@@ -1,5 +1,5 @@
-import { Component, ElementRef, inject, Input, ViewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { AfterViewInit, Component, ElementRef, OnDestroy, inject, Input, ViewChild } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
 import { ContactService } from '../../firebase-service/contact-service';
 
 type DialogMode = 'open' | 'change';
@@ -12,10 +12,17 @@ type DialogTextKey = 'title' | 'subtitle' | 'primaryAction' | 'secondaryAction';
   templateUrl: './contact-dialog-template.html',
   styleUrl: './contact-dialog-template.scss',
 })
-export class ContactDialogTemplate {
+export class ContactDialogTemplate implements AfterViewInit, OnDestroy {
   contactsService = inject(ContactService);
   @Input() mode: DialogMode = 'open';
   @ViewChild('dialog') dialog?: ElementRef<HTMLDialogElement>;
+  private cancelListener?: (event: Event) => void;
+  private readonly bodyScrollLockClass = 'dialog-scroll-lock';
+  private readonly mobileBreakpoint = 1000;
+  private isScrollLocked = false;
+  private toastShowTimeoutId?: number;
+  private toastHideTimeoutId?: number;
+  showSuccessToast = false;
 
   dialogText: Record<DialogMode, Record<DialogTextKey, string>> = {
     open: {
@@ -43,6 +50,29 @@ export class ContactDialogTemplate {
     this.open();
   }
 
+  ngAfterViewInit(): void {
+    const dialogEl = this.dialog?.nativeElement;
+    if (!dialogEl) {
+      return;
+    }
+
+    this.cancelListener = event => {
+      event.preventDefault();
+      this.close();
+    };
+
+    dialogEl.addEventListener('cancel', this.cancelListener);
+  }
+
+  ngOnDestroy(): void {
+    const dialogEl = this.dialog?.nativeElement;
+    if (dialogEl && this.cancelListener) {
+      dialogEl.removeEventListener('cancel', this.cancelListener);
+    }
+    this.unlockBodyScroll();
+    this.clearToastTimeouts();
+  }
+
   open(): void {
     if (this.mode === 'change') {
       const selected = this.contactsService.selectedContact;
@@ -55,11 +85,62 @@ export class ContactDialogTemplate {
       this.clearInputFields();
     }
 
-    this.dialog?.nativeElement.showModal();
+    const dialogEl = this.dialog?.nativeElement;
+    if (!dialogEl) {
+      return;
+    }
+
+    dialogEl.removeAttribute('data-dialog-state');
+    this.lockBodyScroll();
+    dialogEl.showModal();
   }
 
   close(): void {
-    this.dialog?.nativeElement.close();
+    const dialogEl = this.dialog?.nativeElement;
+    if (!dialogEl) {
+      return;
+    }
+
+    const finishClose = () => {
+      dialogEl.removeAttribute('data-dialog-state');
+      dialogEl.close();
+      this.unlockBodyScroll();
+    };
+
+    if (!dialogEl.open) {
+      finishClose();
+      return;
+    }
+
+    if (dialogEl.getAttribute('data-dialog-state') === 'closing') {
+      return;
+    }
+
+    const animationDuration = 400;
+    let fallbackId: number | undefined;
+
+    const handleAnimationEnd = (event: AnimationEvent) => {
+      if (event.target !== dialogEl) {
+        return;
+      }
+      if (event.animationName !== 'dialog-exit-right' && event.animationName !== 'dialog-exit-up') {
+        return;
+      }
+
+      if (fallbackId !== undefined) {
+        window.clearTimeout(fallbackId);
+      }
+      dialogEl.removeEventListener('animationend', handleAnimationEnd);
+      finishClose();
+    };
+
+    fallbackId = window.setTimeout(() => {
+      dialogEl.removeEventListener('animationend', handleAnimationEnd);
+      finishClose();
+    }, animationDuration);
+
+    dialogEl.addEventListener('animationend', handleAnimationEnd);
+    dialogEl.setAttribute('data-dialog-state', 'closing');
   }
 
   onBackdropClick(event: MouseEvent): void {
@@ -72,9 +153,19 @@ export class ContactDialogTemplate {
     return this.dialogText[this.mode][key];
   }
 
-  handlePrimaryAction(): void {
+  getContactColor(contact: any): string {
+    return this.contactsService.getContactColor(contact);
+  }
+
+  handlePrimaryAction(form: NgForm): void {
+    if (!form.valid) {
+      Object.keys(form.controls).forEach(key => {
+        form.controls[key].markAsTouched();
+      });
+      return;
+    }
     if (this.mode === 'open') {
-      this.submitContact();
+      this.submitContact(form);
       return;
     }
 
@@ -107,15 +198,76 @@ export class ContactDialogTemplate {
     this.close();
   }
 
-  async submitContact(): Promise<void> {
+  async submitContact(form: NgForm): Promise<void> {
     await this.contactsService.addContactToDataBase(this.contact);
+    form.resetForm();
     this.clearInputFields();
     this.close();
+    this.scheduleSuccessToast();
   }
 
   clearInputFields(): void {
     this.contact.name = '';
     this.contact.email = '';
     this.contact.phone = '';
+  }
+
+  private scheduleSuccessToast(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    this.clearToastTimeouts();
+
+    const closeAnimationDuration = 400;
+    const delayBeforeShow = closeAnimationDuration + 2000;
+    const animationDuration = 1800;
+
+    this.toastShowTimeoutId = window.setTimeout(() => {
+      this.showSuccessToast = true;
+      this.toastHideTimeoutId = window.setTimeout(() => {
+        this.showSuccessToast = false;
+      }, animationDuration);
+    }, delayBeforeShow);
+  }
+
+  private clearToastTimeouts(): void {
+    if (this.toastShowTimeoutId !== undefined) {
+      window.clearTimeout(this.toastShowTimeoutId);
+    }
+    if (this.toastHideTimeoutId !== undefined) {
+      window.clearTimeout(this.toastHideTimeoutId);
+    }
+    this.toastShowTimeoutId = undefined;
+    this.toastHideTimeoutId = undefined;
+  }
+
+  private lockBodyScroll(): void {
+    if (typeof document === 'undefined') {
+      return;
+    }
+    if (!this.isMobileViewport()) {
+      return;
+    }
+    document.body.classList.add(this.bodyScrollLockClass);
+    this.isScrollLocked = true;
+  }
+
+  private unlockBodyScroll(): void {
+    if (typeof document === 'undefined') {
+      return;
+    }
+    if (!this.isScrollLocked) {
+      return;
+    }
+    document.body.classList.remove(this.bodyScrollLockClass);
+    this.isScrollLocked = false;
+  }
+
+  private isMobileViewport(): boolean {
+    if (typeof window === 'undefined') {
+      return false;
+    }
+    return window.innerWidth <= this.mobileBreakpoint;
   }
 }

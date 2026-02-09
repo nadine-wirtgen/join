@@ -55,14 +55,7 @@ export class ContactList implements OnInit, OnDestroy {
   }
 
   getInitials(name?: string): string {
-    if (!name?.trim()) {
-      return '';
-    }
-
-    const parts = name.trim().split(/\s+/);
-    const first = parts[0]?.charAt(0) ?? '';
-    const last = parts.length > 1 ? parts[parts.length - 1].charAt(0) : '';
-    return (first + last).toUpperCase();
+    return this.contactService.getInitials(name);
   }
 
   getContactColor(contact: Contacts): string {

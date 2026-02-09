@@ -176,6 +176,10 @@ section {
 }
 
 @media (max-width: 1000px) {
+  .contactContant .contactNameContainer .nameEditContant .editContainer {
+    display: none;
+  }
+
   .backArrowBtn {
     display: flex;
     justify-content: center;
