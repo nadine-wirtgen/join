@@ -7,6 +7,15 @@ section {
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1) inset;
 }
 
+@keyframes contact-slide-in-right {
+  from {
+    transform: translateX(calc(100vw + 120px));
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
 .headlineContainer {
   display: flex;
   gap: 24px;
@@ -29,7 +38,10 @@ section {
 .contactContant {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 32px;
+  @media (min-width: 1001px) {
+    animation: contact-slide-in-right 0.35s ease-out both;
+  }
   .contactNameContainer {
     display: flex;
     align-items: center;
@@ -193,6 +205,8 @@ section {
     position: fixed;
     bottom: 20px;
     right: 20px;
+    align-items: flex-end;
+    justify-content: flex-end;
     .preview {
       display: flex;
       justify-content: center;
@@ -201,6 +215,7 @@ section {
       width: 40px;
       background-color: #2a3647;
       border-radius: 50px;
+      transition: transform 0.2s ease, opacity 0.2s ease;
       &:hover {
         cursor: pointer;
         background-color: #007cee;
@@ -218,6 +233,14 @@ section {
         0 8px 16px rgba(0, 0, 0, 0.15);
       border-radius: 25px 25px 0 25px;
       padding: 16px;
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate3d(140%, 0, 0);
+      transition: transform 0.28s ease, opacity 0.2s ease;
+      will-change: transform, opacity;
       .editBox {
         display: flex;
         align-items: center;
@@ -227,6 +250,18 @@ section {
           cursor: pointer;
           color: #29abe2;
         }
+      }
+    }
+    &.menu-open {
+      .preview {
+        opacity: 0;
+        transform: scale(0.9);
+        pointer-events: none;
+      }
+      .menu {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translate3d(0, 0, 0);
       }
     }
   }

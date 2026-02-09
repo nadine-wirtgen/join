@@ -72,45 +72,42 @@
       </div>
     </div>
   }
-  <div class="editBurgermenu" (click)="toggleMenu(); $event.stopPropagation()">
-    @if (!menuOpen) {
-      <div class="preview">
-        <img src="assets/icon/contact-info/burgermenu.png" alt="burgermenu" />
+  <div class="editBurgermenu" [class.menu-open]="menuOpen" (click)="toggleMenu(); $event.stopPropagation()">
+    <div class="preview" aria-hidden="menuOpen">
+      <img src="assets/icon/contact-info/burgermenu.png" alt="burgermenu" />
+    </div>
+    <div class="menu" (click)="$event.stopPropagation()">
+      <div
+        class="editBox"
+        (mouseenter)="hoveredIcon = 'edit'"
+        (mouseleave)="hoveredIcon = null"
+        (click)="onEditFromMenu($event)"
+      >
+        <img
+          [src]="
+            hoveredIcon === 'edit'
+              ? 'assets/icon/contact-info/edit-hover.png'
+              : 'assets/icon/contact-info/edit-default.png'
+          "
+        />
+        <p>Edit</p>
       </div>
-    } @else {
-      <div class="menu">
-        <div
-          class="editBox"
-          (mouseenter)="hoveredIcon = 'edit'"
-          (mouseleave)="hoveredIcon = null"
-          (click)="onEditFromMenu($event)"
-        >
-          <img
-            [src]="
-              hoveredIcon === 'edit'
-                ? 'assets/icon/contact-info/edit-hover.png'
-                : 'assets/icon/contact-info/edit-default.png'
-            "
-          />
-          <p>Edit</p>
-        </div>
-        <div
-          class="editBox"
-          (mouseenter)="hoveredIcon = 'delete'"
-          (mouseleave)="hoveredIcon = null"
-          (click)="onDeleteFromMenu($event)"
-        >
-          <img
-            [src]="
-              hoveredIcon === 'delete'
-                ? 'assets/icon/contact-info/delete-hover.png'
-                : 'assets/icon/contact-info/delete-default.png'
-            "
-          />
-          <p>Delete</p>
-        </div>
+      <div
+        class="editBox"
+        (mouseenter)="hoveredIcon = 'delete'"
+        (mouseleave)="hoveredIcon = null"
+        (click)="onDeleteFromMenu($event)"
+      >
+        <img
+          [src]="
+            hoveredIcon === 'delete'
+              ? 'assets/icon/contact-info/delete-hover.png'
+              : 'assets/icon/contact-info/delete-default.png'
+          "
+        />
+        <p>Delete</p>
       </div>
-    }
+    </div>
   </div>
   <app-contact-dialog-template #contactDialog></app-contact-dialog-template>
 </section>
