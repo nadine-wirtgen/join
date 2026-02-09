@@ -19,9 +19,8 @@
       margin: 0;
     }
 
-    /* IMG nur im Mobile sichtbar */
     img.help-close {
-      display: none; /* Standard Desktop unsichtbar */
+      display: none; 
       width: 24px;
       height: 24px;
       cursor: pointer;
@@ -59,18 +58,17 @@
     font-weight: 700;
   }
 
-  /* ===== Mobile Anpassung ===== */
   @media (max-width: 768px) {
     .legal-header h1 {
       font-size: 47px;
     }
 
     .legal-header img.help-close {
-      display: block; /* im Mobile sichtbar */
+      display: block;
     }
 
     .legal-body {
-      padding-bottom: calc(var(--mobile-nav-height, 64px) + 16px); /* Platz für Mobile Nav-Bar */
+      padding-bottom: calc(var(--mobile-nav-height, 64px) + 16px);
     }
   }
 }

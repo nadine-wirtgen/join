@@ -15,6 +15,7 @@ export class ContactInfo {
   @ViewChild('contactDialog') contactDialog?: ContactDialogTemplate;
   hoveredIcon: string | null = null;
   menuOpen = false;
+  isActive = false;
 
   get selectedContact(): Contacts | null {
     return this.contactService.selectedContact;
@@ -66,6 +67,11 @@ export class ContactInfo {
   }
 
   backToList() {
-    this.switch.emit();
+    this.isActive = true;
+
+    setTimeout(() => {
+      this.switch.emit();
+      this.isActive = false;
+    }, 500);
   }
 }

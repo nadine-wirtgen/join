@@ -1,6 +1,7 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { Router, RouterLink, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { AuthService } from '../../firebase-service/auth.servic';
 
 @Component({
   selector: 'app-header',
@@ -9,11 +10,11 @@ import { filter } from 'rxjs/operators';
   templateUrl: './header.html',
   styleUrls: ['./header.scss'],
 })
-export class Header {
+export class Header implements AfterViewInit {
   userInitials: string = '';
-  
+
   isMobile = false;
-  
+
   isHelpOpen = false;
 
   showPopup: boolean = false;
@@ -27,17 +28,36 @@ export class Header {
   logoPath: string = 'assets/icon/header/logo_grey.png';
   helpIconPath: string = 'assets/icon/header/help.png';
 
-  constructor(private router: Router) {
+  @ViewChild('desktopPopup') desktopPopup?: ElementRef;
+  @ViewChild('mobilePopup') mobilePopup?: ElementRef;
+
+  constructor(
+    private router: Router,
+    private auth: AuthService,
+  ) {
     this.initializeUser();
     this.checkScreenSize();
-    
+
     window.addEventListener('resize', () => this.checkScreenSize());
-    
+
     this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
+      .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: any) => {
         this.isHelpOpen = event.url.includes('help');
       });
+  }
+
+  logout() {
+    localStorage.removeItem('userInitials');
+    this.userInitials = 'GU';
+    this.showPopup = false;
+    this.auth.logout();
+    localStorage.removeItem('userInitials');
+    this.router.navigate(['/login']);
+  }
+
+  ngAfterViewInit() {
+    this.setupPopupAutoClose();
   }
 
   checkScreenSize() {
@@ -51,14 +71,39 @@ export class Header {
 
   toggleHeaderPopup() {
     this.showPopup = !this.showPopup;
+    if (this.showPopup) {
+      setTimeout(() => {
+        this.setupPopupAutoClose();
+      }, 0);
+    }
   }
 
-  logout() {
-    console.log('Logging out...');
-    localStorage.removeItem('userInitials');
-    this.userInitials = 'GU';
+  setupPopupAutoClose() {
+    const popup = this.isMobile
+      ? this.mobilePopup?.nativeElement
+      : this.desktopPopup?.nativeElement;
+
+    if (popup && this.showPopup) {
+      const links = popup.querySelectorAll('a');
+
+      links.forEach((link: HTMLAnchorElement) => {
+        link.addEventListener('click', () => {
+          this.showPopup = false;
+        });
+      });
+    }
+  }
+
+  closePopup() {
     this.showPopup = false;
   }
+
+  // logout() {
+  //   console.log('Logging out...');
+  //   localStorage.removeItem('userInitials');
+  //   this.userInitials = 'GU';
+  //   this.showPopup = false;
+  // }
 
   @HostListener('document:click', ['$event'])
   closePopupOnOutsideClick(event: MouseEvent) {

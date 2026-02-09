@@ -1,0 +1,57 @@
+<div class="signup-form">
+
+  <button
+    class="back-btn"
+    routerLink="/login"
+    aria-label="Back to login"
+  >
+    <img
+      src="assets/icon/login/arrow_left.png"
+      alt="Back"
+    />
+  </button>
+
+  <div class="signup-header">
+    <h1>Sign up</h1>
+    <div class="underline"></div>
+  </div>
+
+  <div class="input-group">
+    <input type="text" placeholder="Name" [(ngModel)]="name" />
+    <img src="assets/icon/login/person.png" alt="User" />
+  </div>
+
+  <div class="input-group">
+    <input type="email" placeholder="Email" [(ngModel)]="email" />
+    <img src="assets/icon/login/mail.png" alt="Email" />
+  </div>
+
+  <div class="input-group">
+    <input type="password" placeholder="Password" [(ngModel)]="password" />
+    <img src="assets/icon/login/lock.png" alt="Password" />
+  </div>
+
+  <div class="input-group">
+    <input
+      type="password"
+      placeholder="Confirm Password"
+      [(ngModel)]="confirmPassword"
+    />
+    <img src="assets/icon/login/lock.png" alt="Confirm Password" />
+  </div>
+
+  <label class="privacy">
+    <input type="checkbox" [(ngModel)]="acceptedPrivacy" />
+    I accept the <a href="#">Privacy policy</a>
+  </label>
+
+  <button [disabled]="!acceptedPrivacy || isLoading" (click)="signup()">
+    {{ isLoading ? 'Signing up...' : 'Sign up' }}
+  </button>
+
+@if (signupSuccess) {
+  <div class="success-msg">
+    You Signed Up successfully
+  </div>
+}
+</div>

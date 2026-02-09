@@ -1,11 +1,18 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
+import { AuthService } from '../../firebase-service/auth.servic';
+import { NavBarLoggedIn } from './nav-bar-logged-in/nav-bar-logged-in';
+import { NavBarLoggedOut } from './nav-bar-logged-out/nav-bar-logged-out';
 
 @Component({
   selector: 'app-nav-bar',
   standalone: true,
-  imports: [RouterLink], // 🔥 DAS ist der Fix
+  imports: [RouterModule, AsyncPipe, NavBarLoggedIn, NavBarLoggedOut],
   templateUrl: './nav-bar.html',
-  styleUrl: './nav-bar.scss',
+  styleUrls: ['./nav-bar.scss'],
 })
-export class NavBar {}
+export class NavBar {
+  private auth = inject(AuthService);
+  isLoggedIn$ = this.auth.isLoggedIn$;
+}
