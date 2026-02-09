@@ -46,6 +46,36 @@ dialog{
   }
 }
 
+@keyframes toast-slide-right {
+  0% {
+    transform: translate3d(-50%, 0, 0) translateX(120vw);
+  }
+  18% {
+    transform: translate3d(-50%, 0, 0) translateX(0);
+  }
+  70% {
+    transform: translate3d(-50%, 0, 0) translateX(0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0) translateX(120vw);
+  }
+}
+
+@keyframes toast-slide-up {
+  0% {
+    transform: translate3d(-50%, 0, 0) translateY(120vh);
+  }
+  18% {
+    transform: translate3d(-50%, 0, 0) translateY(0);
+  }
+  70% {
+    transform: translate3d(-50%, 0, 0) translateY(0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0) translateY(120vh);
+  }
+}
+
 dialog[open]{
   display: flex;
   flex-direction: row;
@@ -146,6 +176,27 @@ dialog[open]{
       display: block;
     }
   }
+}
+
+.contact-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 20vh;
+  transform: translate3d(-50%, 0, 0) translateX(120vw);
+  padding: 12px 22px;
+  border-radius: 12px;
+  background-color: #2A3647;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+  z-index: 1200;
+  pointer-events: none;
+  white-space: nowrap;
+  will-change: transform;
+  backface-visibility: hidden;
+  animation: toast-slide-right 1.8s ease-in-out both;
 }
 form {
   flex: 1;
@@ -329,6 +380,13 @@ form {
   }
   dialog[open] .cancelDelete.edit-mode {
     display: flex !important;
+  }
+
+  .contact-toast {
+    bottom: 18vh;
+    transform: translate3d(-50%, 0, 0) translateY(120vh);
+    text-align: center;
+    animation: toast-slide-up 1.8s ease-in-out both;
   }
 }
 

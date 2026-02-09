@@ -20,6 +20,9 @@ export class ContactDialogTemplate implements AfterViewInit, OnDestroy {
   private readonly bodyScrollLockClass = 'dialog-scroll-lock';
   private readonly mobileBreakpoint = 1000;
   private isScrollLocked = false;
+  private toastShowTimeoutId?: number;
+  private toastHideTimeoutId?: number;
+  showSuccessToast = false;
 
   dialogText: Record<DialogMode, Record<DialogTextKey, string>> = {
     open: {
@@ -67,6 +70,7 @@ export class ContactDialogTemplate implements AfterViewInit, OnDestroy {
       dialogEl.removeEventListener('cancel', this.cancelListener);
     }
     this.unlockBodyScroll();
+    this.clearToastTimeouts();
   }
 
   open(): void {
@@ -161,7 +165,7 @@ export class ContactDialogTemplate implements AfterViewInit, OnDestroy {
       return;
     }
     if (this.mode === 'open') {
-      this.submitContact();
+      this.submitContact(form);
       return;
     }
 
@@ -194,16 +198,48 @@ export class ContactDialogTemplate implements AfterViewInit, OnDestroy {
     this.close();
   }
 
-  async submitContact(): Promise<void> {
+  async submitContact(form: NgForm): Promise<void> {
     await this.contactsService.addContactToDataBase(this.contact);
+    form.resetForm();
     this.clearInputFields();
     this.close();
+    this.scheduleSuccessToast();
   }
 
   clearInputFields(): void {
     this.contact.name = '';
     this.contact.email = '';
     this.contact.phone = '';
+  }
+
+  private scheduleSuccessToast(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    this.clearToastTimeouts();
+
+    const closeAnimationDuration = 400;
+    const delayBeforeShow = closeAnimationDuration + 2000;
+    const animationDuration = 1800;
+
+    this.toastShowTimeoutId = window.setTimeout(() => {
+      this.showSuccessToast = true;
+      this.toastHideTimeoutId = window.setTimeout(() => {
+        this.showSuccessToast = false;
+      }, animationDuration);
+    }, delayBeforeShow);
+  }
+
+  private clearToastTimeouts(): void {
+    if (this.toastShowTimeoutId !== undefined) {
+      window.clearTimeout(this.toastShowTimeoutId);
+    }
+    if (this.toastHideTimeoutId !== undefined) {
+      window.clearTimeout(this.toastHideTimeoutId);
+    }
+    this.toastShowTimeoutId = undefined;
+    this.toastHideTimeoutId = undefined;
   }
 
   private lockBodyScroll(): void {
