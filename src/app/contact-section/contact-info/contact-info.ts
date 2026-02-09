@@ -44,8 +44,11 @@ export class ContactInfo {
     this.menuOpen = !this.menuOpen;
   }
 
-  @HostListener('click')
-  onComponentClick() {
+  @HostListener('document:click', ['$event'])
+  onComponentClick(event: MouseEvent) {
+    if ((event.target as HTMLElement)?.closest('app-contact-info')) {
+      return;
+    }
     if (this.menuOpen) {
       this.menuOpen = false;
     }
