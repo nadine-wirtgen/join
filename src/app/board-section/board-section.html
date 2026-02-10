@@ -3,8 +3,20 @@
     <h1>Board</h1>
     <div class="addBtnSearchContainer">
       <div class="searchSection">
-        <textarea></textarea>
-        <img />
+        <textarea
+          name="search"
+          minlength="3"
+          placeholder=""
+          (mouseenter)="hoveredIcon = 'search'"
+          (mouseleave)="hoveredIcon = null"
+        ></textarea
+        ><img
+          [src]="
+            hoveredIcon === 'search'
+              ? 'assets/icon/task/board/search-hover.png'
+              : 'assets/icon/task/board/search-default.png'
+          "
+        />
       </div>
       <div class="addBtn"></div>
     </div>
