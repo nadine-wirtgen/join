@@ -6,19 +6,25 @@
         <textarea
           name="search"
           minlength="3"
-          placeholder=""
+          placeholder="Find Task"
           (mouseenter)="hoveredIcon = 'search'"
           (mouseleave)="hoveredIcon = null"
-        ></textarea
-        ><img
-          [src]="
-            hoveredIcon === 'search'
-              ? 'assets/icon/task/board/search-hover.png'
-              : 'assets/icon/task/board/search-default.png'
-          "
-        />
+        ></textarea>
+        <div class="lensArea">
+          <img src="assets/icon/task/board/search-borderline.png" />
+          <img
+            [src]="
+              hoveredIcon === 'search'
+                ? 'assets/icon/task/board/search-hover.png'
+                : 'assets/icon/task/board/search-default.png'
+            "
+          />
+        </div>
       </div>
-      <div class="addBtn"></div>
+      <div class="addBtn">
+        <p>Add Task</p>
+        <img src="assets/icon/task/board/add.png" />
+      </div>
     </div>
   </div>
 

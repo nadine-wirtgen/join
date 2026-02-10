@@ -1,21 +1,76 @@
-.searchSection {
-  position: relative;
-  width: 200px;
-  textarea {
-    resize: none;
-    width: 100%;
-    height: 32px;
-    padding-right: 40px;
-    &::placeholder {
-      color: #02f4c080;
-      background-color: none;
+section {
+  padding-top: 60px;
+  padding-left: 60px;
+  padding-right: 60px;
+  .headlineContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    h1 {
+      font-size: 48px;
+    }
+    .addBtnSearchContainer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
     }
   }
-  img {
+}
+
+.searchSection {
+  position: relative;
+  width: 300px;
+  textarea {
+    border-radius: 10px;
+    border: 1px solid #a8a8a8;
+    resize: none;
+    width: 100%;
+    height: 36px;
+    padding-right: 40px;
+    padding-left: 12px;
+    padding-top: 4px;
+    font-size: 20px;
+    &::placeholder {
+      color: #d1d1d1;
+    }
+    &:hover {
+      cursor: pointer;
+    }
+    &:focus-visible {
+      outline-color: #29abe2;
+    }
+  }
+  .lensArea {
     position: absolute;
     top: 8px;
-    right: 8px;
-    height: 16px;
-    object-fit: cover;
+    right: 12px;
+    display: flex;
+    gap: 16px;
+    img {
+      height: 18px;
+      object-fit: cover;
+    }
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+.addBtn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  background-color: #2a3647;
+  p {
+    color: #ffffff;
+  }
+  &:hover {
+    cursor: pointer;
+    background-color: #007cee;
+    box-shadow: 0 8px 8px -4px rgba(0, 0, 0, 0.4);
   }
 }
