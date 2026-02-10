@@ -171,21 +171,28 @@ section {
     justify-content: space-between;
     align-items: center;
     height: 32px;
-    .avatarLetterBox {
-      width: 32px;
-      height: 32px;
-      border: 1px solid white;
-      border-radius: 80px;
-      background-color: #007cee;
+    .teamContainer {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      p {
-        color: #ffffff;
+      padding-left: 8px;
+      .workingTeam {
+        margin-left: -8px;
+        .avatarLetterBox {
+          width: 32px;
+          height: 32px;
+          border: 1px solid white;
+          border-radius: 80px;
+          background-color: #007cee;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          p {
+            color: #ffffff;
+          }
+        }
       }
-    }
-    img {
-      height: 8px;
+      img {
+        height: 8px;
+      }
     }
   }
   &:hover {
