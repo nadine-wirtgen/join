@@ -58,6 +58,11 @@ export class ContactList implements OnInit, OnDestroy {
     return this.contactService.getInitials(name);
   }
 
+  getDisplayName(name?: string): string {
+    if (!name) return '';
+    return name.length >= 20 ? name.slice(0, 15) + '…' : name;
+  }
+
   getContactColor(contact: Contacts): string {
     return this.contactService.getContactColor(contact);
   }

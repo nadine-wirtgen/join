@@ -1,11 +1,11 @@
 section {
   cursor: default;
-  padding-left: 40px;
-  padding-top: 80px;
+  padding: 72px 40px;
   height: 100%;
   width: 100%;
   position: relative;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1) inset;
+  overflow: auto;
 }
 
 @keyframes contact-slide-in-right {
@@ -40,6 +40,7 @@ section {
   display: flex;
   flex-direction: column;
   gap: 32px;
+  // height: 100%;
   @media (min-width: 1001px) {
     animation: contact-slide-in-right 0.35s ease-out both;
   }
@@ -50,6 +51,7 @@ section {
     gap: 32px;
     padding-top: 24px;
     width: 520px;
+    padding-right: 24px;
     .avatarLetterBox {
       width: 100px;
       height: 100px;
@@ -71,7 +73,6 @@ section {
         font-size: 36px;
         font-weight: 600;
         margin: 0;
-        word-break: break-all;
       }
       .editContainer {
         display: flex;
@@ -98,6 +99,7 @@ section {
     display: flex;
     flex-direction: column;
     gap: 32px;
+    padding-bottom: 80px;
     h4 {
       font-size: 20px;
       font-weight: 400;
@@ -133,6 +135,9 @@ section {
 }
 
 @media (max-width: 1200px) {
+  section {
+    padding-top: 64px;
+  }
   .headlineContainer {
     display: flex;
     flex-direction: column;
@@ -168,7 +173,7 @@ section {
       width: 380px;
       .nameEditContant {
         h2 {
-          font-size: 32px;
+          font-size: 28px;
         }
       }
     }
@@ -229,7 +234,9 @@ section {
       width: 40px;
       background-color: #2a3647;
       border-radius: 50px;
-      transition: transform 0.2s ease, opacity 0.2s ease;
+      transition:
+        transform 0.2s ease,
+        opacity 0.2s ease;
       &:hover {
         cursor: pointer;
         background-color: #007cee;
@@ -253,7 +260,9 @@ section {
       opacity: 0;
       pointer-events: none;
       transform: translate3d(140%, 0, 0);
-      transition: transform 0.28s ease, opacity 0.2s ease;
+      transition:
+        transform 0.28s ease,
+        opacity 0.2s ease;
       will-change: transform, opacity;
       .editBox {
         display: flex;
@@ -307,6 +316,19 @@ section {
       .nameEditContant {
         h2 {
           font-size: 28px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 400px) {
+  .contactContant {
+    .contactNameContainer {
+      width: 100%;
+      .nameEditContant {
+        h2 {
+          font-size: 24px;
         }
       }
     }

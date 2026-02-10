@@ -40,6 +40,11 @@ export class ContactInfo {
     return this.contactService.getInitials(name);
   }
 
+  getDisplayName(name?: string): string {
+    if (!name) return '';
+    return name.length >= 20 ? name.slice(0, 20) + '…' : name;
+  }
+
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
   }
