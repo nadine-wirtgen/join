@@ -3,8 +3,8 @@ section {
   flex-direction: column;
   gap: 40px;
   padding-top: 60px;
-  padding-left: 60px;
-  padding-right: 60px;
+  padding-left: 40px;
+  padding-right: 40px;
   .headlineContainer {
     display: flex;
     justify-content: space-between;
@@ -62,7 +62,9 @@ section {
     }
   }
 }
-
+.addBtnMobil {
+  display: none;
+}
 .addBtn {
   display: flex;
   justify-content: space-between;
@@ -84,6 +86,7 @@ section {
 .boardContainer {
   display: flex;
   justify-content: space-between;
+  gap: 16px;
   width: 100%;
   height: 100%;
   padding-bottom: 80px;
@@ -91,7 +94,6 @@ section {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    width: 240px;
     .listHeadline {
       display: flex;
       justify-content: space-between;
@@ -116,6 +118,7 @@ section {
         justify-content: center;
         align-items: center;
         height: 48px;
+        width: 240px;
         color: #a8a8a8;
         border: 2px dotted #a8a8a8;
         border-radius: 10px;
@@ -136,6 +139,7 @@ section {
   box-shadow:
     0px 4px 12px rgba(0, 0, 0, 0.08),
     0px 1px 3px rgba(0, 0, 0, 0.12);
+  width: 240px;
   .typUser {
     height: 26px;
     padding: 4px 16px;
@@ -216,5 +220,63 @@ section {
   &:hover {
     cursor: pointer;
     transform: scale(1.05);
+  }
+}
+
+@media (max-width: 1300px) {
+  section {
+    .headlineContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 32px;
+      width: 100%;
+      .headline {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        h1 {
+          font-size: 48px;
+        }
+        .addBtnMobil {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 40px;
+          width: 40px;
+          background-color: #2a3647;
+          border-radius: 10px;
+          &:hover {
+            cursor: pointer;
+          }
+        }
+      }
+      .addBtnSearchContainer {
+        width: 100%;
+        .searchSection {
+          width: 100%;
+        }
+      }
+      .addBtn {
+        display: none;
+      }
+    }
+  }
+  .boardContainer {
+    flex-direction: column;
+    .listContant {
+      gap: 0;
+      .listContainer {
+        padding-top: 24px;
+        padding-bottom: 24px;
+        display: flex;
+        flex-direction: row;
+        overflow: auto;
+        .placeholder {
+          width: 100%;
+        }
+      }
+    }
   }
 }
