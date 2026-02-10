@@ -168,12 +168,22 @@ dialog[open]{
     border: none;
     background: transparent;
     padding: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
+    transition: background-color 0.2s ease;
     z-index: 5;
     img{
       width: 32px;
       height: 32px;
       display: block;
+    }
+    &:hover {
+      background-color: #29ABE2;
     }
   }
 }
@@ -255,6 +265,8 @@ form {
     justify-content: center;
     gap: 8px;
     position: relative;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
     img {
       display: none;
     }
@@ -262,9 +274,17 @@ form {
       content: '×';
       color: #2A3647;
       font-size: 24px;
+      transition: color 0.2s ease;
     }
     &.edit-mode::after {
       display: none;
+    }
+    &:hover {
+      border-color: #29ABE2;
+      color: #29ABE2;
+    }
+    &:hover::after {
+      color: #29ABE2;
     }
   }
   .createSave{
@@ -285,6 +305,8 @@ form {
     white-space: nowrap;
     gap: 8px;
     position: relative;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
     img {
       display: none;
     }
@@ -292,6 +314,11 @@ form {
       content: '✓';
       color: white;
       font-size: 24px;
+      transition: color 0.2s ease;
+    }
+    &:hover {
+      background-color: #29ABE2;
+      border-color: #29ABE2;
     }
   }
   .dialog-buttons {
@@ -391,6 +418,36 @@ form {
     transform: translate3d(-50%, 0, 0) translateY(120vh);
     text-align: center;
     animation: toast-slide-up 1.8s ease-in-out both;
+  }
+}
+
+@media (max-height: 850px) {
+  dialog[open] {
+    max-height: calc(100vh - 159px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  dialog[open] .dialog-left {
+    height: auto;
+    padding-top: 40px;
+    padding-bottom: 80px;
+  }
+
+  dialog[open] .dialog-right {
+    height: auto;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .profile-image-div {
+    position: static;
+    transform: none;
+    margin: -80px auto 16px;
+  }
+
+  .form-div {
+    margin-top: 0;
   }
 }
 

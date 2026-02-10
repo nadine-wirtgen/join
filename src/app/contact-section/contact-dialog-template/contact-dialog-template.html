@@ -22,22 +22,42 @@
     <form #f="ngForm" (ngSubmit)="handlePrimaryAction(f)">
       <div class="form-div">
         <div>
-          <input type="text" [(ngModel)]="contact.name" #name="ngModel" name="name" placeholder="Name" required>
+          <input
+            type="text"
+            [(ngModel)]="contact.name"
+            #name="ngModel"
+            name="name"
+            placeholder="Name"
+            minlength="2"
+            pattern="(?=.*[A-Za-z]).{2,}"
+            required
+          >
           <img src="assets/imgs/contact-list/personGrey.png">
           @if (name.invalid && name.touched) {
-            <div class="error-message">Enter a name.</div>
+            <div class="error-message">Name must be at least 2 characters and include at least one letter.</div>
           }
         </div>
         <div>
           <input type="email" [(ngModel)]="contact.email" #email="ngModel" name="email" placeholder="Email" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" required>
           <img src="assets/imgs/contact-list/mail.png" alt="MAILICON">
           @if (email.invalid && email.touched) {
-            <div class="error-message">Enter an email.</div>
+            <div class="error-message">Enter an valid email.</div>
           }
         </div>
         <div>
-          <input type="text" [(ngModel)]="contact.phone" #phone="ngModel" name="phone" placeholder="Phone">
+          <input
+            type="tel"
+            [(ngModel)]="contact.phone"
+            #phone="ngModel"
+            name="phone"
+            placeholder="Phone"
+            pattern="(?=(?:.*\d){2,})[0-9+]*"
+            inputmode="tel"
+          >
           <img src="assets/imgs/contact-list/call.png" alt="PHONEICON">
+          @if (phone.invalid && phone.touched) {
+            <div class="error-message">Phone must contain at least two digits.</div>
+          }
         </div>
         <div class="dialog-buttons">
           <button type="button" class="cancelDelete" [class.edit-mode]="mode === 'change'" (click)="handleSecondaryAction()">

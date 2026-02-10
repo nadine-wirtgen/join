@@ -12,8 +12,10 @@
       @for (contact of group.contacts; track $index) {
         <div
           class="singleContactContainer"
+          #contactRow
+          [attr.data-contact-id]="contact.id"
           (click)="selectContact(contact)"
-          [class.active]="contactService.selectedContact === contact"
+          [class.active]="contactService.selectedContact?.id === contact.id"
         >
           <div class="avatarLetterBox" [style.backgroundColor]="getContactColor(contact)">
             <p>{{ getInitials(contact.name) }}</p>
@@ -29,5 +31,9 @@
   <a (click)="openContactDia('open')" class="addButtonMobil">
     <img src="assets/imgs/contact-list/person_add.png" />
   </a>
-  <app-contact-dialog-template #contactDialog [mode]="dialogMode"></app-contact-dialog-template>
+  <app-contact-dialog-template
+    #contactDialog
+    [mode]="dialogMode"
+    (contactCreated)="handleContactCreated($event)"
+  ></app-contact-dialog-template>
 </section>

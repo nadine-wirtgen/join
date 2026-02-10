@@ -1,4 +1,4 @@
-import { Component, inject, Output, EventEmitter, HostListener, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, inject, Output, EventEmitter, HostListener, ViewChild } from '@angular/core';
 import { ContactService } from '../../firebase-service/contact-service';
 import { Contacts } from '../../interfaces/contacts';
 import { ContactDialogTemplate } from '../contact-dialog-template/contact-dialog-template';
@@ -9,16 +9,23 @@ import { ContactDialogTemplate } from '../contact-dialog-template/contact-dialog
   templateUrl: './contact-info.html',
   styleUrl: './contact-info.scss',
 })
-export class ContactInfo {
+export class ContactInfo implements AfterViewInit {
   contactService = inject(ContactService);
   @Output() switch = new EventEmitter<void>();
   @ViewChild('contactDialog') contactDialog?: ContactDialogTemplate;
   hoveredIcon: string | null = null;
   menuOpen = false;
   isActive = false;
+  showContactContent = false;
 
   get selectedContact(): Contacts | null {
     return this.contactService.selectedContact;
+  }
+
+  ngAfterViewInit(): void {
+    window.setTimeout(() => {
+      this.showContactContent = true;
+    }, 0);
   }
 
   editContact(): void {
