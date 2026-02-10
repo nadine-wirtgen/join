@@ -10,7 +10,7 @@
     <img src="assets/icon/contact-info/back-arrow.png" (click)="backToList()" alt="Back Arrow" />
   </div>
 
-  @if (selectedContact?.name) {
+  @if (showContactContent && selectedContact?.name) {
     <div class="contactContant">
       <div class="contactNameContainer">
         <div class="avatarLetterBox" [style.backgroundColor]="getSelectedColor()">

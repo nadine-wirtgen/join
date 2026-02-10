@@ -55,12 +55,21 @@ export class ContactService implements OnDestroy {
     );
   }
 
-  async addContactToDataBase(contact: Contacts) {
+  async addContactToDataBase(contact: Contacts): Promise<Contacts | null> {
     try {
-      await addDoc(collection(this.firebaseDB, 'contacts'), contact);
+      const docRef = await addDoc(collection(this.firebaseDB, 'contacts'), contact);
+      const createdContact = {
+        id: docRef.id,
+        name: contact.name,
+        email: contact.email,
+        phone: contact.phone,
+      };
+      this.selectedContact = createdContact;
       console.log('Contact added successfully');
+      return createdContact;
     } catch (error) {
       console.error('Error adding contact: ', error);
+      return null;
     }
   }
 

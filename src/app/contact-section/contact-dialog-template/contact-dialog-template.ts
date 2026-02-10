@@ -1,6 +1,7 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, inject, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, inject, Input, Output, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ContactService } from '../../firebase-service/contact-service';
+import { Contacts } from '../../interfaces/contacts';
 
 type DialogMode = 'open' | 'change';
 type DialogTextKey = 'title' | 'subtitle' | 'primaryAction' | 'secondaryAction';
@@ -15,6 +16,7 @@ type DialogTextKey = 'title' | 'subtitle' | 'primaryAction' | 'secondaryAction';
 export class ContactDialogTemplate implements AfterViewInit, OnDestroy {
   contactsService = inject(ContactService);
   @Input() mode: DialogMode = 'open';
+  @Output() contactCreated = new EventEmitter<Contacts>();
   @ViewChild('dialog') dialog?: ElementRef<HTMLDialogElement>;
   private cancelListener?: (event: Event) => void;
   private readonly bodyScrollLockClass = 'dialog-scroll-lock';
@@ -199,11 +201,14 @@ export class ContactDialogTemplate implements AfterViewInit, OnDestroy {
   }
 
   async submitContact(form: NgForm): Promise<void> {
-    await this.contactsService.addContactToDataBase(this.contact);
+    const createdContact = await this.contactsService.addContactToDataBase(this.contact);
     form.resetForm();
     this.clearInputFields();
     this.close();
     this.scheduleSuccessToast();
+    if (createdContact) {
+      this.contactCreated.emit(createdContact);
+    }
   }
 
   clearInputFields(): void {

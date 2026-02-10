@@ -1,9 +1,12 @@
 import {
   Component,
+  ElementRef,
   OnDestroy,
   OnInit,
+  QueryList,
   inject,
   ViewChild,
+  ViewChildren,
   Output,
   EventEmitter,
 } from '@angular/core';
@@ -29,6 +32,7 @@ export class ContactList implements OnInit, OnDestroy {
   @Output() switch = new EventEmitter<void>();
 
   private editSubscription?: Subscription;
+  @ViewChildren('contactRow') contactRows?: QueryList<ElementRef<HTMLElement>>;
 
   @ViewChild('contactDialog') contactDialog?: ContactDialogTemplate;
 
@@ -62,6 +66,12 @@ export class ContactList implements OnInit, OnDestroy {
     return this.contactService.getContactColor(contact);
   }
 
+  handleContactCreated(contact: Contacts): void {
+    this.contactService.setSelectedContact(contact);
+    this.openContact();
+    this.scrollToContact(contact.id);
+  }
+
   getContactGroups(): ContactGroup[] {
     const contacts = [...this.contactService.contactList]
       .filter((contact) => contact.name?.trim())
@@ -85,5 +95,38 @@ export class ContactList implements OnInit, OnDestroy {
 
   openContact() {
     this.switch.emit();
+  }
+
+  private scrollToContact(contactId?: string): void {
+    if (!contactId || !this.contactRows) {
+      return;
+    }
+
+    const tryScroll = () => {
+      const target = this.contactRows?.find(
+        (row) => row.nativeElement.dataset['contactId'] === contactId
+      );
+      if (target) {
+        target.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        return true;
+      }
+      return false;
+    };
+
+    if (tryScroll()) {
+      return;
+    }
+
+    const changeSubscription = this.contactRows.changes.subscribe(() => {
+      if (tryScroll()) {
+        changeSubscription.unsubscribe();
+      }
+    });
+
+    window.setTimeout(() => {
+      if (!tryScroll()) {
+        changeSubscription.unsubscribe();
+      }
+    }, 1000);
   }
 }
