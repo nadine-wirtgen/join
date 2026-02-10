@@ -85,6 +85,8 @@ section {
   display: flex;
   justify-content: space-between;
   width: 100%;
+  height: 100%;
+  padding-bottom: 80px;
   .listContant {
     display: flex;
     flex-direction: column;
@@ -105,21 +107,89 @@ section {
         }
       }
     }
+    .listContainer {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      .placeholder {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 48px;
+        color: #a8a8a8;
+        border: 2px dotted #a8a8a8;
+        border-radius: 10px;
+        background-color: #e7e7e7;
+      }
+    }
   }
 }
 
-.listContainer {
+.taskCard {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  .placeholder {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 48px;
+  gap: 24px;
+  margin-left: 4px;
+  margin-right: 4px;
+  padding: 12px;
+  border-radius: 24px;
+  box-shadow:
+    0px 4px 12px rgba(0, 0, 0, 0.08),
+    0px 1px 3px rgba(0, 0, 0, 0.12);
+  .typOfClass {
+    height: 26px;
+    width: 100px;
+  }
+  .title {
+    font-weight: 700;
+    color: #2a3647;
+  }
+  .description {
+    padding-top: 8px;
     color: #a8a8a8;
-    border: 2px dotted #a8a8a8;
-    border-radius: 10px;
-    background-color: #e7e7e7;
+  }
+  .subtaskContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .progress-container {
+      width: 100px;
+      height: 8px;
+      background-color: #e7e7e7;
+      border-radius: 8px;
+      overflow: hidden;
+      .progress-bar {
+        height: 100%;
+        background-color: #4589ff;
+        border-radius: 8px;
+        transition: width 0.3s ease;
+      }
+    }
+  }
+  .teamPriorityContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 32px;
+    .avatarLetterBox {
+      width: 32px;
+      height: 32px;
+      border: 1px solid white;
+      border-radius: 80px;
+      background-color: #007cee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      p {
+        color: #ffffff;
+      }
+    }
+    img {
+      height: 8px;
+    }
+  }
+  &:hover {
+    cursor: pointer;
+    transform: scale(1.05);
   }
 }

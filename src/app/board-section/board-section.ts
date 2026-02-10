@@ -11,4 +11,5 @@ import { FormsModule } from '@angular/forms';
 export class BoardSection {
   hoveredIcon: string | null = null;
   searchValue = '';
+  progress = 60;
 }
