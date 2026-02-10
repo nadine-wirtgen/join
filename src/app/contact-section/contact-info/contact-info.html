@@ -17,7 +17,7 @@
           <p>{{ getInitials(selectedContact?.name) }}</p>
         </div>
         <div class="nameEditContant">
-          <h2>{{ selectedContact?.name }}</h2>
+          <h2>{{ getDisplayName(selectedContact?.name) }}</h2>
           <div class="editContainer">
             <div
               class="editBox"
@@ -72,7 +72,11 @@
       </div>
     </div>
   }
-  <div class="editBurgermenu" [class.menu-open]="menuOpen" (click)="toggleMenu(); $event.stopPropagation()">
+  <div
+    class="editBurgermenu"
+    [class.menu-open]="menuOpen"
+    (click)="toggleMenu(); $event.stopPropagation()"
+  >
     <div class="preview" aria-hidden="menuOpen">
       <img src="assets/icon/contact-info/burgermenu.png" alt="burgermenu" />
     </div>
