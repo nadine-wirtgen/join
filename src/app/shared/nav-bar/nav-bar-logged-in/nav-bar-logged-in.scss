@@ -134,18 +134,19 @@
 
  
   .navbar-main-links.mobile-only.logged-in .mobile-links-wrapper a {
-    display: flex;
-    flex-direction: column; 
-    align-items: center;
-    justify-content: center;
-    flex: 1; 
-    text-align: center;
-    color: white;
-    text-decoration: none;
-    font-size: 16px; 
-    gap: 2px;
-    box-sizing: border-box;
-    padding: 4px 0; 
+display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        text-align: center;
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+        gap: 2px;
+        box-sizing: border-box;
+        padding: 4px 0;
+        border-radius: 10px;
   }
 
   .navbar-main-links.mobile-only.logged-in .mobile-links-wrapper a img {
