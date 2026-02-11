@@ -173,7 +173,7 @@ dialog[open]{
   .dialog-right-content{
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 16px;
     flex: 1;
     min-width: 0;
   }
@@ -231,10 +231,11 @@ form {
 .form-div{
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 12px;
   width: 100%;
   > div {
     position: relative;
+    padding-bottom: 20px;
     input {
       height: 50px;
       border-radius: 10px;
@@ -253,7 +254,9 @@ form {
     .error-message {
       color: #E60026;
       font-size: 14px;
-      margin-top: 4px;
+      position: absolute;
+      left: 0;
+      top: calc(100% - 16px);
     }
     img {
       position: absolute;
@@ -269,11 +272,11 @@ form {
 
 .dialog-buttons {
   display: flex;
-  gap: 24px;
+  gap: 16px;
   position: sticky;
   bottom: 0;
   background-color: #ffffff;
-  padding: 12px 0;
+  padding: 8px 0;
 }
 
 .cancelDelete{
