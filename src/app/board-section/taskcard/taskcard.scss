@@ -1,0 +1,93 @@
+.taskCard {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-left: 4px;
+  margin-right: 4px;
+  padding: 12px;
+  border-radius: 24px;
+  box-shadow:
+    0px 4px 12px rgba(0, 0, 0, 0.08),
+    0px 1px 3px rgba(0, 0, 0, 0.12);
+  width: 240px;
+  .typUser {
+    height: 26px;
+    padding: 4px 16px;
+    border-radius: 10px;
+    width: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #0038ff;
+    color: #ffffff;
+  }
+  .typTechnical {
+    height: 26px;
+    padding: 4px 16px;
+    border-radius: 10px;
+    width: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1fd7c1;
+    color: #ffffff;
+  }
+  .title {
+    font-weight: 700;
+    color: #2a3647;
+  }
+  .description {
+    padding-top: 8px;
+    color: #a8a8a8;
+  }
+  .subtaskContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .progress-container {
+      width: 100px;
+      height: 8px;
+      background-color: #e7e7e7;
+      border-radius: 8px;
+      overflow: hidden;
+      .progress-bar {
+        height: 100%;
+        background-color: #4589ff;
+        border-radius: 8px;
+        transition: width 0.3s ease;
+      }
+    }
+  }
+  .teamPriorityContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 32px;
+    .teamContainer {
+      display: flex;
+      padding-left: 8px;
+      .workingTeam {
+        margin-left: -8px;
+        .avatarLetterBox {
+          width: 32px;
+          height: 32px;
+          border: 1px solid white;
+          border-radius: 80px;
+          background-color: #007cee;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          p {
+            color: #ffffff;
+          }
+        }
+      }
+      img {
+        height: 8px;
+      }
+    }
+  }
+  &:hover {
+    cursor: pointer;
+  }
+}

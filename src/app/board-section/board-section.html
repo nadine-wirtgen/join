@@ -48,154 +48,10 @@
         />
       </div>
       <div class="listContainer">
-        <div class="taskCard">
-          <div class="typUser">User Story</div>
-          <div class="typTechnical">Technical Task</div>
-          <div>
-            <p class="title">Task Title</p>
-            <p class="description">Build start page with recipe recommendation...</p>
-          </div>
-          <div class="subtaskContainer">
-            <div class="progress-container">
-              <div class="progress-bar" [style.width.%]="progress"></div>
-            </div>
-            <p>
-              <span class="finishSubtask">1</span>/<span class="existingSubtask">2</span> Subtasks
-            </p>
-          </div>
-          <div class="teamPriorityContainer">
-            <div class="teamContainer">
-              <div class="workingTeam">
-                <div class="avatarLetterBox">
-                  <p>MK</p>
-                </div>
-              </div>
-              <div class="workingTeam">
-                <div class="avatarLetterBox">
-                  <p>MK</p>
-                </div>
-              </div>
-              <div class="workingTeam">
-                <div class="avatarLetterBox">
-                  <p>MK</p>
-                </div>
-              </div>
-              <p>+<span>3</span></p>
-            </div>
-            <img src="assets/icon/task/priority-symbol-low.png" />
-          </div>
-        </div>
-        <div class="taskCard">
-          <div class="typUser">User Story</div>
-          <div class="typTechnical">Technical Task</div>
-          <div>
-            <p class="title">Task Title</p>
-            <p class="description">Build start page with recipe recommendation...</p>
-          </div>
-          <div class="subtaskContainer">
-            <div class="progress-container">
-              <div class="progress-bar" [style.width.%]="progress"></div>
-            </div>
-            <p>
-              <span class="finishSubtask">1</span>/<span class="existingSubtask">2</span> Subtasks
-            </p>
-          </div>
-          <div class="teamPriorityContainer">
-            <div class="teamContainer">
-              <div class="workingTeam">
-                <div class="avatarLetterBox">
-                  <p>MK</p>
-                </div>
-              </div>
-              <div class="workingTeam">
-                <div class="avatarLetterBox">
-                  <p>MK</p>
-                </div>
-              </div>
-              <div class="workingTeam">
-                <div class="avatarLetterBox">
-                  <p>MK</p>
-                </div>
-              </div>
-              <p>+<span>3</span></p>
-            </div>
-            <img src="assets/icon/task/priority-symbol-low.png" />
-          </div>
-        </div>
-        <div class="taskCard">
-          <div class="typUser">User Story</div>
-          <div class="typTechnical">Technical Task</div>
-          <div>
-            <p class="title">Task Title</p>
-            <p class="description">Build start page with recipe recommendation...</p>
-          </div>
-          <div class="subtaskContainer">
-            <div class="progress-container">
-              <div class="progress-bar" [style.width.%]="progress"></div>
-            </div>
-            <p>
-              <span class="finishSubtask">1</span>/<span class="existingSubtask">2</span> Subtasks
-            </p>
-          </div>
-          <div class="teamPriorityContainer">
-            <div class="teamContainer">
-              <div class="workingTeam">
-                <div class="avatarLetterBox">
-                  <p>MK</p>
-                </div>
-              </div>
-              <div class="workingTeam">
-                <div class="avatarLetterBox">
-                  <p>MK</p>
-                </div>
-              </div>
-              <div class="workingTeam">
-                <div class="avatarLetterBox">
-                  <p>MK</p>
-                </div>
-              </div>
-              <p>+<span>3</span></p>
-            </div>
-            <img src="assets/icon/task/priority-symbol-low.png" />
-          </div>
-        </div>
-        <div class="taskCard">
-          <div class="typUser">User Story</div>
-          <div class="typTechnical">Technical Task</div>
-          <div>
-            <p class="title">Task Title</p>
-            <p class="description">Build start page with recipe recommendation...</p>
-          </div>
-          <div class="subtaskContainer">
-            <div class="progress-container">
-              <div class="progress-bar" [style.width.%]="progress"></div>
-            </div>
-            <p>
-              <span class="finishSubtask">1</span>/<span class="existingSubtask">2</span> Subtasks
-            </p>
-          </div>
-          <div class="teamPriorityContainer">
-            <div class="teamContainer">
-              <div class="workingTeam">
-                <div class="avatarLetterBox">
-                  <p>MK</p>
-                </div>
-              </div>
-              <div class="workingTeam">
-                <div class="avatarLetterBox">
-                  <p>MK</p>
-                </div>
-              </div>
-              <div class="workingTeam">
-                <div class="avatarLetterBox">
-                  <p>MK</p>
-                </div>
-              </div>
-              <p>+<span>3</span></p>
-            </div>
-            <img src="assets/icon/task/priority-symbol-low.png" />
-          </div>
-        </div>
+        <app-taskcard></app-taskcard>
+        <app-taskcard></app-taskcard>
+        <app-taskcard></app-taskcard>
+        <app-taskcard></app-taskcard>
       </div>
     </div>
 
@@ -233,7 +89,7 @@
       <div class="listContainer"><div class="placeholder">No tasks To do</div></div>
     </div>
 
-    <div class="listContant">
+    <div class="listContant listContantDone">
       <div class="listHeadline">
         <p>Done</p>
       </div>
