@@ -1,1 +1,104 @@
-<p>add-task-section works!</p>
+<div class="add-task-section">
+
+  <!-- LEFT -->
+  <div class="add-task-left">
+
+    <div class="form-group">
+      <label for="title">Title<span class="required">*</span></label>
+      <input
+        id="title"
+        type="text"
+        placeholder="Enter a title"
+        [(ngModel)]="title"
+      >
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea
+        id="description"
+        rows="4"
+        placeholder="Enter a description"
+        [(ngModel)]="description"
+      ></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="dueDate">Due date<span class="required">*</span></label>
+      <input
+        id="dueDate"
+        type="date"
+        [min]="minDate"
+        [(ngModel)]="dueDate"
+      >
+    </div>
+
+  </div>
+
+  <!-- RIGHT -->
+  <div class="add-task-right">
+
+    <!-- PRIORITY -->
+    <div class="form-group">
+      <label>Priority</label>
+      <div class="priority-buttons">
+        <button type="button" class="priority urgent" [class.active]="priority==='urgent'" (click)="setPriority('urgent')">Urgent</button>
+        <button type="button" class="priority medium" [class.active]="priority==='medium'" (click)="setPriority('medium')">Medium</button>
+        <button type="button" class="priority low" [class.active]="priority==='low'" (click)="setPriority('low')">Low</button>
+      </div>
+    </div>
+
+    <!-- ASSIGNED TO MULTISELECT -->
+    <div class="form-group assigned-to-container">
+      <label>Assigned To</label>
+      <div class="assigned-to-select" (click)="toggleAssignedDropdown()">
+        <span *ngIf="assignedToContacts.length === 0" class="placeholder">Select contacts...</span>
+        <div class="avatars" *ngIf="assignedToContacts.length > 0">
+          <div class="avatar" *ngFor="let c of assignedToContacts | slice:0:3" [style.backgroundColor]="contactService.getContactColor(c)">
+            {{ contactService.getInitials(c.name) }}
+          </div>
+          <div class="avatar more" *ngIf="assignedToContacts.length > 3">
+            +{{ assignedToContacts.length - 3 }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Dropdown Liste -->
+      <div class="assigned-to-list" *ngIf="isAssignedDropdownOpen">
+        <div class="single-contact" *ngFor="let contact of contactService.contactList">
+          <div class="avatar-letter-box" [style.backgroundColor]="contactService.getContactColor(contact)">
+            {{ contactService.getInitials(contact.name) }}
+          </div>
+          <span class="contact-name">{{ contact.name }}</span>
+          <input type="checkbox" [(ngModel)]="contact.selected" (change)="toggleAssignedContact(contact)">
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBTASKS -->
+    <div class="form-group">
+      <label>Subtasks</label>
+      <div class="subtask-input">
+        <input type="text" placeholder="Add subtask" [(ngModel)]="newSubtask" (keyup.enter)="addSubtask()">
+        <button type="button" (click)="addSubtask()">Add</button>
+      </div>
+      <ul class="subtask-list">
+        <li *ngFor="let task of subtasks; let i = index">
+          {{ task.title }}
+          <button type="button" (click)="removeSubtask(i)">✕</button>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="action-buttons">
+      <button type="button" class="clear-btn" (click)="clearForm()">Clear ✕</button>
+      <button type="button" class="create-btn" (click)="createTask()">Create Task ✓</button>
+    </div>
+
+  </div>
+</div>
+
+<div class="task-saved-message" *ngIf="taskSavedMessage">
+  Task erfolgreich gespeichert!
+</div>
