@@ -82,10 +82,11 @@ dialog[open]{
   position: fixed;
   top: 50%;
   left: 50%;
+  transform: translate(-50%, -50%);
   padding: 0;
   margin: 0;
-  max-height: 600px;
-  height: auto;
+  max-height: calc(100vh - 40px);
+  height: min(467px, calc(100vh - 40px));
   width: 100%;
   max-width: min(1200px, calc(100vw - 100px));
   border: none;
@@ -98,6 +99,13 @@ dialog[open]{
   }
   &::backdrop{
     background-color: rgba(0, 0, 0, 0.6);
+  }
+  .dialog-content{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    position: relative;
   }
   .dialog-left{
     display: flex;
@@ -140,6 +148,7 @@ dialog[open]{
     padding: 48px 48px 48px 98px;
     gap: 80px;
     width: 100%;
+    background-color: #ffffff;
     .profile-image-div{
       display: flex;
       justify-content: center;
@@ -161,6 +170,13 @@ dialog[open]{
       }
     }
   }
+  .dialog-right-content{
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    flex: 1;
+    min-width: 0;
+  }
   .dialog-close{
     position: absolute;
     top: 24px;
@@ -170,6 +186,7 @@ dialog[open]{
     padding: 0;
     width: 40px;
     height: 40px;
+    aspect-ratio: 1 / 1;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -241,89 +258,96 @@ form {
     img {
       position: absolute;
       right: 10px;
-      top: 50%;
+      top: 25px;
       transform: translateY(-50%);
       width: 20px;
       height: 20px;
       pointer-events: none;
     }
   }
-  .cancelDelete{
-    height: 56px;
-    border-radius: 10px;
-    border: 1px solid #2A3647;
-    background-color: white;
+}
+
+.dialog-buttons {
+  display: flex;
+  gap: 24px;
+  position: sticky;
+  bottom: 0;
+  background-color: #ffffff;
+  padding: 12px 0;
+}
+
+.cancelDelete{
+  height: 56px;
+  border-radius: 10px;
+  border: 1px solid #2A3647;
+  background-color: white;
+  color: #2A3647;
+  font-family: 'Inter';
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 120%;
+  letter-spacing: 0%;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+  img {
+    display: none;
+  }
+  &::after {
+    content: '×';
     color: #2A3647;
-    font-family: 'Inter';
-    font-weight: 400;
-    font-size: 20px;
-    line-height: 120%;
-    letter-spacing: 0%;
-    padding: 0 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    position: relative;
-    cursor: pointer;
-    transition: border-color 0.2s ease, color 0.2s ease;
-    img {
-      display: none;
-    }
-    &::after {
-      content: '×';
-      color: #2A3647;
-      font-size: 24px;
-      transition: color 0.2s ease;
-    }
-    &.edit-mode::after {
-      display: none;
-    }
-    &:hover {
-      border-color: #29ABE2;
-      color: #29ABE2;
-    }
-    &:hover::after {
-      color: #29ABE2;
-    }
+    font-size: 24px;
+    transition: color 0.2s ease;
   }
-  .createSave{
-    height: 56px;
-    border-radius: 10px;
-    background-color: #2A3647;
-    border: 1px solid #2A3647;
+  &.edit-mode::after {
+    display: none;
+  }
+  &:hover {
+    border-color: #29ABE2;
+    color: #29ABE2;
+  }
+  &:hover::after {
+    color: #29ABE2;
+  }
+}
+
+.createSave{
+  height: 56px;
+  border-radius: 10px;
+  background-color: #2A3647;
+  border: 1px solid #2A3647;
+  color: white;
+  font-family: 'Inter';
+  font-weight: 700;
+  font-size: 21px;
+  line-height: 120%;
+  letter-spacing: 0%;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  gap: 8px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  img {
+    display: none;
+  }
+  &::after {
+    content: '✓';
     color: white;
-    font-family: 'Inter';
-    font-weight: 700;
-    font-size: 21px;
-    line-height: 120%;
-    letter-spacing: 0%;
-    padding: 0 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    white-space: nowrap;
-    gap: 8px;
-    position: relative;
-    cursor: pointer;
-    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-    img {
-      display: none;
-    }
-    &::after {
-      content: '✓';
-      color: white;
-      font-size: 24px;
-      transition: color 0.2s ease;
-    }
-    &:hover {
-      background-color: #29ABE2;
-      border-color: #29ABE2;
-    }
+    font-size: 24px;
+    transition: color 0.2s ease;
   }
-  .dialog-buttons {
-    display: flex;
-    gap: 24px;
+  &:hover {
+    background-color: #29ABE2;
+    border-color: #29ABE2;
   }
 }
 
@@ -366,9 +390,20 @@ form {
       animation: dialog-exit-up 0.35s ease-in forwards;
     }
   }
+  dialog[open] .dialog-content {
+    flex-direction: column;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
   dialog[open] .dialog-close {
+    position: sticky;
     top: 16px;
     right: 16px;
+    align-self: flex-end;
+    margin-top: 0;
+    margin-bottom: -40px;
+    z-index: 6;
+    background-color: #2A3647;
   }
   dialog[open] .dialog-left {
     min-width: unset;
@@ -424,8 +459,6 @@ form {
 @media (max-width: 1000px) and (max-height: 850px) {
   dialog[open] {
     max-height: calc(100vh - 159px);
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
   }
 
   dialog[open] .dialog-left {
@@ -448,12 +481,6 @@ form {
 
   .form-div {
     margin-top: 0;
-  }
-}
-
-@media (max-width: 1340px) {
-  dialog[open] {
-    margin: auto;
   }
 }
 

@@ -53,7 +53,8 @@ export class ContactInfo implements AfterViewInit {
 
   @HostListener('document:click', ['$event'])
   onComponentClick(event: MouseEvent) {
-    if ((event.target as HTMLElement)?.closest('app-contact-info')) {
+    const target = event.target;
+    if (target instanceof Element && target.closest('app-contact-info')) {
       return;
     }
     if (this.menuOpen) {
