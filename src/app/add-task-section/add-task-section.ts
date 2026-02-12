@@ -68,7 +68,6 @@ export class AddTaskSection {
 
     // Neu berechnen der ausgewählten Kontakte
     this.assignedToContacts = this.contactService.contactList.filter(c => c.selected);
-    console.log('Selected Contacts:', this.assignedToContacts);
   }
 
   @HostListener('document:click', ['$event'])

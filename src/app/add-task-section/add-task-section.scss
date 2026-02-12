@@ -3,29 +3,40 @@
   display: flex;
   gap: 32px;
   flex-wrap: wrap;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: center;
 
   @media (max-width: 900px) {
     flex-direction: column;
   }
 }
 
+h2 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700 bold;
+  font-size: 61px;
+  line-height: 120%;
+}
+
 /* Panel‑Container */
 .add-task-left,
 .add-task-right {
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 400px;
+  max-width: 440px;
 }
 
 /* Trennlinie zwischen links/rechts */
 .devide-section {
-  height: 1px;
-  background-color: #ccc;
-  margin: 20px 0;
+  width: 1px;
+  height: 424px;
+  background-color: #D1D1D1;
+  align-self: center;
+}
+
+@media (max-width: 900px) {
+  .devide-section {
+    display: none;
+  }
 }
 
 /* ================== Formularelemente ================== */
@@ -35,10 +46,11 @@
   margin-bottom: 15px;
 
   label {
-    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
     margin-bottom: 6px;
-    font-size: 14px;
-    color: #333;
+    font-size: 20px;
+    color: #2A3647;
 
     .required {
       color: red;
@@ -48,10 +60,11 @@
 
   input,
   textarea {
+    font-family: 'Inter', sans-serif;
     padding: 10px 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 14px;
+    border: 1px solid #D1D1D1;
+    border-radius: 10px;
+    font-size: 20px;
 
     &:focus {
       outline: none;
@@ -71,34 +84,59 @@
   gap: 10px;
 
   .priority {
-    flex: 1;
-    padding: 8px 0;
-    border: none;
-    border-radius: 6px;
+    width: 136px;
+    height: 56px;
+    padding: 0 12px;
+    border: 1px solid #D1D1D1;
+    border-radius: 10px;
+    background-color: #ffffff;
     cursor: pointer;
-    font-weight: 500;
-    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 120%;
+    color: #2A3647;
     transition: 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.03);
+
+    img {
+      width: 20px;
+      height: auto;
+    }
 
     &.urgent {
-      background-color: #dc3545;
-      &:hover { background-color: #c82333; }
+      &:hover { border-color: #2A3647; }
+      &.active {
+        background-color: #FF3D00;
+        border-color: #FF3D00;
+        color: #ffffff;
+      }
     }
 
     &.medium {
-      background-color: #ffc107;
-      color: #333;
-      &:hover { background-color: #e0a800; }
+      &:hover { border-color: #2A3647; }
+      &.active {
+        background-color: #FFA800;
+        border-color: #FFA800;
+        color: #ffffff;
+      }
     }
 
     &.low {
-      background-color: #28a745;
-      &:hover { background-color: #218838; }
+      &:hover { border-color: #2A3647; }
+      &.active {
+        background-color: #7AE229;
+        border-color: #7AE229;
+        color: #ffffff;
+      }
     }
 
     &.active {
-      box-shadow: 0 0 0 2px rgba(0,123,255,0.3);
-      transform: scale(1.02);
+      box-shadow: 0 0 0 2px rgba(42, 54, 71, 0.15);
     }
   }
 }

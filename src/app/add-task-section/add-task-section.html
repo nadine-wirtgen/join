@@ -3,6 +3,8 @@
   <!-- LEFT -->
   <div class="add-task-left">
 
+    <h2>Add Task</h2>
+
     <div class="form-group">
       <label for="title">Title<span class="required">*</span></label>
       <input
@@ -35,6 +37,8 @@
 
   </div>
 
+  <div class="devide-section" aria-hidden="true"></div>
+
   <!-- RIGHT -->
   <div class="add-task-right">
 
@@ -42,9 +46,18 @@
     <div class="form-group">
       <label>Priority</label>
       <div class="priority-buttons">
-        <button type="button" class="priority urgent" [class.active]="priority==='urgent'" (click)="setPriority('urgent')">Urgent</button>
-        <button type="button" class="priority medium" [class.active]="priority==='medium'" (click)="setPriority('medium')">Medium</button>
-        <button type="button" class="priority low" [class.active]="priority==='low'" (click)="setPriority('low')">Low</button>
+        <button type="button" class="priority urgent" [class.active]="priority==='urgent'" (click)="setPriority('urgent')">
+          <span>Urgent</span>
+          <img [attr.src]="priority === 'urgent' ? 'assets/imgs/add-task/urgent_white.png' : 'assets/imgs/add-task/urgent_default.png'" alt="Urgent">
+        </button>
+        <button type="button" class="priority medium" [class.active]="priority==='medium'" (click)="setPriority('medium')">
+          <span>Medium</span>
+          <img [attr.src]="priority === 'medium' ? 'assets/imgs/add-task/medium_white.png' : 'assets/imgs/add-task/medium_default.png'" alt="Medium">
+        </button>
+        <button type="button" class="priority low" [class.active]="priority==='low'" (click)="setPriority('low')">
+          <span>Low</span>
+          <img [attr.src]="priority === 'low' ? 'assets/imgs/add-task/low_white.png' : 'assets/imgs/add-task/low_default.png'" alt="Low">
+        </button>
       </div>
     </div>
 
@@ -89,15 +102,14 @@
         </li>
       </ul>
     </div>
-
-    <!-- ACTION BUTTONS -->
-    <div class="action-buttons">
-      <button type="button" class="clear-btn" (click)="clearForm()">Clear ✕</button>
-      <button type="button" class="create-btn" (click)="createTask()">Create Task ✓</button>
-    </div>
-
   </div>
 </div>
+
+  <!-- ACTION BUTTONS -->
+  <div class="action-buttons">
+    <button type="button" class="clear-btn" (click)="clearForm()">Clear ✕</button>
+    <button type="button" class="create-btn" (click)="createTask()">Create Task ✓</button>
+  </div>
 
 <div class="task-saved-message" *ngIf="taskSavedMessage">
   Task erfolgreich gespeichert!

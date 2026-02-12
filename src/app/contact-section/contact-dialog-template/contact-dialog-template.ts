@@ -18,6 +18,7 @@ export class ContactDialogTemplate implements AfterViewInit, OnDestroy {
   @Input() mode: DialogMode = 'open';
   @Output() contactCreated = new EventEmitter<Contacts>();
   @ViewChild('dialog') dialog?: ElementRef<HTMLDialogElement>;
+  @ViewChild('f') contactForm?: NgForm;
   private cancelListener?: (event: Event) => void;
   private readonly bodyScrollLockClass = 'dialog-scroll-lock';
   private readonly mobileBreakpoint = 1000;
@@ -107,6 +108,7 @@ export class ContactDialogTemplate implements AfterViewInit, OnDestroy {
       dialogEl.removeAttribute('data-dialog-state');
       dialogEl.close();
       this.unlockBodyScroll();
+      this.contactForm?.resetForm();
     };
 
     if (!dialogEl.open) {
