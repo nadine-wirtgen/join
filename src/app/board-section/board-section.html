@@ -1,1 +1,99 @@
-<p>board-section works!</p>
+<section>
+  <div class="headlineContainer">
+    <div class="headline">
+      <h1>Board</h1>
+      <div class="addBtnMobil">
+        <img src="assets/icon/task/board/add.png" />
+      </div>
+    </div>
+    <div class="addBtnSearchContainer">
+      <div class="searchSection">
+        <textarea
+          name="search"
+          minlength="3"
+          placeholder="Find Task"
+          (mouseenter)="hoveredIcon = 'search'"
+          (mouseleave)="hoveredIcon = null"
+        ></textarea>
+        <div class="lensArea">
+          <img src="assets/icon/task/board/search-borderline.png" />
+          <img
+            [src]="
+              hoveredIcon === 'search'
+                ? 'assets/icon/task/board/search-hover.png'
+                : 'assets/icon/task/board/search-default.png'
+            "
+          />
+        </div>
+      </div>
+      <div class="addBtn">
+        <p>Add Task</p>
+        <img src="assets/icon/task/board/add.png" />
+      </div>
+    </div>
+  </div>
+
+  <div class="boardContainer">
+    <div class="listContant">
+      <div class="listHeadline">
+        <p>To Do</p>
+        <img
+          (mouseenter)="hoveredIcon = 'addToDo'"
+          (mouseleave)="hoveredIcon = null"
+          [src]="
+            hoveredIcon === 'addToDo'
+              ? 'assets/icon/task/board/add-task-hover.png'
+              : 'assets/icon/task/board/add-task-default.png'
+          "
+        />
+      </div>
+      <div class="listContainer">
+        <app-taskcard></app-taskcard>
+        <app-taskcard></app-taskcard>
+        <app-taskcard></app-taskcard>
+        <app-taskcard></app-taskcard>
+      </div>
+    </div>
+
+    <div class="listContant">
+      <div class="listHeadline">
+        <p>In progress</p>
+        <img
+          (mouseenter)="hoveredIcon = 'addProgress'"
+          (mouseleave)="hoveredIcon = null"
+          [src]="
+            hoveredIcon === 'addProgress'
+              ? 'assets/icon/task/board/add-task-hover.png'
+              : 'assets/icon/task/board/add-task-default.png'
+          "
+        />
+      </div>
+      <div class="listContainer">
+        <div class="placeholder">No tasks To do</div>
+      </div>
+    </div>
+
+    <div class="listContant">
+      <div class="listHeadline">
+        <p>Await feedback</p>
+        <img
+          (mouseenter)="hoveredIcon = 'addAwait'"
+          (mouseleave)="hoveredIcon = null"
+          [src]="
+            hoveredIcon === 'addAwait'
+              ? 'assets/icon/task/board/add-task-hover.png'
+              : 'assets/icon/task/board/add-task-default.png'
+          "
+        />
+      </div>
+      <div class="listContainer"><div class="placeholder">No tasks To do</div></div>
+    </div>
+
+    <div class="listContant listContantDone">
+      <div class="listHeadline">
+        <p>Done</p>
+      </div>
+      <div class="listContainer"><div class="placeholder">No tasks To do</div></div>
+    </div>
+  </div>
+</section>
