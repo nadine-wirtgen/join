@@ -11,7 +11,7 @@ export interface Task {
   description?: string;
   dueDate: string;
   priority: 'urgent' | 'medium' | 'low';
-  assignedTo?: string;
+   assignedTo?: string[];
   category: string;
   subtasks: Subtask[];
   status: 'todo' | 'in-progress' | 'await-feedback' | 'done';
