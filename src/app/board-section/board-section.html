@@ -9,6 +9,8 @@
     <div class="addBtnSearchContainer">
       <div class="searchSection">
         <textarea
+          [(ngModel)]="searchTerm"
+          (input)="filterTasks()"
           name="search"
           minlength="3"
           placeholder="Find Task"
@@ -34,7 +36,7 @@
   </div>
 
   <div class="boardContainer">
-    <div class="listContant">
+    <div class="listContant" id="todo" (drop)="drop($event)" (dragover)="allowDrop($event)">
       <div class="listHeadline">
         <p>To Do</p>
         <img
@@ -45,17 +47,23 @@
               ? 'assets/icon/task/board/add-task-hover.png'
               : 'assets/icon/task/board/add-task-default.png'
           "
+          (click)="addTaskToColumn('todo')"
         />
       </div>
       <div class="listContainer">
-        <app-taskcard></app-taskcard>
-        <app-taskcard></app-taskcard>
-        <app-taskcard></app-taskcard>
-        <app-taskcard></app-taskcard>
+        @if (tasks().todo.length > 0) {
+          @for (task of tasks().todo; track task.id) {
+            <div class="task-card" [id]="task.id" draggable="true" (dragstart)="drag($event)">
+              <app-taskcard [task]="task"></app-taskcard>
+            </div>
+          }
+        } @else {
+          <div class="placeholder">No tasks in progress</div>
+        }
       </div>
     </div>
 
-    <div class="listContant">
+    <div class="listContant" id="inProgress" (drop)="drop($event)" (dragover)="allowDrop($event)">
       <div class="listHeadline">
         <p>In progress</p>
         <img
@@ -66,14 +74,28 @@
               ? 'assets/icon/task/board/add-task-hover.png'
               : 'assets/icon/task/board/add-task-default.png'
           "
+          (click)="addTaskToColumn('inProgress')"
         />
       </div>
       <div class="listContainer">
-        <div class="placeholder">No tasks To do</div>
+        @if (tasks().inProgress.length > 0) {
+          @for (task of tasks().inProgress; track task.id) {
+            <div class="task-card" [id]="task.id" draggable="true" (dragstart)="drag($event)">
+              <app-taskcard [task]="task"></app-taskcard>
+            </div>
+          }
+        } @else {
+          <div class="placeholder">No tasks in progress</div>
+        }
       </div>
     </div>
 
-    <div class="listContant">
+    <div
+      class="listContant"
+      id="awaitFeedback"
+      (drop)="drop($event)"
+      (dragover)="allowDrop($event)"
+    >
       <div class="listHeadline">
         <p>Await feedback</p>
         <img
@@ -84,16 +106,42 @@
               ? 'assets/icon/task/board/add-task-hover.png'
               : 'assets/icon/task/board/add-task-default.png'
           "
+          (click)="addTaskToColumn('awaitFeedback')"
         />
       </div>
-      <div class="listContainer"><div class="placeholder">No tasks To do</div></div>
+      <div class="listContainer">
+        @if (tasks().awaitFeedback.length > 0) {
+          @for (task of tasks().awaitFeedback; track task.id) {
+            <div class="task-card" [id]="task.id" draggable="true" (dragstart)="drag($event)">
+              <app-taskcard [task]="task"></app-taskcard>
+            </div>
+          }
+        } @else {
+          <div class="placeholder">No tasks in progress</div>
+        }
+      </div>
     </div>
 
-    <div class="listContant listContantDone">
+    <div
+      class="listContant listContantDone"
+      id="done"
+      (drop)="drop($event)"
+      (dragover)="allowDrop($event)"
+    >
       <div class="listHeadline">
         <p>Done</p>
       </div>
-      <div class="listContainer"><div class="placeholder">No tasks To do</div></div>
+      <div class="listContainer">
+        @if (tasks().done.length > 0) {
+          @for (task of tasks().done; track task.id) {
+            <div class="task-card" [id]="task.id" draggable="true" (dragstart)="drag($event)">
+              <app-taskcard [task]="task"></app-taskcard>
+            </div>
+          }
+        } @else {
+          <div class="placeholder">No tasks in progress</div>
+        }
+      </div>
     </div>
   </div>
 </section>

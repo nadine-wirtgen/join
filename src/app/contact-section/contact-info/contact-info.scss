@@ -40,7 +40,6 @@ section {
   display: flex;
   flex-direction: column;
   gap: 32px;
-  // height: 100%;
   @media (min-width: 1001px) {
     animation: contact-slide-in-right 0.35s ease-out both;
   }
