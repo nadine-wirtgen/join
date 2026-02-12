@@ -1,16 +1,27 @@
 <div class="taskCard">
-  <div class="typUser">User Story</div>
-  <div class="typTechnical">Technical Task</div>
+  @if (task.category == 'User Story') {
+    <div class="typUser">User Story</div>
+  } @else {
+    <div class="typTechnical">Technical Task</div>
+  }
+
   <div>
-    <p class="title">Task Title</p>
-    <p class="description">Build start page with recipe recommendation...</p>
+    <p class="title">{{ task.title }}</p>
+    <p class="description">{{ task.description }}</p>
   </div>
-  <div class="subtaskContainer">
-    <div class="progress-container">
-      <div class="progress-bar" [style.width.%]="progress"></div>
+
+  @if (task.subtasks.length) {
+    <div class="subtaskContainer">
+      <div class="progress-container">
+        <div class="progress-bar" [style.width.%]="getSubtaskProgress(task)"></div>
+      </div>
+      <p>
+        {{ getCompletedCount(task) }}/{{ task.subtasks.length }}
+        Subtasks
+      </p>
     </div>
-    <p><span class="finishSubtask">1</span>/<span class="existingSubtask">2</span> Subtasks</p>
-  </div>
+  }
+
   <div class="teamPriorityContainer">
     <div class="teamContainer">
       <div class="workingTeam">
@@ -30,6 +41,12 @@
       </div>
       <p>+<span>3</span></p>
     </div>
-    <img src="assets/icon/task/priority-symbol-low.png" />
+    @if (task.priority == 'low') {
+      <img src="assets/icon/task/priority-symbol-low.png" />
+    } @else if (task.priority == 'medium') {
+      <img src="assets/icon/task/priority-symbol-medium.png" />
+    } @else {
+      <img src="assets/icon/task/priority-symbol-urgent.png" />
+    }
   </div>
 </div>
