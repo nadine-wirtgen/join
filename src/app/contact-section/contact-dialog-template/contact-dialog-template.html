@@ -55,10 +55,12 @@
                 placeholder="Phone"
                 pattern="(?=(?:.*\d){2,})[0-9+]*"
                 inputmode="tel"
+                minlength="8"
+                maxlength="15"
               >
               <img src="assets/imgs/contact-list/call.png" alt="PHONEICON">
               @if (phone.invalid && phone.touched) {
-                <div class="error-message">Phone must contain at least two digits.</div>
+                <div class="error-message">Phone must contain 8 to 15 digits.</div>
               }
             </div>
           </div>

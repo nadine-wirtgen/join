@@ -65,7 +65,6 @@ export class ContactService implements OnDestroy {
         phone: contact.phone,
       };
       this.selectedContact = createdContact;
-      console.log('Contact added successfully');
       return createdContact;
     } catch (error) {
       console.error('Error adding contact: ', error);
@@ -98,7 +97,6 @@ export class ContactService implements OnDestroy {
           phone: contact.phone,
         };
       }
-      console.log('Contact erfolgreich aktualisiert');
     } catch (error) {
       console.error('Fehler beim Update Contact:', error);
     }
