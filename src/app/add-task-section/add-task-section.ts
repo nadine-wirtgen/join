@@ -15,6 +15,46 @@ import { Task, Subtask } from '../interfaces/task';
   styleUrls: ['./add-task-section.scss']
 })
 export class AddTaskSection {
+        isCategoryDropdownOpen: boolean = false;
+
+        toggleCategoryDropdown(event?: Event) {
+          if (event) event.stopPropagation();
+          this.isCategoryDropdownOpen = !this.isCategoryDropdownOpen;
+        }
+
+        selectCategory(value: string, event: Event) {
+          event.stopPropagation();
+          this.category = value;
+          this.isCategoryDropdownOpen = false;
+        }
+      toggleDropdownArrow(event: Event) {
+        event.stopPropagation();
+        if (this.isAssignedDropdownOpen) {
+          this.isAssignedDropdownOpen = false;
+        } else {
+          this.openDropdownAll(event);
+        }
+      }
+    contactSearchTerm: string = '';
+    showAllContacts: boolean = false;
+
+    openDropdownOnSearch() {
+      this.showAllContacts = false;
+      this.isAssignedDropdownOpen = true;
+    }
+
+    openDropdownAll(event: Event) {
+      event.stopPropagation();
+      this.showAllContacts = true;
+      this.isAssignedDropdownOpen = true;
+    }
+
+    filteredContactsToShow(): Contacts[] {
+      if (this.showAllContacts) return this.contactService.contactList;
+      const term = this.contactSearchTerm.trim().toLowerCase();
+      if (!term) return this.contactService.contactList;
+      return this.contactService.contactList.filter(c => c.name.toLowerCase().includes(term));
+    }
   title = '';
   description = '';
   dueDate = '';
@@ -98,7 +138,7 @@ async createTask() {
     description: this.description,
     dueDate: this.dueDate,
     priority: this.priority,
-    assignedTo: this.assignedToContacts.map(c => c.name).join(', '),
+    assignedTo: this.assignedToContacts.map(c => c.name),
     category: this.category || 'User Story', // 🔹 Default setzen
     subtasks: this.subtasks,
     status: 'todo'

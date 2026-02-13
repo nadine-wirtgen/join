@@ -1,4 +1,5 @@
-<div class="add-task-section">
+<div class="add-task-container">
+  <div class="add-task-section">
 
   <!-- LEFT -->
   <div class="add-task-left">
@@ -12,6 +13,7 @@
         type="text"
         placeholder="Enter a title"
         [(ngModel)]="title"
+        required
       >
     </div>
 
@@ -32,9 +34,10 @@
         type="date"
         [min]="minDate"
         [(ngModel)]="dueDate"
+        required
       >
     </div>
-
+    
   </div>
 
   <div class="devide-section" aria-hidden="true"></div>
@@ -65,27 +68,73 @@
     <div class="form-group assigned-to-container">
       <label>Assigned To</label>
       <div class="assigned-to-select" (click)="toggleAssignedDropdown()">
-        <span *ngIf="assignedToContacts.length === 0" class="placeholder">Select contacts...</span>
-        <div class="avatars" *ngIf="assignedToContacts.length > 0">
-          <div class="avatar" *ngFor="let c of assignedToContacts | slice:0:3" [style.backgroundColor]="contactService.getContactColor(c)">
+        <input
+          type="text"
+          class="contact-search-select"
+          placeholder="Select contacts to assign"
+          [(ngModel)]="contactSearchTerm"
+          (focus)="openDropdownOnSearch()"
+          (input)="openDropdownOnSearch()"
+          (click)="$event.stopPropagation()"
+        >
+        <img
+          [src]="isAssignedDropdownOpen ? 'assets/imgs/add-task/arrow_drop_up.png' : 'assets/imgs/add-task/arrow_drop_down.png'"
+          class="dropdown-arrow"
+          (click)="toggleDropdownArrow($event)"
+          alt="Dropdown Arrow"
+        >
+      </div>
+      <div class="avatars avatars-below">
+        @for (c of assignedToContacts | slice:0:3; track c) {
+          <div class="avatar" [style.backgroundColor]="contactService.getContactColor(c)">
             {{ contactService.getInitials(c.name) }}
           </div>
-          <div class="avatar more" *ngIf="assignedToContacts.length > 3">
+        }
+        @if (assignedToContacts.length > 3) {
+          <div class="avatar more">
             +{{ assignedToContacts.length - 3 }}
           </div>
+        }
+      </div>
+
+      <!-- CATEGORY -->
+      <div class="category-select">
+        <label for="category">Category</label>
+        <div class="category-dropdown-custom" (click)="toggleCategoryDropdown()">
+          <span class="category-selected">{{ category || 'Select task category' }}</span>
+          <img
+            [src]="isCategoryDropdownOpen ? 'assets/imgs/add-task/arrow_drop_up.png' : 'assets/imgs/add-task/arrow_drop_down.png'"
+            class="dropdown-arrow"
+            (click)="toggleCategoryDropdown($event)"
+            alt="Dropdown Arrow"
+          >
+          @if (isCategoryDropdownOpen) {
+            <div class="category-options">
+              <div class="category-option" (click)="selectCategory('User Story', $event)">User Story</div>
+              <div class="category-option" (click)="selectCategory('Technical Task', $event)">Technical Task</div>
+            </div>
+          }
         </div>
       </div>
 
       <!-- Dropdown Liste -->
-      <div class="assigned-to-list" *ngIf="isAssignedDropdownOpen">
-        <div class="single-contact" *ngFor="let contact of contactService.contactList">
-          <div class="avatar-letter-box" [style.backgroundColor]="contactService.getContactColor(contact)">
-            {{ contactService.getInitials(contact.name) }}
-          </div>
-          <span class="contact-name">{{ contact.name }}</span>
-          <input type="checkbox" [(ngModel)]="contact.selected" (change)="toggleAssignedContact(contact)">
+      @if (isAssignedDropdownOpen) {
+        <div class="assigned-to-list">
+          @for (contact of filteredContactsToShow(); track contact) {
+            <div class="single-contact" [class.active]="contact.selected" (click)="toggleAssignedContact(contact)">
+              <div class="avatar-letter-box" [style.backgroundColor]="contactService.getContactColor(contact)">
+                {{ contactService.getInitials(contact.name) }}
+              </div>
+              <span class="contact-name">{{ contact.name }}</span>
+              <img
+                [src]="contact.selected ? 'assets/imgs/add-task/checkbox_active.png' : 'assets/imgs/add-task/checkbox_default.png'"
+                class="checkbox-img"
+                alt="Checkbox"
+              >
+            </div>
+          }
         </div>
-      </div>
+      }
     </div>
 
     <!-- SUBTASKS -->
@@ -96,21 +145,25 @@
         <button type="button" (click)="addSubtask()">Add</button>
       </div>
       <ul class="subtask-list">
-        <li *ngFor="let task of subtasks; let i = index">
-          {{ task.title }}
-          <button type="button" (click)="removeSubtask(i)">✕</button>
-        </li>
+        @for (task of subtasks; let i = $index; track task) {
+          <li>
+            {{ task.title }}
+            <button type="button" (click)="removeSubtask(i)">✕</button>
+          </li>
+        }
       </ul>
     </div>
   </div>
 </div>
-
+<div class="text-button-div">
+  <p><span class="required">*</span>This field is rehhquired</p>
   <!-- ACTION BUTTONS -->
   <div class="action-buttons">
     <button type="button" class="clear-btn" (click)="clearForm()">Clear ✕</button>
     <button type="button" class="create-btn" (click)="createTask()">Create Task ✓</button>
   </div>
-
+</div>  
+</div>
 <div class="task-saved-message" *ngIf="taskSavedMessage">
   Task erfolgreich gespeichert!
 </div>
