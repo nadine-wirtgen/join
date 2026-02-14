@@ -1,1 +1,233 @@
-<p>add-task-template works!</p>
+<div class="add-task-container">
+	<h2 class="add-task-heading">Add Task</h2>
+	<div class="add-task-section">
+
+		<!-- LEFT -->
+		<div class="add-task-left">
+
+			<div class="form-group">
+				<label for="title">Title<span class="required">*</span></label>
+				<input
+					id="title"
+					type="text"
+					placeholder="Enter a title"
+					[(ngModel)]="title"
+					(blur)="validateTitle()"
+					required
+				>
+				@if (titleInvalid) {
+					<p class="error-message">This field is required</p>
+				}
+			</div>
+
+			<div class="form-group">
+				<label for="description">Description</label>
+				<textarea
+					id="description"
+					rows="4"
+					placeholder="Enter a description"
+					[(ngModel)]="description"
+				></textarea>
+			</div>
+
+			<div class="form-group">
+				<label for="dueDate">Due date<span class="required">*</span></label>
+				<input
+					id="dueDate"
+					type="text"
+					placeholder="dd/mm/yyyy"
+					[(ngModel)]="dueDate"
+					(blur)="validateDueDate()"
+					required
+				>
+				@if (dueDateInvalid) {
+					<p class="error-message">This field is required</p>
+				}
+			</div>
+      
+		</div>
+
+		<div class="devide-section" aria-hidden="true"></div>
+
+		<!-- RIGHT -->
+		<div class="add-task-right">
+
+			<!-- PRIORITY -->
+			<div class="form-group">
+				<label>Priority</label>
+				<div class="priority-buttons">
+					<button type="button" class="priority urgent" [class.active]="priority==='urgent'" (click)="setPriority('urgent')">
+						<span>Urgent</span>
+						<img [attr.src]="priority === 'urgent' ? 'assets/imgs/add-task/urgent_white.png' : 'assets/imgs/add-task/urgent_default.png'" alt="Urgent">
+					</button>
+					<button type="button" class="priority medium" [class.active]="priority==='medium'" (click)="setPriority('medium')">
+						<span>Medium</span>
+						<img [attr.src]="priority === 'medium' ? 'assets/imgs/add-task/medium_white.png' : 'assets/imgs/add-task/medium_default.png'" alt="Medium">
+					</button>
+					<button type="button" class="priority low" [class.active]="priority==='low'" (click)="setPriority('low')">
+						<span>Low</span>
+						<img [attr.src]="priority === 'low' ? 'assets/imgs/add-task/low_white.png' : 'assets/imgs/add-task/low_default.png'" alt="Low">
+					</button>
+				</div>
+			</div>
+
+			<!-- ASSIGNED TO MULTISELECT -->
+			<div class="form-group assigned-to-container">
+				<label>Assigned To</label>
+				<div class="assigned-to-select" (click)="toggleAssignedDropdown()">
+					<input
+						type="text"
+						class="contact-search-select"
+						placeholder="Select contacts to assign"
+						[(ngModel)]="contactSearchTerm"
+						(focus)="openDropdownOnSearch()"
+						(input)="openDropdownOnSearch()"
+						(click)="$event.stopPropagation()"
+					>
+					<img
+						[src]="isAssignedDropdownOpen ? 'assets/imgs/add-task/arrow_drop_up.png' : 'assets/imgs/add-task/arrow_drop_down.png'"
+						class="dropdown-arrow"
+						(click)="toggleDropdownArrow($event)"
+						alt="Dropdown Arrow"
+					>
+				</div>
+				<div class="avatars avatars-below">
+					@for (c of assignedToContacts | slice:0:3; track c) {
+						<div class="avatar" [style.backgroundColor]="contactService.getContactColor(c)">
+							{{ contactService.getInitials(c.name) }}
+						</div>
+					}
+					@if (assignedToContacts.length > 3) {
+						<div class="avatar more">
+							+{{ assignedToContacts.length - 3 }}
+						</div>
+					}
+				</div>
+
+				<!-- CATEGORY -->
+				<div class="category-select">
+					<label for="category">Category<span class="required">*</span></label>
+					<div class="category-dropdown-custom" (click)="toggleCategoryDropdown()">
+						<span class="category-selected">{{ category || 'Select task category' }}</span>
+						<img
+							[src]="isCategoryDropdownOpen ? 'assets/imgs/add-task/arrow_drop_up.png' : 'assets/imgs/add-task/arrow_drop_down.png'"
+							class="dropdown-arrow"
+							(click)="toggleCategoryDropdown($event)"
+							alt="Dropdown Arrow"
+						>
+						@if (isCategoryDropdownOpen) {
+							<div class="category-options">
+								<div class="category-option" (click)="selectCategory('User Story', $event)">User Story</div>
+								<div class="category-option" (click)="selectCategory('Technical Task', $event)">Technical Task</div>
+							</div>
+						}
+					</div>
+						@if (categoryInvalid) {
+							<p class="error-message">This field is required</p>
+						}
+				</div>
+
+				<!-- Dropdown Liste -->
+				@if (isAssignedDropdownOpen) {
+					<div class="assigned-to-list">
+						@for (contact of filteredContactsToShow(); track contact) {
+							<div class="single-contact" [class.active]="contact.selected" (click)="toggleAssignedContact(contact)">
+								<div class="avatar-letter-box" [style.backgroundColor]="contactService.getContactColor(contact)">
+									{{ contactService.getInitials(contact.name) }}
+								</div>
+								<span class="contact-name">{{ getDisplayName(contact.name) }}</span>
+								<img
+									[src]="contact.selected ? 'assets/imgs/add-task/checkbox_active.png' : 'assets/imgs/add-task/checkbox_default.png'"
+									class="checkbox-img"
+									alt="Checkbox"
+								>
+							</div>
+						}
+					</div>
+				}
+			</div>
+
+			<!-- SUBTASKS -->
+			<div class="form-group">
+				<label>Subtasks</label>
+				<div class="subtask-input">
+					<input
+						type="text"
+						placeholder="Add new subtask"
+						[(ngModel)]="newSubtask"
+						(keyup.enter)="addSubtask()"
+						(click)="$event.stopPropagation()"
+					>
+					<div class="subtask-actions">
+						<img
+							src="assets/imgs/add-task/delete_grey.png"
+							alt="Clear subtask"
+							class="subtask-icon delete"
+							(mousedown)="$event.preventDefault()"
+							(click)="newSubtask = ''"
+						>
+						<div class="subtask-divider"></div>
+						<img
+							src="assets/imgs/add-task/check_grey.png"
+							alt="Add subtask"
+							class="subtask-icon check"
+							(mousedown)="$event.preventDefault()"
+							(click)="addSubtask()"
+						>
+					</div>
+				</div>
+				<ul class="subtask-list">
+					@for (task of subtasks; let i = $index; track i) {
+						<li
+							class="subtask-item"
+							[class.editing]="editingSubtaskIndex === i"
+							(dblclick)="startEditSubtask(i, task.title); $event.stopPropagation()"
+						>
+							@if (editingSubtaskIndex === i) {
+								<div class="subtask-input existing-subtask">
+									<input
+										type="text"
+										[(ngModel)]="editingSubtaskTitle"
+										(click)="$event.stopPropagation()"
+										(keyup.enter)="saveSubtaskEdit(i)"
+									>
+									<div class="subtask-actions">
+										<img
+											src="assets/imgs/add-task/trash.png"
+											alt="Delete subtask"
+											class="subtask-icon delete"
+											(mousedown)="$event.preventDefault()"
+											(click)="$event.stopPropagation(); removeSubtask(i)"
+										>
+										<div class="subtask-divider"></div>
+										<img
+											src="assets/imgs/add-task/check_grey.png"
+											alt="Save subtask"
+											class="subtask-icon check"
+											(mousedown)="$event.preventDefault()"
+											(click)="$event.stopPropagation(); saveSubtaskEdit(i)"
+										>
+									</div>
+								</div>
+							} @else {
+								<span class="subtask-title-text">{{ task.title }}</span>
+							}
+						</li>
+					}
+				</ul>
+				<p class="inline-required-hint"><span class="required">*</span>This field is rehhquired</p>
+			</div>
+		</div>
+	</div>
+	<div class="text-button-div">
+		<p><span class="required">*</span>This field is rehhquired</p>
+		<!-- ACTION BUTTONS -->
+		<div class="action-buttons">
+			<button type="button" class="clear-btn" (click)="clearForm()">Clear ✕</button>
+			<button type="button" class="create-btn" (click)="createTask()">Create Task ✓</button>
+		</div>
+	</div>  
+</div>
+<div class="task-saved-message" *ngIf="taskSavedMessage">
+	Task erfolgreich gespeichert!
+</div>
