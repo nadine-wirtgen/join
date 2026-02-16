@@ -1,0 +1,71 @@
+<div class="contact-selector">
+  <div class="add-contact-area">
+    <div class="add-contact-input" (click)="toggleDropdown()">
+      <input
+        type="text"
+        placeholder="Select contacts to assign..."
+        readonly
+        [value]="selectedContacts.length ? selectedContacts.length + ' contact(s) selected' : ''"
+      />
+      <button class="add-contact-btn" type="button">
+        <span>🔽</span>
+      </button>
+    </div>
+
+    @if (showDropdown) {
+      <div class="contacts-dropdown">
+
+        <div class="contacts-list">
+          @if (filteredContacts.length > 0) {
+            @for (contact of filteredContacts; track contact.id) {
+              <div class="contact-item" (click)="addContact(contact)">
+                <div class="avatar" [style.backgroundColor]="getContactColor(contact)">
+                  <p>{{ getInitials(contact.name) }}</p>
+                </div>
+                <div class="contact-info">
+                  <span class="contact-name">{{ getDisplayName(contact.name) }}</span>
+                </div>
+              </div>
+            }
+          } @else {
+            <div class="no-results">
+              @if (searchTerm) {
+                No contacts found for "{{ searchTerm }}"
+              } @else {
+                No contacts available
+              }
+            </div>
+          }
+        </div>
+
+        <div class="dropdown-footer">
+          <button class="close-dropdown" (click)="showDropdown = false">Close</button>
+        </div>
+      </div>
+    }
+  </div>
+
+  @if (selectedContacts.length > 0) {
+    <div class="selected-badges reverse-order">
+      @for (contact of displayedSelectedContacts; track contact.id) {
+        <div class="contact-badge">
+          <div class="avatar" [style.backgroundColor]="getContactColor(contact)">
+            <p>{{ getInitials(contact.name) }}</p>
+          </div>
+        </div>
+      }
+
+      @if (hiddenContactsCount > 0 && !showAllContacts) {
+        <div class="more-contacts-badge" (click)="toggleShowAll()">
+          <span class="more-count">+{{ hiddenContactsCount }}</span>
+        </div>
+      }
+
+      @if (showAllContacts && selectedContacts.length > 3) {
+        <div class="more-contacts-badge show-less" (click)="toggleShowAll()">
+          <span class="more-count">−{{ selectedContacts.length - 3 }}</span>
+        </div>
+      }
+    </div>
+  }
+</div>
