@@ -108,14 +108,6 @@ export class BoardSection implements OnInit {
     this.tasks.set(filtered);
   }
 
-  // allowDrop(event: DragEvent) {
-  //   event.preventDefault();
-  // }
-
-  // drag(event: DragEvent) {
-  //   this.setDragData(event);
-  // }
-
   drop(event: CdkDragDrop<(Task & { id: string })[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
@@ -216,15 +208,4 @@ export class BoardSection implements OnInit {
       false
     );
   }
-  // private setDragData(event: DragEvent) {
-  //   const target = event.target as HTMLElement;
-  //   if (target?.id) event.dataTransfer?.setData('text', target.id);
-  // }
-  // private async handleDrop(event: DragEvent) {
-  //   event.preventDefault();
-  //   const targetColumn = (event.currentTarget as HTMLElement).id as ColumnKey;
-  //   const taskId = event.dataTransfer?.getData('text');
-  //   if (!taskId) return;
-  //   await this.taskService.updateTaskStatus(taskId, this.columnToStatus[targetColumn]);
-  // }
 }
