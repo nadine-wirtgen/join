@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AddTaskTemplate } from '../add-task-template/add-task-template';
 
@@ -9,4 +9,10 @@ import { AddTaskTemplate } from '../add-task-template/add-task-template';
   templateUrl: './add-task-dialog.html',
   styleUrl: './add-task-dialog.scss',
 })
-export class AddTaskDialog {}
+export class AddTaskDialog {
+  @Output() close = new EventEmitter<void>();
+
+  onClose() {
+    this.close.emit();
+  }
+}
