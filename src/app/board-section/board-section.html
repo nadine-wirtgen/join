@@ -36,7 +36,7 @@
   </div>
 
   <div class="boardContainer">
-    <div class="listContant" id="todo" (drop)="drop($event)" (dragover)="allowDrop($event)">
+    <div class="listContant">
       <div class="listHeadline">
         <p>To Do</p>
         <img
@@ -50,11 +50,24 @@
           (click)="addTaskToColumn('todo')"
         />
       </div>
-      <div class="listContainer">
+      <div
+        class="listContainer"
+        cdkDropList
+        [id]="'todo'"
+        [cdkDropListData]="tasks().todo"
+        [cdkDropListConnectedTo]="connectedLists"
+        (cdkDropListDropped)="drop($event)"
+      >
         @if (tasks().todo.length > 0) {
           @for (task of tasks().todo; track task.id) {
-            <div class="task-card" [id]="task.id" draggable="true" (dragstart)="drag($event)">
-              <app-taskcard [task]="task"></app-taskcard>
+            <div class="task-card" cdkDrag [cdkDragData]="task" (cdkDragMoved)="onDragMove($event)">
+              <ng-template cdkDragPreview>
+                <div class="preview-container">
+                  <app-taskcard class="rotation-wrapper" [task]="task" />
+                </div>
+              </ng-template>
+
+              <app-taskcard [task]="task" />
             </div>
           }
         } @else {
@@ -63,7 +76,7 @@
       </div>
     </div>
 
-    <div class="listContant" id="inProgress" (drop)="drop($event)" (dragover)="allowDrop($event)">
+    <div class="listContant">
       <div class="listHeadline">
         <p>In progress</p>
         <img
@@ -77,11 +90,24 @@
           (click)="addTaskToColumn('inProgress')"
         />
       </div>
-      <div class="listContainer">
+      <div
+        class="listContainer"
+        cdkDropList
+        [id]="'inProgress'"
+        [cdkDropListData]="tasks().inProgress"
+        [cdkDropListConnectedTo]="connectedLists"
+        (cdkDropListDropped)="drop($event)"
+      >
         @if (tasks().inProgress.length > 0) {
           @for (task of tasks().inProgress; track task.id) {
-            <div class="task-card" [id]="task.id" draggable="true" (dragstart)="drag($event)">
-              <app-taskcard [task]="task"></app-taskcard>
+            <div class="task-card" cdkDrag [cdkDragData]="task" (cdkDragMoved)="onDragMove($event)">
+              <ng-template cdkDragPreview>
+                <div class="preview-container">
+                  <app-taskcard class="rotation-wrapper" [task]="task" />
+                </div>
+              </ng-template>
+
+              <app-taskcard [task]="task" />
             </div>
           }
         } @else {
@@ -90,12 +116,7 @@
       </div>
     </div>
 
-    <div
-      class="listContant"
-      id="awaitFeedback"
-      (drop)="drop($event)"
-      (dragover)="allowDrop($event)"
-    >
+    <div class="listContant">
       <div class="listHeadline">
         <p>Await feedback</p>
         <img
@@ -109,11 +130,24 @@
           (click)="addTaskToColumn('awaitFeedback')"
         />
       </div>
-      <div class="listContainer">
+      <div
+        class="listContainer"
+        cdkDropList
+        [id]="'awaitFeedback'"
+        [cdkDropListData]="tasks().awaitFeedback"
+        [cdkDropListConnectedTo]="connectedLists"
+        (cdkDropListDropped)="drop($event)"
+      >
         @if (tasks().awaitFeedback.length > 0) {
           @for (task of tasks().awaitFeedback; track task.id) {
-            <div class="task-card" [id]="task.id" draggable="true" (dragstart)="drag($event)">
-              <app-taskcard [task]="task"></app-taskcard>
+            <div class="task-card" cdkDrag [cdkDragData]="task" (cdkDragMoved)="onDragMove($event)">
+              <ng-template cdkDragPreview>
+                <div class="preview-container">
+                  <app-taskcard class="rotation-wrapper" [task]="task" />
+                </div>
+              </ng-template>
+
+              <app-taskcard [task]="task" />
             </div>
           }
         } @else {
@@ -122,20 +156,28 @@
       </div>
     </div>
 
-    <div
-      class="listContant listContantDone"
-      id="done"
-      (drop)="drop($event)"
-      (dragover)="allowDrop($event)"
-    >
+    <div class="listContant listContantDone">
       <div class="listHeadline">
         <p>Done</p>
       </div>
-      <div class="listContainer">
+      <div
+        class="listContainer"
+        cdkDropList
+        [id]="'done'"
+        [cdkDropListData]="tasks().done"
+        [cdkDropListConnectedTo]="connectedLists"
+        (cdkDropListDropped)="drop($event)"
+      >
         @if (tasks().done.length > 0) {
           @for (task of tasks().done; track task.id) {
-            <div class="task-card" [id]="task.id" draggable="true" (dragstart)="drag($event)">
-              <app-taskcard [task]="task"></app-taskcard>
+            <div class="task-card" cdkDrag [cdkDragData]="task" (cdkDragMoved)="onDragMove($event)">
+              <ng-template cdkDragPreview>
+                <div class="preview-container">
+                  <app-taskcard class="rotation-wrapper" [task]="task" />
+                </div>
+              </ng-template>
+
+              <app-taskcard [task]="task" />
             </div>
           }
         } @else {

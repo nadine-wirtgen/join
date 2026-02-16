@@ -89,7 +89,7 @@ section {
 .boardContainer {
   display: flex;
   justify-content: space-between;
-  gap: 16px;
+  gap: 8px;
   width: 100%;
   height: 100%;
   padding-bottom: 40px;
@@ -119,6 +119,12 @@ section {
       padding: 16px 2px;
       overflow-y: scroll;
       scrollbar-width: none;
+      width: 250px;
+      .task-card {
+        cursor: default;
+        background-color: #ffffff;
+        border-radius: 24px;
+      }
       .placeholder {
         display: flex;
         justify-content: center;
@@ -132,6 +138,44 @@ section {
       }
     }
   }
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.2;
+  background: #bfd7f0;
+  border: 4px dotted #999;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drag-preview {
+  padding-right: 20px;
+  padding-left: 8px;
+  padding-top: 8px;
+  padding-bottom: 20px;
+  position: fixed;
+}
+
+.rotation-wrapper {
+  background-color: #ffffff;
+  border-radius: 24px;
+  box-shadow:
+    0px 4px 12px rgba(0, 0, 0, 0.08),
+    0px 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-preview .preview-container {
+  box-sizing: border-box;
+}
+
+.cdk-drag-preview .rotation-wrapper {
+  user-select: none;
+  display: block;
+  width: 240px;
+  height: 100%;
 }
 
 @media (max-width: 1300px) {
@@ -160,6 +204,8 @@ section {
           border-radius: 10px;
           &:hover {
             cursor: pointer;
+            background-color: #007cee;
+            box-shadow: 0 8px 8px -4px rgba(0, 0, 0, 0.4);
           }
         }
       }
@@ -183,7 +229,10 @@ section {
         padding-bottom: 24px;
         display: flex;
         flex-direction: row;
-        overflow: auto;
+        overflow-y: hidden;
+        overflow-x: auto;
+        scrollbar-width: auto;
+        width: 100%;
         .placeholder {
           width: 100%;
         }

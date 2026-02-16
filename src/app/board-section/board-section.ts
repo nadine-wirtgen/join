@@ -5,11 +5,20 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Task } from '../interfaces/task';
 import { Taskcard } from './taskcard/taskcard';
+import {
+  CdkDrag,
+  CdkDragDrop,
+  CdkDragMove,
+  CdkDragPreview,
+  CdkDropList,
+  moveItemInArray,
+  transferArrayItem,
+} from '@angular/cdk/drag-drop';
 type ColumnKey = 'todo' | 'inProgress' | 'awaitFeedback' | 'done';
 
 @Component({
   selector: 'app-board-section',
-  imports: [FormsModule, CommonModule, Taskcard],
+  imports: [FormsModule, CommonModule, Taskcard, CdkDrag, CdkDragPreview, CdkDropList],
   templateUrl: './board-section.html',
   styleUrl: './board-section.scss',
 })
@@ -17,6 +26,7 @@ export class BoardSection implements OnInit {
   hoveredIcon: string | null = null;
   searchValue = '';
   searchTerm = '';
+  connectedLists: ColumnKey[] = ['todo', 'inProgress', 'awaitFeedback', 'done'];
   tasks = signal<Record<ColumnKey, (Task & { id: string })[]>>({
     todo: [],
     inProgress: [],
@@ -41,6 +51,7 @@ export class BoardSection implements OnInit {
     awaitFeedback: 'await-feedback',
     done: 'done',
   };
+  lastPointerX = 0;
   constructor(
     private taskService: TaskService,
     private router: Router,
@@ -62,22 +73,61 @@ export class BoardSection implements OnInit {
     };
     this.tasks.set(filtered);
   }
-  allowDrop(event: DragEvent) {
-    event.preventDefault();
+
+  // allowDrop(event: DragEvent) {
+  //   event.preventDefault();
+  // }
+
+  // drag(event: DragEvent) {
+  //   this.setDragData(event);
+  // }
+
+  drop(event: CdkDragDrop<(Task & { id: string })[]>) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex,
+      );
+
+      const movedTask = event.container.data[event.currentIndex];
+
+      this.taskService.updateTaskStatus(
+        movedTask.id,
+        this.columnToStatus[event.container.id as ColumnKey],
+      );
+    }
   }
-  drag(event: DragEvent) {
-    this.setDragData(event);
+
+  onDragMove(event: CdkDragMove) {
+    const currentX = event.pointerPosition.x;
+    if (this.lastPointerX === 0) {
+      this.lastPointerX = currentX;
+      return;
+    }
+    const deltaX = currentX - this.lastPointerX;
+    const rotation = Math.max(-8, Math.min(8, deltaX * 0.5));
+    const rotationEl = document.querySelector('.cdk-drag-preview .rotation-wrapper') as HTMLElement;
+    if (rotationEl) {
+      rotationEl.style.transform = `rotate(${rotation}deg)`;
+      // rotationEl.style.left = `${event.pointerPosition.x}px`;
+      // rotationEl.style.top = `${event.pointerPosition.y}px`;
+    }
+    this.lastPointerX = currentX;
   }
-  async drop(event: DragEvent) {
-    await this.handleDrop(event);
-  }
+
   toggleAddTask(column: ColumnKey) {
     this.showAddTask[column] = !this.showAddTask[column];
   }
+
   addTaskToColumn(column: ColumnKey) {
     console.log('Add Task Button clicked for column:', column);
     this.toggleAddTask(column);
   }
+
   async createTaskFromForm(column: ColumnKey, formData: Partial<Task>) {
     const newTask: Omit<Task, 'createdAt'> = {
       title: formData.title || 'Neue Aufgabe',
@@ -91,6 +141,7 @@ export class BoardSection implements OnInit {
     await this.taskService.createTask(newTask);
     this.showAddTask[column] = false;
   }
+
   trackById(_index: number, task: Task & { id: string }) {
     return task.id;
   }
@@ -131,15 +182,15 @@ export class BoardSection implements OnInit {
       false
     );
   }
-  private setDragData(event: DragEvent) {
-    const target = event.target as HTMLElement;
-    if (target?.id) event.dataTransfer?.setData('text', target.id);
-  }
-  private async handleDrop(event: DragEvent) {
-    event.preventDefault();
-    const targetColumn = (event.currentTarget as HTMLElement).id as ColumnKey;
-    const taskId = event.dataTransfer?.getData('text');
-    if (!taskId) return;
-    await this.taskService.updateTaskStatus(taskId, this.columnToStatus[targetColumn]);
-  }
+  // private setDragData(event: DragEvent) {
+  //   const target = event.target as HTMLElement;
+  //   if (target?.id) event.dataTransfer?.setData('text', target.id);
+  // }
+  // private async handleDrop(event: DragEvent) {
+  //   event.preventDefault();
+  //   const targetColumn = (event.currentTarget as HTMLElement).id as ColumnKey;
+  //   const taskId = event.dataTransfer?.getData('text');
+  //   if (!taskId) return;
+  //   await this.taskService.updateTaskStatus(taskId, this.columnToStatus[targetColumn]);
+  // }
 }
