@@ -14,11 +14,12 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
+import { TaskOverlay } from './task-overlay/task-overlay';
 type ColumnKey = 'todo' | 'inProgress' | 'awaitFeedback' | 'done';
 
 @Component({
   selector: 'app-board-section',
-  imports: [FormsModule, CommonModule, Taskcard, CdkDrag, CdkDragPreview, CdkDropList],
+  imports: [FormsModule, CommonModule, Taskcard, CdkDrag, CdkDragPreview, CdkDropList, TaskOverlay],
   templateUrl: './board-section.html',
   styleUrl: './board-section.scss',
 })
@@ -26,6 +27,8 @@ export class BoardSection implements OnInit {
   hoveredIcon: string | null = null;
   searchValue = '';
   searchTerm = '';
+  showTaskOverlay = false;
+  selectedTask: (Task & { id: string }) | null = null;
   connectedLists: ColumnKey[] = ['todo', 'inProgress', 'awaitFeedback', 'done'];
   tasks = signal<Record<ColumnKey, (Task & { id: string })[]>>({
     todo: [],
@@ -63,6 +66,37 @@ export class BoardSection implements OnInit {
       this.tasks.set(grouped);
     });
   }
+
+  openTaskOverlay(task: Task & { id: string }) {
+    this.selectedTask = task;
+    this.showTaskOverlay = true;
+  }
+
+  closeTaskOverlay() {
+    this.showTaskOverlay = false;
+    this.selectedTask = null;
+  }
+
+  async saveTask(updatedTask: Omit<Task, 'id' | 'createdAt'>) {
+    if (this.selectedTask?.id) {
+      try {
+        await this.taskService.updateTask(this.selectedTask.id, updatedTask);
+        this.closeTaskOverlay();
+      } catch (error) {
+        console.error('❌ Error updating task:', error);
+      }
+    }
+  }
+
+  async deleteTask(taskId: string) {
+    try {
+      await this.taskService.deleteTask(taskId);
+      this.closeTaskOverlay();
+    } catch (error) {
+      console.error(' Error deleting task:', error);
+    }
+  }
+
   filterTasks() {
     const term = this.searchTerm.toLowerCase();
     const filtered: Record<ColumnKey, (Task & { id: string })[]> = {

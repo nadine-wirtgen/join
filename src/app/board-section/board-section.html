@@ -67,7 +67,7 @@
                 </div>
               </ng-template>
 
-              <app-taskcard [task]="task" />
+              <app-taskcard [task]="task" (openTask)="openTaskOverlay(task)" />
             </div>
           }
         } @else {
@@ -107,7 +107,7 @@
                 </div>
               </ng-template>
 
-              <app-taskcard [task]="task" />
+              <app-taskcard [task]="task" (openTask)="openTaskOverlay(task)"></app-taskcard>
             </div>
           }
         } @else {
@@ -147,7 +147,7 @@
                 </div>
               </ng-template>
 
-              <app-taskcard [task]="task" />
+              <app-taskcard [task]="task" (openTask)="openTaskOverlay(task)"></app-taskcard>
             </div>
           }
         } @else {
@@ -177,7 +177,7 @@
                 </div>
               </ng-template>
 
-              <app-taskcard [task]="task" />
+              <app-taskcard [task]="task" (openTask)="openTaskOverlay(task)" />
             </div>
           }
         } @else {
@@ -187,3 +187,13 @@
     </div>
   </div>
 </section>
+
+@if (showTaskOverlay && selectedTask) {
+  <app-task-overlay
+    [task]="selectedTask"
+    (close)="closeTaskOverlay()"
+    (save)="saveTask($event)"
+    (delete)="deleteTask($event)"
+  >
+  </app-task-overlay>
+}

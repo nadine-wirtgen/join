@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, Output, EventEmitter } from '@angular/core';
 import { Task } from '../../interfaces/task';
 import { ContactService } from '../../firebase-service/contact-service';
 import { CommonModule, SlicePipe } from '@angular/common';
@@ -12,7 +12,12 @@ import { CommonModule, SlicePipe } from '@angular/common';
 })
 export class Taskcard {
   @Input() task!: Task;
+  @Output() openTask = new EventEmitter<Task>();
   contactService = inject(ContactService);
+
+  onCardClick() {
+    this.openTask.emit(this.task);
+  }
 
   getSubtaskProgress(task?: Task): number {
     const t = task || this.task;
