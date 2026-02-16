@@ -15,11 +15,21 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import { TaskOverlay } from './task-overlay/task-overlay';
+import { AddTaskDialog } from '../add-task-section/add-task-dialog/add-task-dialog';
 type ColumnKey = 'todo' | 'inProgress' | 'awaitFeedback' | 'done';
 
 @Component({
   selector: 'app-board-section',
-  imports: [FormsModule, CommonModule, Taskcard, CdkDrag, CdkDragPreview, CdkDropList, TaskOverlay],
+  imports: [
+    FormsModule,
+    CommonModule,
+    Taskcard,
+    AddTaskDialog,
+    CdkDrag,
+    CdkDragPreview,
+    CdkDropList,
+    TaskOverlay,
+  ],
   templateUrl: './board-section.html',
   styleUrl: './board-section.scss',
 })
@@ -28,6 +38,7 @@ export class BoardSection implements OnInit {
   searchValue = '';
   searchTerm = '';
   showTaskOverlay = false;
+  isAddTaskDialogOpen = false;
   selectedTask: (Task & { id: string }) | null = null;
   connectedLists: ColumnKey[] = ['todo', 'inProgress', 'awaitFeedback', 'done'];
   tasks = signal<Record<ColumnKey, (Task & { id: string })[]>>({
@@ -83,7 +94,7 @@ export class BoardSection implements OnInit {
         await this.taskService.updateTask(this.selectedTask.id, updatedTask);
         this.closeTaskOverlay();
       } catch (error) {
-        console.error('❌ Error updating task:', error);
+        console.error(' Error updating task:', error);
       }
     }
   }
@@ -95,6 +106,14 @@ export class BoardSection implements OnInit {
     } catch (error) {
       console.error(' Error deleting task:', error);
     }
+  }
+
+  openAddTaskDialog() {
+    this.isAddTaskDialogOpen = true;
+  }
+
+  closeAddTaskDialog() {
+    this.isAddTaskDialogOpen = false;
   }
 
   filterTasks() {
