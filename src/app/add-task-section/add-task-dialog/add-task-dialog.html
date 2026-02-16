@@ -1,1 +1,7 @@
-<app-add-task-template></app-add-task-template>
+<div class="add-task-dialog-overlay">
+	<div class="add-task-dialog-backdrop" (click)="onClose()"></div>
+	<div class="add-task-dialog-container" (click)="$event.stopPropagation()">
+		<button type="button" class="dialog-close-btn" (click)="onClose()">✕</button>
+		<app-add-task-template></app-add-task-template>
+	</div>
+</div>
