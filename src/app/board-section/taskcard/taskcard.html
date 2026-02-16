@@ -1,4 +1,4 @@
-<div class="taskCard">
+<div class="taskCard" (click)="onCardClick()">
   @if (task.category == 'User Story') {
     <div class="typUser">User Story</div>
   } @else {
