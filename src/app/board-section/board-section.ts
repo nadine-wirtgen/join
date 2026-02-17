@@ -35,11 +35,11 @@ type ColumnKey = 'todo' | 'inProgress' | 'awaitFeedback' | 'done';
 })
 export class BoardSection implements OnInit {
   hoveredIcon: string | null = null;
-  searchValue = '';
   searchTerm = '';
   showTaskOverlay = false;
   isAddTaskDialogOpen = false;
   selectedTask: (Task & { id: string }) | null = null;
+  addTaskDialogColumn: Task['status'] = 'todo';
   connectedLists: ColumnKey[] = ['todo', 'inProgress', 'awaitFeedback', 'done'];
   tasks = signal<Record<ColumnKey, (Task & { id: string })[]>>({
     todo: [],
@@ -108,8 +108,9 @@ export class BoardSection implements OnInit {
     }
   }
 
-  openAddTaskDialog() {
+  openAddTaskDialog(column: ColumnKey) {
     this.isAddTaskDialogOpen = true;
+    this.addTaskDialogColumn = this.columnToStatus[column];
   }
 
   closeAddTaskDialog() {
