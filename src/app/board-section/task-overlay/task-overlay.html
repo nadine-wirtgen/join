@@ -2,142 +2,86 @@
   <div class="task-overlay" (click)="$event.stopPropagation()">
     @if (!isEditMode && task) {
       <div class="task-view-container">
-        <button class="close-btn" (click)="onClose()">✕</button>
+        <div class="overlay-header">
+          <button class="close-btn" (click)="onClose()">✕</button>
+          <div class="category-badge" [style.background-color]="categoryColor">
+            {{ safeTask.category }}
+          </div>
+          <h1 class="task-title">
+            {{ safeTask.title | slice: 0 : 25 }}{{ safeTask.title.length > 25 ? '...' : '' }}
+          </h1>
 
-        <div class="category-badge" [style.background-color]="categoryColor">
-          {{ safeTask.category }}
+          <p class="task-description">
+            {{ safeTask.description | slice: 0 : 50
+            }}{{ safeTask.description.length > 50 ? '...' : '' }}
+          </p>
         </div>
 
-        <h1 class="task-title">{{ safeTask.title }}</h1>
+        <div class="overlay-content">
+          <div class="info-grid">
+            <div class="info-row">
+              <span class="label">Due date:</span>
+              <span class="value">{{ safeTask.dueDate | date: 'dd/MM/yyyy' }}</span>
+            </div>
 
-        <p class="task-description">{{ safeTask.description }}</p>
-
-        <div class="info-grid">
-          <div class="info-row">
-            <span class="label">Due date:</span>
-            <span class="value">{{ safeTask.dueDate | date: 'dd/MM/yyyy' }}</span>
-          </div>
-
-          <div class="info-row">
-            <span class="label">Priority:</span>
-            <div class="priority-badge" [ngClass]="safeTask.priority">
-              <span>{{ safeTask.priority | titlecase }}</span>
-              <span class="priority-icon">
-                @if (safeTask.priority === 'urgent') {
-                  ▲
-                } @else if (safeTask.priority === 'medium') {
-                  =
-                } @else {
-                  ▼
-                }
-              </span>
+            <div class="info-row">
+              <span class="label">Priority:</span>
+              <div class="priority-badge" [ngClass]="safeTask.priority">
+                <span class="priority-icon">
+                  <div class="priority-badge" [class]="safeTask.priority">
+                    <span>{{ safeTask.priority | titlecase }}</span>
+                    <img
+                      [src]="'assets/imgs/add-task/' + safeTask.priority + '_default.png'"
+                      [alt]="safeTask.priority"
+                    />
+                  </div>
+                </span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="assigned-section">
-          <span class="label">Assigned To:</span>
-          <div class="contacts-list">
-            @if (assignedContacts && assignedContacts.length > 0) {
-              <div class="assigned-badges">
-                @for (contact of displayedAssignedInView; track contact.id) {
-                  <div class="contact-badge">
-                    <div class="avatar" [style.background-color]="getContactColor(contact)">
-                      {{ getInitials(contact.name) }}
+          <div class="assigned-section">
+            <span class="label">Assigned To:</span>
+            <div class="contacts-list">
+              @if (assignedContacts && assignedContacts.length > 0) {
+                <div class="assigned-list scrollable">
+                  @for (contact of assignedContacts; track contact.id) {
+                    <div class="assigned-item">
+                      <div class="avatar" [style.background-color]="getContactColor(contact)">
+                        {{ getInitials(contact.name) }}
+                      </div>
+                      <span class="contact-name">{{ contact.name }}</span>
                     </div>
-                    <span class="contact-name">{{ contact.name }}</span>
-                  </div>
-                }
+                  }
+                </div>
+              } @else {
+                <div class="empty-state">No contacts assigned</div>
+              }
+            </div>
+          </div>
 
-                @if (hiddenAssignedInViewCount > 0 && !showAllAssignedInView) {
-                  <div class="more-badge" (click)="toggleAssignedInView()">
-                    +{{ hiddenAssignedInViewCount }}
-                  </div>
-                }
-
-                @if (showAllAssignedInView && assignedContacts.length > 3) {
-                  <div class="more-badge less-badge" (click)="toggleAssignedInView()">
-                    −{{ assignedContacts.length - 3 }}
+          <div class="form-group">
+            <label>Subtasks</label>
+            @if (safeTask.subtasks && safeTask.subtasks.length > 0) {
+              <div class="subtasks-list">
+                @for (subtask of safeTask.subtasks; track subtask; let i = $index) {
+                  <div class="subtask-item">
+                    <input
+                      type="checkbox"
+                      [checked]="subtask.completed"
+                      (change)="toggleSubtask(subtask)"
+                      class="subtask-checkbox"
+                    />
+                    <span class="subtask-title" [class.completed]="subtask.completed">
+                      {{ subtask.title }}
+                    </span>
                   </div>
                 }
               </div>
             } @else {
-              <div class="empty-state">No contacts assigned</div>
+              <div class="empty-state">No subtasks</div>
             }
           </div>
-        </div>
-
-        <div class="form-group">
-          <label>Subtasks</label>
-
-          @if (safeTask.subtasks && safeTask.subtasks.length > 0) {
-            <div class="subtasks-list">
-              @for (subtask of safeTask.subtasks.slice(0, 3); track subtask; let i = $index) {
-                <div
-                  class="subtask-item"
-                  (mouseenter)="hoveredSubtaskIndex = i"
-                  (mouseleave)="hoveredSubtaskIndex = null"
-                >
-                  <input
-                    type="checkbox"
-                    [checked]="subtask.completed"
-                    (change)="toggleSubtask(subtask)"
-                    class="subtask-checkbox"
-                  />
-                  <span class="subtask-title" [class.completed]="subtask.completed">
-                    {{ subtask.title }}
-                  </span>
-                </div>
-              }
-
-              @if (safeTask.subtasks.length > 3) {
-                <div class="more-subtasks">
-                  <button
-                    type="button"
-                    class="more-btn"
-                    (click)="showAllSubtasksView = !showAllSubtasksView"
-                  >
-                    <span class="plus-icon">{{ showAllSubtasksView ? '−' : '+' }}</span>
-                    <span>{{
-                      showAllSubtasksView ? 'Show less' : safeTask.subtasks.length - 3 + ' more'
-                    }}</span>
-                  </button>
-                </div>
-              }
-
-              @if (showAllSubtasksView) {
-                <div class="extra-subtasks">
-                  @for (subtask of safeTask.subtasks.slice(3); track subtask; let i = $index) {
-                    <div
-                      class="subtask-item"
-                      (mouseenter)="hoveredSubtaskIndex = i + 3"
-                      (mouseleave)="hoveredSubtaskIndex = null"
-                    >
-                      <input
-                        type="checkbox"
-                        [checked]="subtask.completed"
-                        (change)="toggleSubtask(subtask)"
-                        class="subtask-checkbox"
-                      />
-                      <span class="subtask-title" [class.completed]="subtask.completed">
-                        {{ subtask.title }}
-                      </span>
-
-                      @if (hoveredSubtaskIndex === i + 3) {
-                        <div class="subtask-actions">
-                          <button class="delete-subtask" (click)="removeSubtask(i + 3)">
-                            <img src="assets/icon/task/delete-default.png" alt="delete" />
-                          </button>
-                        </div>
-                      }
-                    </div>
-                  }
-                </div>
-              }
-            </div>
-          } @else {
-            <div class="empty-state">No subtasks</div>
-          }
         </div>
 
         <div class="overlay-footer">
@@ -156,10 +100,13 @@
 
     @if (isEditMode && task) {
       <div class="task-edit-container">
-        <button class="close-btn" (click)="cancelEdit()">✕</button>
+        <div class="overlay-header">
+          <button class="close-btn" (click)="cancelEdit()">✕</button>
+          <h2 class="edit-title">Edit Task</h2>
+        </div>
 
-        <form #taskForm="ngForm" (ngSubmit)="onSave()" novalidate>
-          <div class="edit-content">
+        <div class="overlay-content">
+          <form #taskForm="ngForm" (ngSubmit)="onSave()" novalidate>
             <div class="form-group" [class.has-error]="title.invalid && title.touched">
               <label>Title <span class="required">*</span></label>
               <input
@@ -207,30 +154,56 @@
 
             <div class="form-group">
               <label>Priority</label>
-              <div class="priority-selector">
+              <div class="priority-buttons">
                 <button
                   type="button"
-                  class="priority-btn urgent"
+                  class="priority urgent"
                   [class.active]="editedTask.priority === 'urgent'"
                   (click)="setPriority('urgent')"
                 >
-                  Urgent <span class="icon">▲</span>
+                  <span>Urgent</span>
+                  <img
+                    [attr.src]="
+                      editedTask.priority === 'urgent'
+                        ? 'assets/imgs/add-task/urgent_white.png'
+                        : 'assets/imgs/add-task/urgent_default.png'
+                    "
+                    alt="Urgent"
+                  />
                 </button>
+
                 <button
                   type="button"
-                  class="priority-btn medium"
+                  class="priority medium"
                   [class.active]="editedTask.priority === 'medium'"
                   (click)="setPriority('medium')"
                 >
-                  Medium <span class="icon">=</span>
+                  <span>Medium</span>
+                  <img
+                    [attr.src]="
+                      editedTask.priority === 'medium'
+                        ? 'assets/imgs/add-task/medium_white.png'
+                        : 'assets/imgs/add-task/medium_default.png'
+                    "
+                    alt="Medium"
+                  />
                 </button>
+
                 <button
                   type="button"
-                  class="priority-btn low"
+                  class="priority low"
                   [class.active]="editedTask.priority === 'low'"
                   (click)="setPriority('low')"
                 >
-                  Low <span class="icon">▼</span>
+                  <span>Low</span>
+                  <img
+                    [attr.src]="
+                      editedTask.priority === 'low'
+                        ? 'assets/imgs/add-task/low_white.png'
+                        : 'assets/imgs/add-task/low_default.png'
+                    "
+                    alt="Low"
+                  />
                 </button>
               </div>
             </div>
@@ -238,12 +211,13 @@
             <div class="form-group">
               <label>Assigned to</label>
               <app-contact-selector
-                [selectedContactIds]="editedTask.assignedTo || []"
+                [selectedContactNames]="editedTask.assignedTo || []"
                 (selectedContactsChange)="onContactsChange($event)"
+                [showAsList]="false"
+                [showCheckboxes]="true"
               >
               </app-contact-selector>
             </div>
-
 
             <div class="subtasks-section">
               <span class="label">Subtasks</span>
@@ -269,7 +243,7 @@
 
               <div class="subtasks-list">
                 @if (editedTask.subtasks && editedTask.subtasks.length > 0) {
-                  @for (subtask of editedTask.subtasks.slice(0, 3); track subtask; let i = $index) {
+                  @for (subtask of editedTask.subtasks; track subtask; let i = $index) {
                     <div
                       class="subtask-item"
                       (mouseenter)="hoveredSubtaskIndex = i"
@@ -285,10 +259,7 @@
                           class="subtask-edit-input"
                         />
                       } @else {
- 
-                        <span class="subtask-title" [class.completed]="subtask.completed">
-                          <strong>•</strong> {{ subtask.title }}
-                        </span>
+                        <span class="subtask-title"> <strong>•</strong> {{ subtask.title }} </span>
 
                         @if (hoveredSubtaskIndex === i) {
                           <div class="subtask-actions">
@@ -316,91 +287,23 @@
                       }
                     </div>
                   }
-
-                  @if (editedTask.subtasks.length > 3) {
-                    <div class="more-subtasks">
-                      <button
-                        type="button"
-                        class="more-btn"
-                        (click)="showAllSubtasksEdit = !showAllSubtasksEdit"
-                      >
-                        <span class="plus-icon">{{ showAllSubtasksEdit ? '−' : '+' }}</span>
-                        <span>{{
-                          showAllSubtasksEdit
-                            ? 'Show less'
-                            : editedTask.subtasks.length - 3 + ' more'
-                        }}</span>
-                      </button>
-                    </div>
-                  }
-
-                  @if (showAllSubtasksEdit) {
-                    <div class="extra-subtasks">
-                      @for (
-                        subtask of editedTask.subtasks.slice(3);
-                        track subtask;
-                        let i = $index
-                      ) {
-                        <div
-                          class="subtask-item"
-                          (mouseenter)="hoveredSubtaskIndex = i + 3"
-                          (mouseleave)="hoveredSubtaskIndex = null"
-                        >
-                          @if (editingSubtaskIndex === i + 3) {
-                            <input
-                              type="text"
-                              [(ngModel)]="editingSubtaskTitle"
-                              (keyup.enter)="saveSubtaskEdit(i + 3)"
-                              (blur)="cancelSubtaskEdit()"
-                              class="subtask-edit-input"
-                            />
-                          } @else {
-                            <input
-                              type="checkbox"
-                              [checked]="subtask.completed"
-                              (change)="toggleSubtask(subtask)"
-                              class="subtask-checkbox"
-                            />
-                            <span class="subtask-title" [class.completed]="subtask.completed">
-                              {{ subtask.title }}
-                            </span>
-
-                            @if (hoveredSubtaskIndex === i + 3) {
-                              <div class="subtask-actions">
-                                <button
-                                  class="edit-subtask"
-                                  (click)="startSubtaskEdit(i + 3, subtask.title)"
-                                >
-                                  <span class="edit-icon">✏️</span>
-                                </button>
-                                <button class="delete-subtask" (click)="removeSubtask(i + 3)">
-                                  <span class="delete-icon">🗑️</span>
-                                </button>
-                              </div>
-                            }
-                          }
-                        </div>
-                      }
-                    </div>
-                  }
                 } @else {
                   <div class="empty-state">No subtasks</div>
                 }
               </div>
             </div>
-
-            <div class="edit-footer">
-              <button type="button" class="cancel-btn" (click)="cancelEdit()">Cancel</button>
-              <button type="submit" class="save-btn" [disabled]="taskForm.invalid || isSaving">
-                {{ isSaving ? 'Saving...' : 'Ok ✓' }}
-              </button>
-            </div>
-
-            @if (taskForm.invalid && taskForm.submitted) {
-              <div class="form-error">Please fill all required fields correctly</div>
-            }
-          </div>
-        </form>
+          </form>
+        </div>
+        <div class="overlay-footer">
+          <button
+            type="button"
+            class="save-btn"
+            (click)="taskForm.ngSubmit.emit()"
+            [disabled]="taskForm.invalid || isSaving"
+          >
+            {{ isSaving ? 'Saving...' : 'Ok ✓' }}
+          </button>
+        </div>
       </div>
     }
   </div>

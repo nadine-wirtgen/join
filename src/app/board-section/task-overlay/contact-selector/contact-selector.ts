@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./contact-selector.scss'],
 })
 export class ContactSelector implements OnInit, OnDestroy {
-  @Input() selectedContactIds: string[] = [];
+  @Input() selectedContactNames: string[] = [];
   @Output() selectedContactsChange = new EventEmitter<Contacts[]>();
 
   allContacts: Contacts[] = [];
@@ -41,10 +41,8 @@ export class ContactSelector implements OnInit, OnDestroy {
   }
 
   get filteredContacts() {
-    return this.allContacts.filter(
-      (contact) =>
-        contact.name.toLowerCase().includes(this.searchTerm.toLowerCase()) &&
-        !this.selectedContactIds.includes(contact.id || ''),
+    return this.allContacts.filter((contact) =>
+      contact.name.toLowerCase().includes(this.searchTerm.toLowerCase()),
     );
   }
 
@@ -65,28 +63,39 @@ export class ContactSelector implements OnInit, OnDestroy {
 
   private updateSelectedContacts() {
     this.selectedContacts = this.allContacts.filter((contact) =>
-      this.selectedContactIds.includes(contact.id || ''),
+      this.selectedContactNames.includes(contact.name),
     );
   }
 
-  addContact(contact: Contacts) {
-    if (contact.id && !this.selectedContactIds.includes(contact.id)) {
-      const updatedIds = [...this.selectedContactIds, contact.id];
-      this.selectedContactIds = updatedIds;
-      this.updateSelectedContacts();
-      this.selectedContactsChange.emit(this.selectedContacts);
+  toggleContact(contact: Contacts) {
+    const index = this.selectedContacts.findIndex((c) => c.id === contact.id);
+
+    if (index === -1) {
+      this.selectedContacts.push(contact);
+      if (contact.id) {
+        this.selectedContactNames = [...this.selectedContactNames, contact.id];
+      }
+    } else {
+      this.selectedContacts.splice(index, 1);
+      if (contact.id) {
+        this.selectedContactNames = this.selectedContactNames.filter((id) => id !== contact.id);
+      }
     }
-    this.showDropdown = false;
+
+    this.selectedContactsChange.emit(this.selectedContacts);
     this.searchTerm = '';
   }
 
+  addContact(contact: Contacts) {
+    this.toggleContact(contact);
+  }
+
   removeContact(contact: Contacts) {
-    if (contact.id) {
-      const updatedIds = this.selectedContactIds.filter((id) => id !== contact.id);
-      this.selectedContactIds = updatedIds;
+    if (contact.name) {
+      this.selectedContactNames = this.selectedContactNames.filter((name) => name !== contact.name);
       this.updateSelectedContacts();
       this.selectedContactsChange.emit(this.selectedContacts);
-      
+
       if (this.selectedContacts.length <= 3) {
         this.showAllContacts = false;
       }
@@ -115,5 +124,12 @@ export class ContactSelector implements OnInit, OnDestroy {
   getDisplayName(name: string): string {
     if (!name) return '';
     return name.length >= 20 ? name.slice(0, 15) + '…' : name;
+  }
+
+  @Input() showAsList: boolean = true;
+  @Input() showCheckboxes: boolean = false;
+
+  isContactSelected(contact: any): boolean {
+    return this.selectedContacts.some((c) => c.name === contact.name);
   }
 }

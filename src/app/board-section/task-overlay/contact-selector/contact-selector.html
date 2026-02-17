@@ -14,17 +14,23 @@
 
     @if (showDropdown) {
       <div class="contacts-dropdown">
-
         <div class="contacts-list">
           @if (filteredContacts.length > 0) {
             @for (contact of filteredContacts; track contact.id) {
-              <div class="contact-item" (click)="addContact(contact)">
+              <div class="contact-item">
                 <div class="avatar" [style.backgroundColor]="getContactColor(contact)">
                   <p>{{ getInitials(contact.name) }}</p>
                 </div>
                 <div class="contact-info">
                   <span class="contact-name">{{ getDisplayName(contact.name) }}</span>
                 </div>
+                <input
+                  type="checkbox"
+                  class="contact-checkbox"
+                  [checked]="isContactSelected(contact)"
+                  (change)="toggleContact(contact)"
+                  (click)="$event.stopPropagation()"
+                />
               </div>
             }
           } @else {
