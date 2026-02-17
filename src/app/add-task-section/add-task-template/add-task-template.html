@@ -224,7 +224,23 @@
 		<!-- ACTION BUTTONS -->
 		<div class="action-buttons">
 			<button type="button" class="clear-btn" (click)="clearForm()">Clear ✕</button>
-			<button type="button" class="create-btn" (click)="createTask()">Create Task ✓</button>
+			@if (isFormValid) {
+				<button
+					type="button"
+					class="create-btn"
+					(click)="createTask()"
+				>
+					Create Task ✓
+				</button>
+			} @else {
+				<button
+					type="button"
+					class="create-btn"
+					disabled
+				>
+					Create Task ✓
+				</button>
+			}
 		</div>
 	</div>  
 </div>
