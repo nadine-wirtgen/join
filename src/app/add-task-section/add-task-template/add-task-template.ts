@@ -1,4 +1,4 @@
-import { Component, HostListener, Input } from '@angular/core';
+import { Component, HostListener, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TaskService } from '../../firebase-service/task.service';
@@ -15,7 +15,6 @@ import { Task, Subtask } from '../../interfaces/task';
 })
 export class AddTaskTemplate {
   @Input() column: Task['status'] = 'todo';
-  title = '';
   isCategoryDropdownOpen: boolean = false;
 
   toggleCategoryDropdown(event?: Event) {
