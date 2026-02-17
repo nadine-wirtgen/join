@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TaskService } from '../../firebase-service/task.service';
@@ -14,6 +14,8 @@ import { Task, Subtask } from '../../interfaces/task';
   styleUrl: './add-task-template.scss',
 })
 export class AddTaskTemplate {
+  @Input() column: Task['status'] = 'todo';
+  title = '';
   isCategoryDropdownOpen: boolean = false;
 
   toggleCategoryDropdown(event?: Event) {
@@ -222,7 +224,14 @@ export class AddTaskTemplate {
       return;
     }
 
-    this.dueDateInvalid = this.parseDueDate(this.dueDate) === null;
+    const parsed = this.parseDueDate(this.dueDate);
+    if (!parsed) {
+      this.dueDateInvalid = true;
+      return;
+    }
+
+    const todayIso = new Date().toISOString().split('T')[0];
+    this.dueDateInvalid = parsed < todayIso;
   }
 
   validateTitle() {
@@ -233,6 +242,13 @@ export class AddTaskTemplate {
 
   validateCategory() {
     this.categoryInvalid = !this.category || !this.category.trim();
+  }
+
+  get isFormValid(): boolean {
+    if (!this.title || !this.title.trim()) return false;
+    if (!this.dueDate || this.parseDueDate(this.dueDate) === null) return false;
+    if (!this.category || !this.category.trim()) return false;
+    return true;
   }
 
   async createTask() {
@@ -254,7 +270,7 @@ export class AddTaskTemplate {
       assignedTo: this.assignedToContacts.map(c => c.name),
       category: this.category,
       subtasks: this.subtasks,
-      status: 'todo',
+      status: this.column,
     };
 
     try {
