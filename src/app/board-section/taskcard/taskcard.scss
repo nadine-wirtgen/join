@@ -7,27 +7,35 @@
   box-shadow:
     0px 4px 12px rgba(0, 0, 0, 0.08),
     0px 1px 3px rgba(0, 0, 0, 0.12);
-  .typUser {
-    height: 26px;
-    padding: 4px 16px;
-    border-radius: 10px;
-    width: 120px;
+  .typAndMoveToContainer {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #0038ff;
-    color: #ffffff;
-  }
-  .typTechnical {
-    height: 26px;
-    padding: 4px 16px;
-    border-radius: 10px;
-    width: 150px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #1fd7c1;
-    color: #ffffff;
+    justify-content: space-between;
+    position: relative;
+    .typUser {
+      height: 26px;
+      padding: 4px 16px;
+      border-radius: 10px;
+      width: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #0038ff;
+      color: #ffffff;
+    }
+    .typTechnical {
+      height: 26px;
+      padding: 4px 16px;
+      border-radius: 10px;
+      width: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #1fd7c1;
+      color: #ffffff;
+    }
+    .MoveToBurgermenu {
+      display: none;
+    }
   }
   .title {
     font-weight: 700;
@@ -93,5 +101,50 @@
   .taskCard {
     height: 100%;
     width: 240px;
+    .typAndMoveToContainer {
+      position: relative;
+      .MoveToBurgermenu {
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: block;
+        width: 20px;
+      }
+      .menu {
+        position: absolute;
+        right: -72px;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 12px;
+        background-color: #2a3647;
+        color: #ffffff;
+        padding: 16px 16px;
+        border-radius: 0 20px 20px 20px;
+        .menuContant {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          padding-top: 4px;
+          gap: 4px;
+          .moveToBox {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            width: 100%;
+            font-size: 14px;
+            padding: 4px 5px 4px 2px;
+            img {
+              height: 12px;
+            }
+            &:hover {
+              background-color: #091931;
+              border-radius: 8px;
+            }
+          }
+        }
+      }
+    }
   }
 }
