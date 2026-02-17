@@ -94,9 +94,10 @@ export class TaskOverlay implements OnInit, OnChanges {
 
   loadAssignedContacts() {
     if (this.task?.assignedTo?.length && this.contactService) {
-      this.assignedContacts = this.contactService.contactList.filter((contact) =>
-        this.task?.assignedTo?.includes(contact.id || ''),
-      );
+      this.assignedContacts = this.contactService.contactList.filter((contact) => {
+        if (!contact.name) return false;
+        return this.task?.assignedTo?.includes(contact.name) || false;
+      });
     } else {
       this.assignedContacts = [];
     }
@@ -104,7 +105,7 @@ export class TaskOverlay implements OnInit, OnChanges {
 
   onContactsChange(contacts: Contacts[]) {
     this.editedTask.assignedTo = contacts
-      .map((c) => c.id)
+      .map((c) => c.name)
       .filter((id): id is string => id !== undefined);
   }
 
@@ -254,4 +255,5 @@ export class TaskOverlay implements OnInit, OnChanges {
   onClose() {
     this.close.emit();
   }
+
 }

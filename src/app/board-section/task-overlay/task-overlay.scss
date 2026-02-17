@@ -11,7 +11,7 @@
 }
 
 .task-overlay {
-  position: relative; 
+  position: relative;
   width: 525px;
   height: 931px;
   max-width: 95vw;
@@ -26,7 +26,7 @@
   gap: 24px;
   animation: slideIn 0.3s ease;
   overflow-y: auto;
-  margin: 0; 
+  margin: 0;
 }
 .close-btn {
   position: absolute;
@@ -118,24 +118,24 @@
 }
 
 .priority-badge {
-  padding: 4px 18px;
+  padding: 4px 0;
   border-radius: 10px;
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  color: white;
+  color: black;
   font-size: 20px;
   font-weight: 400;
 
-  &.urgent {
-    background: #ff3d00;
-  }
-  &.medium {
-    background: #ffa800;
-  }
-  &.low {
-    background: #7ae229;
-  }
+  // &.urgent {
+  //     background: #c0bfbf;
+  //   }
+  //   &.medium {
+  //     background: #ffa800;
+  //   }
+  //   &.low {
+  //     background: #7ae229;
+  //   }
 
   .priority-icon {
     font-size: 20px;
@@ -204,15 +204,6 @@
     color: #2a3647;
     font-size: 20px;
     font-weight: 400;
-  }
-
-  .subtasks-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    max-height: 200px;
-    overflow-y: auto;
-    padding-right: 8px;
   }
 
   .subtask-item {
@@ -359,58 +350,72 @@ textarea {
   resize: vertical;
 }
 
-.priority-selector {
+/* ================== Priority Buttons ================== */
+.priority-buttons {
   display: flex;
-  gap: 16px;
-}
+  gap: 10px;
 
-.priority-btn {
-  flex: 1;
-  height: 56px;
-  border-radius: 10px;
-  border: 1px solid transparent;
-  background: white;
-  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
-  font-size: 20px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: all 0.1s ease;
-
-  &:hover {
-    scale: 1.02;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  }
-
-  &.urgent {
-    color: #ff3d00;
-    &.active {
-      background: #ff3d00;
-      color: white;
-    }
-  }
-
-  &.medium {
-    color: #ffa800;
-    &.active {
-      background: #ffa800;
-      color: white;
-    }
-  }
-
-  &.low {
-    color: #7ae229;
-    &.active {
-      background: #7ae229;
-      color: white;
-    }
-  }
-
-  .icon {
+  .priority {
+    width: 136px;
+    height: 56px;
+    padding: 0 12px;
+    border: 1px solid #d1d1d1;
+    border-radius: 10px;
+    background-color: #ffffff;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
     font-size: 20px;
-    font-weight: 700;
+    line-height: 120%;
+    color: #2a3647;
+    transition: 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.03);
+
+    img {
+      width: 20px;
+      height: auto;
+    }
+
+    &.urgent {
+      &:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+      &.active {
+        background-color: #ff3d00;
+        border-color: #ff3d00;
+        color: #ffffff;
+      }
+    }
+
+    &.medium {
+      &:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+      &.active {
+        background-color: #ffa800;
+        border-color: #ffa800;
+        color: #ffffff;
+      }
+    }
+
+    &.low {
+      &:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+      &.active {
+        background-color: #7ae229;
+        border-color: #7ae229;
+        color: #ffffff;
+      }
+    }
+
+    &.active {
+      box-shadow: 0 0 0 2px rgba(42, 54, 71, 0.15);
+    }
   }
 }
 
@@ -657,77 +662,125 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-height: 300px;
+
+  // Kufizon ne 3 subtasks njelloj si assigned-list
+  max-height: 130px;
   overflow-y: auto;
-  padding: 4px 4px 4px 0;
-}
+  padding-right: 8px;
 
-.subtask-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 12px;
-  background: #f6f7f8;
-  border-radius: 8px;
-  transition: all 125ms ease;
+  .subtask-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 40px;
+    padding: 0 8px;
+    border-radius: 8px;
 
-  &:hover {
-    background: #e7e7e7;
+    &:hover {
+      background: #f6f7f8;
+    }
+
+    .subtask-checkbox {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: #2a3647;
+      flex-shrink: 0;
+    }
+
+    .subtask-title {
+      font-size: 16px;
+      color: #000000;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      &.completed {
+        text-decoration: line-through;
+        color: #a8a8a8;
+      }
+    }
+
+    .subtask-actions {
+      display: flex;
+      gap: 4px;
+      flex-shrink: 0;
+
+      button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 4px;
+
+        &:hover {
+          background: rgba(0, 0, 0, 0.05);
+        }
+
+        img {
+          width: 16px;
+          height: 16px;
+          opacity: 0.6;
+
+          &:hover {
+            opacity: 1;
+          }
+        }
+      }
+    }
   }
 
-  .subtask-checkbox {
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
-    accent-color: #2a3647;
-    margin: 0;
+  // Scrollbar styling - i njejti si assigned-list
+  &::-webkit-scrollbar {
+    width: 4px;
   }
-
-  .subtask-title {
-    font-size: 16px;
-    color: #000000;
-    flex: 1;
-
-    &.completed {
-      text-decoration: line-through;
-      color: #a8a8a8;
+  &::-webkit-scrollbar-track {
+    background: #f6f7f8;
+    border-radius: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #a8a8a8;
+    border-radius: 10px;
+    &:hover {
+      background: #2a3647;
     }
   }
 }
 
+// Pjesa "more" - e lëmë ashtu siç është
 .more-subtasks {
   display: flex;
   justify-content: center;
   margin-top: 8px;
-}
 
-.more-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background: white;
-  border: 1px solid #2a3647;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all 125ms ease;
-  color: #2a3647;
-  font-size: 14px;
-
-  &:hover {
-    background: #2a3647;
-    color: white;
-
-    .plus-icon {
-      color: white;
-    }
-  }
-
-  .plus-icon {
-    font-size: 18px;
-    font-weight: bold;
+  .more-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: white;
+    border: 1px solid #2a3647;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 13px;
     color: #2a3647;
     transition: all 125ms ease;
+
+    &:hover {
+      background: #2a3647;
+      color: white;
+
+      .plus-icon {
+        color: white;
+      }
+    }
+
+    .plus-icon {
+      font-size: 16px;
+      font-weight: bold;
+      color: #2a3647;
+    }
   }
 }
 
@@ -738,7 +791,6 @@ textarea {
   margin-top: 8px;
   padding-top: 8px;
   border-top: 1px dashed #d1d1d1;
-  animation: slideDown 200ms ease;
 }
 
 @keyframes slideDown {
@@ -813,7 +865,7 @@ textarea {
     padding: 4px;
 
     &.reverse-order {
-      flex-direction: row-reverse; 
+      flex-direction: row-reverse;
       justify-content: flex-end;
     }
   }
@@ -984,7 +1036,6 @@ textarea {
   }
 }
 
-
 @media (max-width: 768px) {
   .task-overlay {
     width: 90vw;
@@ -1062,4 +1113,100 @@ textarea {
       font-size: 16px;
     }
   }
+}
+
+.assigned-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+
+  // Kufizon ne 3 emra (36px avatar + 8px gap = ~130px per 3)
+  max-height: 130px;
+  overflow-y: auto;
+  padding-right: 8px;
+
+  .assigned-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 40px; // Lartesi fikse per cdo rresht
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 14px;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+
+    .contact-name {
+      font-size: 16px;
+      color: #000000;
+      white-space: nowrap; // Nuk e lejon emrin te shkojne ne rresht tjeter
+      overflow: hidden; // Fsheh pjesen qe nuk futet
+      text-overflow: ellipsis; // Shton ... ne fund
+    }
+  }
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #f6f7f8;
+    border-radius: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #a8a8a8;
+    border-radius: 10px;
+    &:hover {
+      background: #2a3647;
+    }
+  }
+}
+
+.task-view-container,
+.task-edit-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;  // Fsheh scroll-in e jashtëm
+}
+
+.overlay-header {
+  flex-shrink: 0;    // Nuk tkurret
+  padding-bottom: 16px;
+}
+
+.overlay-content {
+  flex: 1;           // Merr gjithë hapësirën e mbetur
+  overflow-y: auto;  // Scroll vetëm këtu
+  padding-right: 8px;
+  
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #f6f7f8;
+    border-radius: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #a8a8a8;
+    border-radius: 10px;
+    &:hover {
+      background: #2a3647;
+    }
+  }
+}
+
+.overlay-footer {
+  flex-shrink: 0;    // Nuk tkurret
+  padding-top: 16px;
+  border-top: 1px solid #d1d1d1;
 }
