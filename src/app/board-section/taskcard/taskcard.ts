@@ -1,4 +1,12 @@
-import { Component, inject, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  inject,
+  Input,
+  Output,
+  EventEmitter,
+  HostListener,
+  ElementRef,
+} from '@angular/core';
 import { Task } from '../../interfaces/task';
 import { ContactService } from '../../firebase-service/contact-service';
 import { CommonModule, SlicePipe } from '@angular/common';
@@ -14,6 +22,8 @@ export class Taskcard {
   @Input() task!: Task;
   @Output() openTask = new EventEmitter<Task>();
   contactService = inject(ContactService);
+  private elementRef = inject(ElementRef);
+  menuOpen = false;
 
   onCardClick() {
     this.openTask.emit(this.task);
@@ -44,5 +54,16 @@ export class Taskcard {
 
   getContactByName(name: string) {
     return this.contactService.contactList.find((c) => c.name === name);
+  }
+
+  toggleMenu() {
+    this.menuOpen = !this.menuOpen;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      this.menuOpen = false;
+    }
   }
 }
