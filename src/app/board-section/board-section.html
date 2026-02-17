@@ -2,7 +2,7 @@
   <div class="headlineContainer">
     <div class="headline">
       <h1>Board</h1>
-      <div class="addBtnMobil" (click)="openAddTaskDialog(); addTaskToColumn('todo')">
+      <div class="addBtnMobil" (click)="openAddTaskDialog('todo')">
         <img src="assets/icon/task/board/add.png" />
       </div>
     </div>
@@ -28,7 +28,7 @@
           />
         </div>
       </div>
-      <div class="addBtn" (click)="openAddTaskDialog(); addTaskToColumn('todo')">
+      <div class="addBtn" (click)="openAddTaskDialog('todo')">
         <p>Add Task</p>
         <img src="assets/icon/task/board/add.png" />
       </div>
@@ -47,7 +47,7 @@
               ? 'assets/icon/task/board/add-task-hover.png'
               : 'assets/icon/task/board/add-task-default.png'
           "
-          (click)="openAddTaskDialog(); addTaskToColumn('todo')"
+          (click)="openAddTaskDialog('todo')"
         />
       </div>
       <div
@@ -87,7 +87,7 @@
               ? 'assets/icon/task/board/add-task-hover.png'
               : 'assets/icon/task/board/add-task-default.png'
           "
-          (click)="openAddTaskDialog(); addTaskToColumn('inProgress')"
+          (click)="openAddTaskDialog('inProgress')"
         />
       </div>
       <div
@@ -127,7 +127,7 @@
               ? 'assets/icon/task/board/add-task-hover.png'
               : 'assets/icon/task/board/add-task-default.png'
           "
-          (click)="openAddTaskDialog(); addTaskToColumn('awaitFeedback')"
+          (click)="openAddTaskDialog('awaitFeedback')"
         />
       </div>
       <div
@@ -199,5 +199,8 @@
 }
 
 @if (isAddTaskDialogOpen) {
-  <app-add-task-dialog (close)="closeAddTaskDialog()"></app-add-task-dialog>
+  <app-add-task-dialog
+    [column]="addTaskDialogColumn"
+    (close)="closeAddTaskDialog()"
+  ></app-add-task-dialog>
 }

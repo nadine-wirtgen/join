@@ -97,6 +97,7 @@ section {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    min-height: 400px;
     .listHeadline {
       display: flex;
       justify-content: space-between;
@@ -120,6 +121,7 @@ section {
       overflow-y: scroll;
       scrollbar-width: none;
       width: 250px;
+      height: 100%;
       .task-card {
         cursor: default;
         background-color: #ffffff;
@@ -180,6 +182,7 @@ section {
 
 @media (max-width: 1300px) {
   section {
+    height: auto;
     .headlineContainer {
       display: flex;
       flex-direction: column;
@@ -222,8 +225,18 @@ section {
   }
   .boardContainer {
     flex-direction: column;
+    gap: 24px;
     .listContant {
       gap: 0;
+      min-height: 40px;
+      height: 100%;
+      .listHeadline {
+        p {
+          font-size: 26px;
+          font-weight: 700;
+          color: #2a3647;
+        }
+      }
       .listContainer {
         padding-top: 24px;
         padding-bottom: 24px;
@@ -233,6 +246,9 @@ section {
         overflow-x: auto;
         scrollbar-width: auto;
         width: 100%;
+        .task-card {
+          height: auto;
+        }
         .placeholder {
           width: 100%;
         }
