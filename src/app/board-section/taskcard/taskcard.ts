@@ -10,6 +10,7 @@ import {
 import { Task } from '../../interfaces/task';
 import { ContactService } from '../../firebase-service/contact-service';
 import { CommonModule, SlicePipe } from '@angular/common';
+import { TaskService } from '../../firebase-service/task.service';
 
 @Component({
   selector: 'app-taskcard',
@@ -22,8 +23,10 @@ export class Taskcard {
   @Input() task!: Task;
   @Output() openTask = new EventEmitter<Task>();
   contactService = inject(ContactService);
+  private taskService = inject(TaskService);
   private elementRef = inject(ElementRef);
   menuOpen = false;
+  statusOrder: Task['status'][] = ['todo', 'in-progress', 'await-feedback', 'done'];
 
   onCardClick() {
     this.openTask.emit(this.task);
@@ -56,6 +59,16 @@ export class Taskcard {
     return this.contactService.contactList.find((c) => c.name === name);
   }
 
+  getDisplayTitle(title?: string): string {
+    return title && title.length >= 30 ? title.slice(0, 30) + '…' : (title ?? '');
+  }
+
+  getDisplayDescription(description?: string): string {
+    return description && description.length >= 100
+      ? description.slice(0, 100) + '…'
+      : (description ?? '');
+  }
+
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
   }
@@ -64,6 +77,22 @@ export class Taskcard {
   onDocumentClick(event: MouseEvent) {
     if (!this.elementRef.nativeElement.contains(event.target)) {
       this.menuOpen = false;
+    }
+  }
+
+  async moveStatus(direction: 'up' | 'down') {
+    if (!this.task?.id) return;
+    const currentIndex = this.statusOrder.indexOf(this.task.status);
+    let newIndex = currentIndex;
+    if (direction === 'up' && currentIndex > 0) {
+      newIndex = currentIndex - 1;
+    }
+    if (direction === 'down' && currentIndex < this.statusOrder.length - 1) {
+      newIndex = currentIndex + 1;
+    }
+    const newStatus = this.statusOrder[newIndex];
+    if (newStatus !== this.task.status) {
+      await this.taskService.updateTaskStatus(this.task.id, newStatus);
     }
   }
 }
