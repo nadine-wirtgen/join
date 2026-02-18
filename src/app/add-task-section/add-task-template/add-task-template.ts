@@ -227,7 +227,7 @@ export class AddTaskTemplate {
     const task: Omit<Task, 'createdAt'> = {
       title: this.title,
       description: this.description,
-      dueDate: parsedDueDate,
+      dueDate: this.dueDate,
       priority: this.priority,
       assignedTo: this.assignedToContacts.map((c) => c.name),
       category: this.category,
