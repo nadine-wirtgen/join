@@ -129,6 +129,7 @@ export class BoardSection implements OnInit {
   }
 
   drop(event: CdkDragDrop<(Task & { id: string })[]>) {
+    const current = this.tasks();
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
@@ -138,14 +139,16 @@ export class BoardSection implements OnInit {
         event.previousIndex,
         event.currentIndex,
       );
-
       const movedTask = event.container.data[event.currentIndex];
-
-      this.taskService.updateTaskStatus(
-        movedTask.id,
-        this.columnToStatus[event.container.id as ColumnKey],
-      );
+      movedTask.status = this.columnToStatus[event.container.id as ColumnKey];
     }
+    [...event.previousContainer.data, ...event.container.data].forEach((task, index) => {
+      task.position = index;
+    });
+    this.tasks.set({ ...current });
+    [...event.previousContainer.data, ...event.container.data].forEach((task) => {
+      this.taskService.updateTask(task.id, { position: task.position, status: task.status });
+    });
   }
 
   onDragMove(event: CdkDragMove) {
@@ -159,8 +162,6 @@ export class BoardSection implements OnInit {
     const rotationEl = document.querySelector('.cdk-drag-preview .rotation-wrapper') as HTMLElement;
     if (rotationEl) {
       rotationEl.style.transform = `rotate(${rotation}deg)`;
-      // rotationEl.style.left = `${event.pointerPosition.x}px`;
-      // rotationEl.style.top = `${event.pointerPosition.y}px`;
     }
     this.lastPointerX = currentX;
   }
@@ -170,7 +171,6 @@ export class BoardSection implements OnInit {
   }
 
   addTaskToColumn(column: ColumnKey) {
-    console.log('Add Task Button clicked for column:', column);
     this.toggleAddTask(column);
   }
 
@@ -183,6 +183,7 @@ export class BoardSection implements OnInit {
       category: formData.category || 'User Story',
       subtasks: formData.subtasks || [],
       status: this.columnToStatus[column],
+      position: this.tasks()[column].length,
     };
     await this.taskService.createTask(newTask);
     this.showAddTask[column] = false;
@@ -218,6 +219,9 @@ export class BoardSection implements OnInit {
         default:
           grouped.todo.push(t);
       }
+    });
+    Object.keys(grouped).forEach((key) => {
+      grouped[key as ColumnKey].sort((a, b) => a.position - b.position);
     });
     return grouped;
   }
