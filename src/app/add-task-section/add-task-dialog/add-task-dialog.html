@@ -2,6 +2,6 @@
 	<div class="add-task-dialog-backdrop" (click)="onClose()"></div>
 	<div class="add-task-dialog-container" (click)="$event.stopPropagation()">
 		<button type="button" class="dialog-close-btn" (click)="onClose()">✕</button>
-		<app-add-task-template [column]="column"></app-add-task-template>
+		<app-add-task-template class="dialog-mode" [column]="column" [isDialogMode]="true"></app-add-task-template>
 	</div>
 </div>
