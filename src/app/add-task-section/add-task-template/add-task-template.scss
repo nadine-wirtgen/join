@@ -1,72 +1,4 @@
-/* Custom Category Dropdown */
-.category-dropdown-custom {
-	position: relative;
-	margin-top: 6px;
-	display: flex;
-	align-items: center;
-	min-height: 40px;
-	border: 1px solid #D1D1D1;
-	border-radius: 8px;
-	background: #fff;
-	cursor: pointer;
-	padding: 8px 12px;
-	.category-selected {
-		flex: 1;
-		font-family: 'Inter', sans-serif;
-		font-weight: 400;
-		font-size: 20px;
-		line-height: 120%;
-		letter-spacing: 0;
-		color: #2A3647;
-	}
-	.dropdown-arrow {
-		width: 24px;
-		height: 24px;
-		margin-left: auto;
-		cursor: pointer;
-	}
-	.category-options {
-		position: absolute;
-		left: 0;
-		top: calc(100% + 4px);
-		width: 100%;
-		background: #fff;
-		border: 1px solid #D1D1D1;
-		border-radius: 8px;
-		box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-		z-index: 10;
-		.category-option {
-			padding: 10px 12px;
-			font-size: 16px;
-			color: #2A3647;
-			font-family: 'Inter', sans-serif;
-			cursor: pointer;
-			&:hover {
-				background: #f0f0f0;
-			}
-		}
-	}
-}
 
-/* Category Dropdown */
-.category-dropdown {
-	margin-top: 6px;
-	select {
-		width: 100%;
-		padding: 8px 12px;
-		border: 1px solid #D1D1D1;
-		border-radius: 8px;
-		font-size: 16px;
-		font-family: 'Inter', sans-serif;
-		background: #fff;
-		color: #2A3647;
-		outline: none;
-		transition: border-color 0.2s;
-	}
-	select:focus {
-		border-color: #007bff;
-	}
-}
 
 /* ================== Grundlayout ================== */
 .add-task-container {
@@ -88,12 +20,16 @@
 	width: 100%;
 	max-width: 945px;
 	flex: 1 1 auto;
-	padding-bottom: 80px;
+	padding-bottom: 100px;
 	@media (max-width: 1240px) {
 		flex-direction: column;
 	}
 }
-
+/* Scrollable add-task-section only in dialog mode */
+.dialog-mode .add-task-section {
+	overflow-y: auto;
+	max-height: 100%;
+}
 .add-task-heading {
 	font-family: 'Inter', sans-serif;
 	font-weight: 700 bold;
@@ -110,6 +46,7 @@
 	margin-left: 2px;
 }
 
+
 .inline-required-hint {
 	font-family: 'Inter', sans-serif;
 	font-weight: 400;
@@ -119,7 +56,13 @@
 	color: #2A3647;
 	margin-top: 16px;
 	margin-bottom: 0;
-	display: none;
+	display: block;
+}
+
+@media (max-width: 900px) {
+	.inline-required-hint {
+		display: none;
+	}
 }
 
 .add-task-left,
@@ -130,6 +73,16 @@
 	flex-direction: column;
 }
 
+/* Inline required hint right: hidden by default, visible at <=1000px */
+.inline-required-hint-right {
+	display: none;
+}
+
+@media (max-width: 900px) {
+	.inline-required-hint-right {
+		display: block;
+	}
+}
 .text-button-div {
 	max-width: 945px;
 	margin-left: auto;
@@ -199,9 +152,7 @@
 }
 
 #dueDate {
-	background: url('/assets/imgs/add-task/event.png') no-repeat right 12px center;
 	background-size: 24px 24px;
-	padding-right: 48px; /* Platz für das Icon lassen */
 }
 
 .error-message {
@@ -215,6 +166,7 @@
 }
 
 /* ================== Priority Buttons ================== */
+
 .priority-buttons {
 	display: flex;
 	gap: 10px;
@@ -442,6 +394,57 @@
 		}
 	}
 }
+
+/* Custom Category Dropdown */
+.category-dropdown-custom {
+	position: relative;
+	margin-top: 6px;
+	display: flex;
+	align-items: center;
+	min-height: 40px;
+	border: 1px solid #D1D1D1;
+	border-radius: 8px;
+	background: #fff;
+	cursor: pointer;
+	padding: 8px 12px;
+	.category-selected {
+		flex: 1;
+		font-family: 'Inter', sans-serif;
+		font-weight: 400;
+		font-size: 20px;
+		line-height: 120%;
+		letter-spacing: 0;
+		color: #2A3647;
+	}
+	.dropdown-arrow {
+		width: 24px;
+		height: 24px;
+		margin-left: auto;
+		cursor: pointer;
+	}
+	.category-options {
+		position: absolute;
+		left: 0;
+		top: calc(100% + 4px);
+		width: 100%;
+		background: #fff;
+		border: 1px solid #D1D1D1;
+		border-radius: 8px;
+		box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+		z-index: 10;
+		.category-option {
+			padding: 10px 12px;
+			font-size: 16px;
+			color: #2A3647;
+			font-family: 'Inter', sans-serif;
+			cursor: pointer;
+			&:hover {
+				background: #f0f0f0;
+			}
+		}
+	}
+}
+
 
 /* ================== Subtask Eingabe & Liste ================== */
 .subtask-input {
@@ -692,7 +695,7 @@
 	.devide-section {
 		display: none;
 	}
-
+/*
 	.text-button-div {
 		align-items: center;
 		justify-content: center;
@@ -704,7 +707,7 @@
 	.inline-required-hint {
 		display: block;
 		margin-bottom: 10px;
-	}
+	}*/
 }
 
 @media (max-width: 1000px) {
