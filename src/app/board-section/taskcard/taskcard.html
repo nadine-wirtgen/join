@@ -6,33 +6,30 @@
       <div class="typTechnical">Technical Task</div>
     }
 
-    <div>
-      <img
-        src="assets/icon/task/board/taskcard-Burgermenu.png"
-        class="MoveToBurgermenu"
-        (click)="toggleMenu(); $event.stopPropagation()"
-        alt="burgermenu"
-        *ngIf="!menuOpen"
-      />
-
-      <div class="menu" *ngIf="menuOpen" (click)="$event.stopPropagation()">
-        <p>Move to</p>
-        <div class="menuContant">
-          <div class="moveToBox">
-            <img src="assets/icon/task/board/arrow_upward.png" />
-            <p>To-Do</p>
-          </div>
-          <div class="moveToBox">
-            <img src="assets/icon/task/board/arrow_upward.png" />
-            <p>Review</p>
-          </div>
+    <img
+      src="assets/icon/task/board/taskcard-Burgermenu.png"
+      class="MoveToBurgermenu"
+      (click)="toggleMenu(); $event.stopPropagation()"
+      alt="burgermenu"
+      *ngIf="!menuOpen"
+    />
+    <div class="menu" *ngIf="menuOpen" (click)="$event.stopPropagation()">
+      <p>Move to</p>
+      <div class="menuContant">
+        <div class="moveToBox" (click)="moveStatus('up')" *ngIf="task.status !== 'todo'">
+          <img src="assets/icon/task/board/arrow_upward.png" />
+          <p>To-do</p>
+        </div>
+        <div class="moveToBox" (click)="moveStatus('down')" *ngIf="task.status !== 'done'">
+          <img src="assets/icon/task/board/arrow_downward.png" />
+          <p>Done</p>
         </div>
       </div>
     </div>
   </div>
   <div>
-    <p class="title">{{ task.title }}</p>
-    <p class="description">{{ task.description }}</p>
+    <p class="title">{{ getDisplayTitle(task.title) }}</p>
+    <p class="description">{{ getDisplayDescription(task.description) }}</p>
   </div>
   @if (task.subtasks.length) {
     <div class="subtaskContainer">

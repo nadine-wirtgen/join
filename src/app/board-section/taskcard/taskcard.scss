@@ -40,10 +40,12 @@
   .title {
     font-weight: 700;
     color: #2a3647;
+    word-wrap: break-word;
   }
   .description {
     padding-top: 8px;
     color: #a8a8a8;
+    word-wrap: break-word;
   }
   .subtaskContainer {
     display: flex;
