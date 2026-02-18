@@ -8,7 +8,7 @@ import {
   deleteDoc,
   collectionData,
   Timestamp,
-  DocumentData
+  DocumentData,
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -22,10 +22,9 @@ export type GroupedTasks = {
 };
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TaskService {
-
   constructor(private firestore: Firestore) {}
 
   // 🔹 Getter für Firestore Collection (verhindert TS2729 Fehler)
@@ -35,26 +34,28 @@ export class TaskService {
 
   // 🔹 Alle Tasks als Realtime Observable
   getTasks(): Observable<(Task & { id: string })[]> {
-    return collectionData(this.tasksCollection, { idField: 'id' }) as Observable<(Task & { id: string })[]>;
+    return collectionData(this.tasksCollection, { idField: 'id' }) as Observable<
+      (Task & { id: string })[]
+    >;
   }
 
   // 🔹 Tasks direkt nach Status gruppieren (ideal für Board + DragDrop)
   getTasksGroupedByStatus(): Observable<GroupedTasks> {
     return this.getTasks().pipe(
-      map(tasks => ({
-        todo: tasks.filter(t => t.status === 'todo'),
-        inProgress: tasks.filter(t => t.status === 'in-progress'),
-        awaitFeedback: tasks.filter(t => t.status === 'await-feedback'),
-        done: tasks.filter(t => t.status === 'done')
-      }))
+      map((tasks) => ({
+        todo: tasks.filter((t) => t.status === 'todo'),
+        inProgress: tasks.filter((t) => t.status === 'in-progress'),
+        awaitFeedback: tasks.filter((t) => t.status === 'await-feedback'),
+        done: tasks.filter((t) => t.status === 'done'),
+      })),
     );
   }
 
   // 🔹 Neue Aufgabe erstellen
-  async createTask(task: Omit<Task, 'createdAt'>) {
+  async createTask(task: Omit<Task, 'createdAt'> & { position: number }) {
     return addDoc(this.tasksCollection, {
       ...task,
-      createdAt: Timestamp.now()
+      createdAt: Timestamp.now(),
     });
   }
 
@@ -65,10 +66,7 @@ export class TaskService {
   }
 
   // 🔹 Task komplett aktualisieren
-  async updateTask(
-    taskId: string,
-    taskData: Partial<Omit<Task, 'id' | 'createdAt'>>
-  ) {
+  async updateTask(taskId: string, taskData: Partial<Omit<Task, 'id' | 'createdAt'>>) {
     const docRef = doc(this.firestore, `tasks/${taskId}`);
     await updateDoc(docRef, taskData as DocumentData);
   }
@@ -79,16 +77,22 @@ export class TaskService {
     await deleteDoc(docRef);
   }
 
+  async updateTasksPositions(tasks: (Task & { id: string })[]) {
+    for (let i = 0; i < tasks.length; i++) {
+      await this.updateTask(tasks[i].id, { position: i });
+    }
+  }
+
   // 🔹 Subtask Fortschritt berechnen (0-100%)
   getSubtaskProgress(task: Task): number {
     if (!task.subtasks || task.subtasks.length === 0) return 0;
 
-    const completed = task.subtasks.filter(st => st.completed).length;
+    const completed = task.subtasks.filter((st) => st.completed).length;
     return Math.round((completed / task.subtasks.length) * 100);
   }
 
   // 🔹 Anzahl abgeschlossener Subtasks
   getCompletedCount(task: Task): number {
-    return task.subtasks?.filter(st => st.completed).length || 0;
+    return task.subtasks?.filter((st) => st.completed).length || 0;
   }
 }

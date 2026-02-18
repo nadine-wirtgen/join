@@ -60,12 +60,12 @@ export class Taskcard {
   }
 
   getDisplayTitle(title?: string): string {
-    return title && title.length >= 30 ? title.slice(0, 30) + '…' : (title ?? '');
+    return title && title.length >= 25 ? title.slice(0, 25) + '…' : (title ?? '');
   }
 
   getDisplayDescription(description?: string): string {
-    return description && description.length >= 100
-      ? description.slice(0, 100) + '…'
+    return description && description.length >= 50
+      ? description.slice(0, 50) + '…'
       : (description ?? '');
   }
 
