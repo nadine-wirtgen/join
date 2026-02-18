@@ -15,6 +15,7 @@ import { Task, Subtask } from '../../interfaces/task';
 })
 export class AddTaskTemplate {
   @Input() column: Task['status'] = 'todo';
+  @Input() isDialogMode = false;
   isCategoryDropdownOpen: boolean = false;
 
   toggleCategoryDropdown(event?: Event) {
@@ -90,7 +91,9 @@ export class AddTaskTemplate {
     this.contactService.contactList.forEach(c => {
       if (c.selected === undefined) c.selected = false;
     });
+        this.today = new Date().toISOString().split('T')[0];
   }
+  today: string;
 
   setPriority(value: 'urgent' | 'medium' | 'low') {
     this.priority = value;
@@ -193,46 +196,6 @@ export class AddTaskTemplate {
     this.editingSubtaskTitle = '';
   }
 
-  /**
-   * Expects an input in the format dd/mm/yyyy and converts it to ISO (yyyy-mm-dd).
-   * Returns null if the value is not a valid calendar date.
-   */
-  private parseDueDate(input: string): string | null {
-    const match = input.trim().match(/^([0-2]\d|3[01])\/(0\d|1[0-2])\/(\d{4})$/);
-    if (!match) return null;
-
-    const day = Number(match[1]);
-    const month = Number(match[2]);
-    const year = Number(match[3]);
-
-    const date = new Date(year, month - 1, day);
-    if (
-      date.getFullYear() !== year ||
-      date.getMonth() !== month - 1 ||
-      date.getDate() !== day
-    ) {
-      return null;
-    }
-
-    return date.toISOString().split('T')[0];
-  }
-
-  validateDueDate() {
-    if (!this.dueDate) {
-      this.dueDateInvalid = true;
-      return;
-    }
-
-    const parsed = this.parseDueDate(this.dueDate);
-    if (!parsed) {
-      this.dueDateInvalid = true;
-      return;
-    }
-
-    const todayIso = new Date().toISOString().split('T')[0];
-    this.dueDateInvalid = parsed < todayIso;
-  }
-
   validateTitle() {
     this.titleInvalid = !this.title || !this.title.trim();
   }
@@ -245,31 +208,32 @@ export class AddTaskTemplate {
 
   get isFormValid(): boolean {
     if (!this.title || !this.title.trim()) return false;
-    if (!this.dueDate || this.parseDueDate(this.dueDate) === null) return false;
+    if (!this.dueDate) return false;
+    // Check if dueDate is today or in the future
+    const todayIso = new Date().toISOString().split('T')[0];
+    if (this.dueDate < todayIso) return false;
     if (!this.category || !this.category.trim()) return false;
     return true;
   }
 
   async createTask() {
     this.validateTitle();
-    this.validateDueDate();
     this.validateCategory();
 
-    if (this.titleInvalid || this.dueDateInvalid || this.categoryInvalid) {
+    if (this.titleInvalid || !this.isFormValid || this.categoryInvalid) {
       return;
     }
-
-    const parsedDueDate = this.parseDueDate(this.dueDate)!;
 
     const task: Omit<Task, 'createdAt'> = {
       title: this.title,
       description: this.description,
       dueDate: parsedDueDate,
       priority: this.priority,
-      assignedTo: this.assignedToContacts.map(c => c.name),
+      assignedTo: this.assignedToContacts.map((c) => c.name),
       category: this.category,
       subtasks: this.subtasks,
       status: this.column,
+      position: 0,
     };
 
     try {

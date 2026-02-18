@@ -1,4 +1,4 @@
-<div class="add-task-container">
+<div class="add-task-container" [ngClass]="{ 'dialog-mode': isDialogMode }">
 	<h2 class="add-task-heading">Add Task</h2>
 	<div class="add-task-section">
 
@@ -34,10 +34,9 @@
 				<label for="dueDate">Due date<span class="required">*</span></label>
 				<input
 					id="dueDate"
-					type="text"
-					placeholder="dd/mm/yyyy"
+					type="date"
+					[min]="today"
 					[(ngModel)]="dueDate"
-					(blur)="validateDueDate()"
 					required
 				>
 				@if (dueDateInvalid) {
@@ -215,12 +214,12 @@
 						</li>
 					}
 				</ul>
-				<p class="inline-required-hint"><span class="required">*</span>This field is rehhquired</p>
+				<p *ngIf="!isDialogMode" class="inline-required-hint-right"><span class="required">*</span>This field is rehhquired</p>
 			</div>
 		</div>
 	</div>
 	<div class="text-button-div">
-		<p><span class="required">*</span>This field is rehhquired</p>
+		<p class="inline-required-hint"><span class="required">*</span>This field is rehhquired</p>
 		<!-- ACTION BUTTONS -->
 		<div class="action-buttons">
 			<button type="button" class="clear-btn" (click)="clearForm()">Clear ✕</button>
@@ -242,7 +241,7 @@
 				</button>
 			}
 		</div>
-	</div>  
+	</div>
 </div>
 <div class="task-saved-message" *ngIf="taskSavedMessage">
 	Task erfolgreich gespeichert!
