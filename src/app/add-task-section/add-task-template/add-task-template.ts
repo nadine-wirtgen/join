@@ -201,11 +201,20 @@ export class AddTaskTemplate {
   }
 
   validateTitle() {
-    this.titleInvalid = !this.title || !this.title.trim();
+    // Mindestens 2 Zeichen, nicht nur Zahlen, keine reinen Leerzeichen
+    const trimmed = this.title ? this.title.trim() : '';
+    this.titleInvalid =
+      !trimmed ||
+      trimmed.length < 2 ||
+      /^\d+$/.test(trimmed);
   }
 
   categoryInvalid = false;
 
+  validateDueDate() {
+    const todayIso = new Date().toISOString().split('T')[0];
+    this.dueDateInvalid = !this.dueDate || this.dueDate < todayIso;
+  }
   validateCategory() {
     this.categoryInvalid = !this.category || !this.category.trim();
   }
@@ -245,12 +254,16 @@ export class AddTaskTemplate {
       this.clearForm();
       this.taskSavedMessage = true;
 
-      setTimeout(() => (this.taskSavedMessage = false), 3000);
-
       if (this.isDialogMode) {
-        this.closeDialog.emit();
+        setTimeout(() => {
+          this.taskSavedMessage = false;
+          this.closeDialog.emit();
+        }, 1000);
       } else {
-        this.router.navigate(['/board']);
+        setTimeout(() => {
+          this.taskSavedMessage = false;
+          this.router.navigate(['/board']);
+        }, 1000);
       }
     } catch (error) {
       console.error('Error creating task:', error);
