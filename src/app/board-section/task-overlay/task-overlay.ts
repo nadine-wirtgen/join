@@ -68,6 +68,7 @@ export class TaskOverlay implements OnInit, OnChanges {
     subtasks: [],
     status: 'todo',
     assignedTo: [],
+    position: 0
   };
 
   newSubtaskTitle = '';
