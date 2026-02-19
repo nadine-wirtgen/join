@@ -1,4 +1,5 @@
-import { Component, HostListener, Input, Output } from '@angular/core';
+import { Component, HostListener, Input, Output, EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TaskService } from '../../firebase-service/task.service';
@@ -82,16 +83,19 @@ export class AddTaskTemplate {
   isAssignedDropdownOpen = false;
   assignedToContacts: Contacts[] = [];
 
+  @Output() closeDialog = new EventEmitter<void>();
+
   constructor(
     private taskService: TaskService,
-    public contactService: ContactService
+    public contactService: ContactService,
+    private router: Router
   ) {
     this.minDate = new Date().toISOString().split('T')[0];
 
     this.contactService.contactList.forEach(c => {
       if (c.selected === undefined) c.selected = false;
     });
-        this.today = new Date().toISOString().split('T')[0];
+    this.today = new Date().toISOString().split('T')[0];
   }
   today: string;
 
@@ -242,6 +246,12 @@ export class AddTaskTemplate {
       this.taskSavedMessage = true;
 
       setTimeout(() => (this.taskSavedMessage = false), 3000);
+
+      if (this.isDialogMode) {
+        this.closeDialog.emit();
+      } else {
+        this.router.navigate(['/board']);
+      }
     } catch (error) {
       console.error('Error creating task:', error);
     }
