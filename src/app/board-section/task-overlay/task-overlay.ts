@@ -37,6 +37,8 @@ export class TaskOverlay implements OnInit, OnChanges {
   showAllSubtasksView = false;
   showAllSubtasksEdit = false;
   showAllAssignedInView = false;
+  deleteHover = false;
+  editHover = false;
 
   get displayedAssignedInView() {
     if (this.showAllAssignedInView) {
@@ -68,7 +70,7 @@ export class TaskOverlay implements OnInit, OnChanges {
     subtasks: [],
     status: 'todo',
     assignedTo: [],
-    position: 0
+    position: 0,
   };
 
   newSubtaskTitle = '';
@@ -256,5 +258,4 @@ export class TaskOverlay implements OnInit, OnChanges {
   onClose() {
     this.close.emit();
   }
-
 }

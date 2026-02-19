@@ -8,12 +8,11 @@
             {{ safeTask.category }}
           </div>
           <h1 class="task-title">
-            {{ safeTask.title | slice: 0 : 25 }}{{ safeTask.title.length > 25 ? '...' : '' }}
+            {{ safeTask.title }}
           </h1>
 
           <p class="task-description">
-            {{ safeTask.description | slice: 0 : 50
-            }}{{ safeTask.description.length > 50 ? '...' : '' }}
+            {{ safeTask.description }}
           </p>
         </div>
 
@@ -86,12 +85,34 @@
 
         <div class="overlay-footer">
           <button class="delete-btn" (click)="onDelete()">
-            <span class="btn-icon">🗑</span>
+            <img
+              src="assets/icon/contact-info/delete-default.png"
+              alt="Delete"
+              class="btn-icon"
+              (mouseenter)="deleteHover = true"
+              (mouseleave)="deleteHover = false"
+              [src]="
+                deleteHover
+                  ? 'assets/icon/contact-info/delete-hover.png'
+                  : 'assets/icon/contact-info/delete-default.png'
+              "
+            />
             Delete
           </button>
           <div class="divider"></div>
           <button class="edit-btn" (click)="enableEdit()">
-            <span class="btn-icon">✏</span>
+            <img
+              src="assets/icon/contact-info/edit-default.png"
+              alt="Edit"
+              class="btn-icon"
+              (mouseenter)="editHover = true"
+              (mouseleave)="editHover = false"
+              [src]="
+                editHover
+                  ? 'assets/icon/contact-info/edit-hover.png'
+                  : 'assets/icon/contact-info/edit-default.png'
+              "
+            />
             Edit
           </button>
         </div>
@@ -102,13 +123,12 @@
       <div class="task-edit-container">
         <div class="overlay-header">
           <button class="close-btn" (click)="cancelEdit()">✕</button>
-          <h2 class="edit-title">Edit Task</h2>
         </div>
 
         <div class="overlay-content">
           <form #taskForm="ngForm" (ngSubmit)="onSave()" novalidate>
             <div class="form-group" [class.has-error]="title.invalid && title.touched">
-              <label>Title <span class="required">*</span></label>
+              <label>Title</label>
               <input
                 type="text"
                 [(ngModel)]="editedTask.title"
@@ -133,7 +153,7 @@
             </div>
 
             <div class="form-group" [class.has-error]="dueDate.invalid && dueDate.touched">
-              <label>Due date <span class="required">*</span></label>
+              <label>Due date</label>
               <input
                 type="date"
                 [(ngModel)]="editedTask.dueDate"
@@ -222,23 +242,35 @@
             <div class="subtasks-section">
               <span class="label">Subtasks</span>
 
-              <div class="add-subtask">
+              <div class="subtask-input">
                 <input
                   type="text"
+                  placeholder="Add new subtask"
                   [(ngModel)]="newSubtaskTitle"
                   name="newSubtask"
-                  placeholder="Add new subtask"
                   (keyup.enter)="addSubtask()"
+                  (click)="$event.stopPropagation()"
                 />
-                <button
-                  type="button"
-                  class="reset-btn"
-                  (click)="resetSubtaskInput()"
-                  [class.visible]="newSubtaskTitle"
-                >
-                  ✕
-                </button>
-                <button type="button" class="add-btn" (click)="addSubtask()">✅</button>
+
+                @if (newSubtaskTitle.trim().length > 0) {
+                  <div class="subtask-actions">
+                    <img
+                      src="assets/imgs/add-task/delete_grey.png"
+                      alt="Clear subtask"
+                      class="subtask-icon delete"
+                      (mousedown)="$event.preventDefault()"
+                      (click)="resetSubtaskInput()"
+                    />
+                    <div class="subtask-divider"></div>
+                    <img
+                      src="assets/imgs/add-task/check_grey.png"
+                      alt="Add subtask"
+                      class="subtask-icon check"
+                      (mousedown)="$event.preventDefault()"
+                      (click)="addSubtask()"
+                    />
+                  </div>
+                }
               </div>
 
               <div class="subtasks-list">
@@ -246,42 +278,57 @@
                   @for (subtask of editedTask.subtasks; track subtask; let i = $index) {
                     <div
                       class="subtask-item"
+                      [class.editing]="editingSubtaskIndex === i"
                       (mouseenter)="hoveredSubtaskIndex = i"
                       (mouseleave)="hoveredSubtaskIndex = null"
                     >
                       @if (editingSubtaskIndex === i) {
-                        <input
-                          type="text"
-                          [(ngModel)]="editingSubtaskTitle"
-                          (keyup.enter)="saveSubtaskEdit(i)"
-                          (blur)="cancelSubtaskEdit()"
-                          #subtaskInput
-                          class="subtask-edit-input"
-                        />
+                        <div class="subtask-input existing-subtask">
+                          <input
+                            type="text"
+                            [(ngModel)]="editingSubtaskTitle"
+                            (click)="$event.stopPropagation()"
+                            (keyup.enter)="saveSubtaskEdit(i)"
+                          />
+                          <div class="subtask-actions">
+                            <img
+                              src="assets/imgs/add-task/trash.png"
+                              alt="Delete subtask"
+                              class="subtask-icon delete"
+                              (mousedown)="$event.preventDefault()"
+                              (click)="$event.stopPropagation(); removeSubtask(i)"
+                            />
+                            <div class="subtask-divider"></div>
+                            <img
+                              src="assets/imgs/add-task/check_grey.png"
+                              alt="Save subtask"
+                              class="subtask-icon check"
+                              (mousedown)="$event.preventDefault()"
+                              (click)="$event.stopPropagation(); saveSubtaskEdit(i)"
+                            />
+                          </div>
+                        </div>
                       } @else {
-                        <span class="subtask-title"> <strong>•</strong> {{ subtask.title }} </span>
+                        <span class="subtask-title-text">{{ subtask.title }}</span>
 
                         @if (hoveredSubtaskIndex === i) {
                           <div class="subtask-actions">
-                            <button
-                              class="edit-subtask"
-                              (click)="
-                                startSubtaskEdit(i, subtask.title);
-                                $event.preventDefault();
-                                $event.stopPropagation()
-                              "
-                            >
-                              <span class="edit-icon">✏️</span>
-                            </button>
-
-                            <button
-                              class="delete-subtask"
-                              (click)="
-                                removeSubtask(i); $event.preventDefault(); $event.stopPropagation()
-                              "
-                            >
-                              <span class="delete-icon">🗑️</span>
-                            </button>
+                            <img
+                              src="assets/icon/contact-info/edit-default.png"
+                              public\assets\icon\contact-info\edit-default.png
+                              alt="Edit subtask"
+                              class="subtask-icon edit"
+                              (mousedown)="$event.preventDefault()"
+                              (click)="$event.stopPropagation(); startSubtaskEdit(i, subtask.title)"
+                            />
+                            <div class="subtask-divider"></div>
+                            <img
+                              src="assets/imgs/add-task/trash.png"
+                              alt="Delete subtask"
+                              class="subtask-icon delete"
+                              (mousedown)="$event.preventDefault()"
+                              (click)="$event.stopPropagation(); removeSubtask(i)"
+                            />
                           </div>
                         }
                       }
