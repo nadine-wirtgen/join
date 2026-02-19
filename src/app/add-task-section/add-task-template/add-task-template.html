@@ -37,6 +37,8 @@
 					type="date"
 					[min]="today"
 					[(ngModel)]="dueDate"
+					(blur)="validateDueDate()"
+  				(change)="validateDueDate()"
 					required
 				>
 				@if (dueDateInvalid) {
@@ -149,13 +151,14 @@
 			<!-- SUBTASKS -->
 			<div class="form-group">
 				<label>Subtasks</label>
-				<div class="subtask-input">
+				<div class="subtask-input" style="height: 48px; display: flex; align-items: center;">
 					<input
 						type="text"
 						placeholder="Add new subtask"
 						[(ngModel)]="newSubtask"
 						(keyup.enter)="addSubtask()"
 						(click)="$event.stopPropagation()"
+						style="height: 48px;"
 					>
 					<div class="subtask-actions">
 						<img
@@ -164,6 +167,7 @@
 							class="subtask-icon delete"
 							(mousedown)="$event.preventDefault()"
 							(click)="newSubtask = ''"
+							style="width: 24px; height: 24px; min-width: 24px; min-height: 24px; max-width: 24px; max-height: 24px;"
 						>
 						<div class="subtask-divider"></div>
 						<img
@@ -172,25 +176,23 @@
 							class="subtask-icon check"
 							(mousedown)="$event.preventDefault()"
 							(click)="addSubtask()"
+							style="width: 24px; height: 24px; min-width: 24px; min-height: 24px; max-width: 24px; max-height: 24px;"
 						>
 					</div>
 				</div>
-				<ul class="subtask-list">
+				<div class="subtask-list">
 					@for (task of subtasks; let i = $index; track i) {
-						<li
-							class="subtask-item"
-							[class.editing]="editingSubtaskIndex === i"
-							(dblclick)="startEditSubtask(i, task.title); $event.stopPropagation()"
-						>
+						<div class="subtask-item" [class.editing]="editingSubtaskIndex === i" style="display: flex; align-items: center; position: relative; height: 48px;">
 							@if (editingSubtaskIndex === i) {
-								<div class="subtask-input existing-subtask">
+								<div class="subtask-input existing-subtask" style="flex: 1; display: flex; align-items: center; height: 48px;">
 									<input
 										type="text"
 										[(ngModel)]="editingSubtaskTitle"
 										(click)="$event.stopPropagation()"
 										(keyup.enter)="saveSubtaskEdit(i)"
+										style="flex: 1; height: 48px;"
 									>
-									<div class="subtask-actions">
+									<div class="subtask-actions" style="margin-left: 8px; display: flex; align-items: center;">
 										<img
 											src="assets/imgs/add-task/trash.png"
 											alt="Delete subtask"
@@ -198,7 +200,7 @@
 											(mousedown)="$event.preventDefault()"
 											(click)="$event.stopPropagation(); removeSubtask(i)"
 										>
-										<div class="subtask-divider"></div>
+										<div class="subtask-divider" style="width: 1px; height: 20px; background: #A8A8A8; margin: 0 8px;"></div>
 										<img
 											src="assets/imgs/add-task/check_grey.png"
 											alt="Save subtask"
@@ -209,12 +211,28 @@
 									</div>
 								</div>
 							} @else {
-								<span class="subtask-title-text">{{ task.title }}</span>
+								<span style="font-size: 20px; margin-right: 8px;">&bull;</span>
+								<span class="subtask-title-text" style="flex: 1; cursor: pointer;" (click)="startEditSubtask(i, task.title)">{{ task.title }}</span>
+								<div class="subtask-actions" style="margin-left: 8px; display: flex; align-items: center;">
+									<img
+										src="assets/imgs/add-task/edit.png"
+										alt="Bearbeiten"
+										class="subtask-icon edit"
+										(click)="startEditSubtask(i, task.title)"
+									>
+									<div class="subtask-divider" style="width: 1px; height: 20px; background: #A8A8A8; margin: 0 8px;"></div>
+									<img
+										src="assets/imgs/add-task/trash.png"
+										alt="Löschen"
+										class="subtask-icon delete"
+										(click)="removeSubtask(i)"
+									>
+								</div>
 							}
-						</li>
+						</div>
 					}
-				</ul>
-				<p *ngIf="!isDialogMode" class="inline-required-hint-right"><span class="required">*</span>This field is rehhquired</p>
+				</div>
+				<p class="inline-required-hint-right"><span class="required">*</span>This field is rehhquired</p>
 			</div>
 		</div>
 	</div>
@@ -243,6 +261,8 @@
 		</div>
 	</div>
 </div>
-<div class="task-saved-message" *ngIf="taskSavedMessage">
-	Task erfolgreich gespeichert!
-</div>
+@if (taskSavedMessage) {
+	<div class="task-saved-message center-animate">
+		Task added to board! <img class="board-icon" src="assets/imgs/add-task/board-icon.png" alt="Success">
+	</div>
+}

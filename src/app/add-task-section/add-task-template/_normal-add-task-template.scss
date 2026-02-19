@@ -1,0 +1,168 @@
+.add-task-container:not(.dialog-mode) {
+	width: 100%;
+	height: calc(100vh - 96px);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	padding-left: 8px;
+	padding-right: 8px;
+
+	/* ================== Action Buttons ================== */
+	.text-button-div {
+		position: relative;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+		max-width: 945px;
+		margin: 0 auto;
+		padding-bottom: 30px;
+		.action-buttons {
+			display: flex;
+			justify-content: flex-end;
+			gap: 10px;
+			margin-top: 8px;
+
+			.clear-btn {
+				height: 56px;
+				background: #fff;
+				border: 1px solid #2A3647;
+				border-radius: 10px;
+				font-family: 'Inter', sans-serif;
+				font-weight: 400;
+				font-size: 20px;
+				line-height: 120%;
+				letter-spacing: 0;
+				color: #2A3647;
+				cursor: pointer;
+				padding: 0 24px;
+				transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+				box-shadow: none;
+
+				&:hover {
+					background: #fff;
+					border-color: #29ABE2;
+					color: #29ABE2;
+					box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+				}
+			}
+
+			.create-btn {
+				height: 56px;
+				background: #2A3647;
+				color: #fff;
+				border: none;
+				border-radius: 10px;
+				font-family: 'Inter', sans-serif;
+				font-weight: 700;
+				font-size: 21px;
+				line-height: 120%;
+				letter-spacing: 0;
+				cursor: pointer;
+				padding: 0 24px;
+				transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+				box-shadow: none;
+
+				&:hover {
+					background: #29ABE2;
+					color: #fff;
+					box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+				}
+
+				&:disabled {
+					background: #d1d1d1;
+					color: #ffffff;
+					cursor: not-allowed;
+					box-shadow: none;
+				}
+
+				&:disabled:hover {
+					background: #d1d1d1;
+					box-shadow: none;
+				}
+			}
+		}
+	}
+}
+
+@media (max-width: 1240px) {
+	.add-task-heading {
+		position: sticky;
+		top: 0;
+		z-index: 10;
+	}
+
+	.text-button-div {
+		position: fixed;
+		left: 232px;
+		right: 0;
+    width: auto;
+		max-width: none;
+		bottom: 0;
+		margin: 0;
+		padding: 16px 20px 24px 20px;
+    padding-right: 40px;
+		gap: 16px;
+		justify-content: flex-start;
+		background-color: #f6f7f8;
+	}
+
+	.text-button-div .action-buttons {
+		margin-left: auto;
+	}
+}
+
+@media (max-width: 900px) {
+	.add-task-container:not(.dialog-mode) .inline-required-hint {
+		display: none;
+	}
+}
+
+.add-task-container:not(.dialog-mode) .inline-required-hint-right {
+	display: none;
+}
+
+@media (max-width: 900px) {
+	.add-task-container:not(.dialog-mode) .inline-required-hint-right {
+		display: block;
+	}
+}
+
+@media (max-width: 768px) {
+	.add-task-heading {
+		font-size: 47px;
+	}
+
+	.form-group label,
+	.assigned-to-container label {
+		font-size: 16px;
+	}
+
+	.add-task-section {
+		padding-bottom: 160px;
+	}
+
+	.text-button-div{
+		left: 0;
+		right: 0;
+		width: 100%;
+		padding-bottom: 80px;
+		flex-direction: row;
+		justify-content: flex-end;
+		background-color: #f6f7f8;
+	}
+}
+
+@media (max-width: 386px) {
+	.text-button-div .action-buttons {
+		flex-direction: column;
+		align-items: stretch;
+		width: 100%;
+		gap: 8px;
+	}
+  .add-task-section {
+		padding-bottom: 190px;
+	}
+}
