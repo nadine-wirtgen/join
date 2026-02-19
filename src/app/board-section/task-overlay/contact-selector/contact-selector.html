@@ -7,9 +7,7 @@
         readonly
         [value]="selectedContacts.length ? selectedContacts.length + ' contact(s) selected' : ''"
       />
-      <button class="add-contact-btn" type="button">
-        <span>🔽</span>
-      </button>
+      <span class="dropdown-arrow" [class.rotated]="showDropdown">⌵</span>
     </div>
 
     @if (showDropdown) {

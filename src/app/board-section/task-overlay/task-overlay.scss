@@ -55,7 +55,6 @@
 .task-view-container {
   display: flex;
   flex-direction: column;
-  gap: 24px;
   height: 100%;
   width: 100%;
 }
@@ -78,7 +77,7 @@
   font-size: 61px;
   font-weight: 700;
   line-height: 120%;
-  margin: 0;
+  margin: 16px 0;
   color: #2a3647;
   word-break: break-word;
 }
@@ -126,16 +125,6 @@
   color: black;
   font-size: 20px;
   font-weight: 400;
-
-  // &.urgent {
-  //     background: #c0bfbf;
-  //   }
-  //   &.medium {
-  //     background: #ffa800;
-  //   }
-  //   &.low {
-  //     background: #7ae229;
-  //   }
 
   .priority-icon {
     font-size: 20px;
@@ -199,6 +188,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  margin-top: 24px;
 
   .label {
     color: #2a3647;
@@ -274,17 +264,25 @@
 
     .btn-icon {
       font-size: 18px;
+      width: 18px; 
+      height: 18px;
+      object-fit: contain;
+      transition: all 0.1s ease;
     }
 
     &:hover {
       background: #f6f7f8;
       font-weight: 700;
       scale: 1.02;
+
+      .btn-icon {
+        transform: scale(1.1); 
+      }
     }
   }
 
   .delete-btn {
-    color: #ff3d00;
+    color: #2a3647;
   }
   .edit-btn {
     color: #2a3647;
@@ -306,7 +304,7 @@
 .edit-content {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 32px;
   margin-top: 20px;
   overflow-y: auto;
   padding-right: 8px;
@@ -315,7 +313,8 @@
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
+  margin-top: 32px;
 
   label {
     color: #2a3647;
@@ -350,7 +349,6 @@ textarea {
   resize: vertical;
 }
 
-/* ================== Priority Buttons ================== */
 .priority-buttons {
   display: flex;
   gap: 10px;
@@ -365,7 +363,7 @@ textarea {
     cursor: pointer;
     font-family: 'Inter', sans-serif;
     font-weight: 400;
-    font-size: 20px;
+    font-size: 18px;
     line-height: 120%;
     color: #2a3647;
     transition: 0.2s ease;
@@ -376,7 +374,7 @@ textarea {
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.03);
 
     img {
-      width: 20px;
+      width: 18px;
       height: auto;
     }
 
@@ -519,6 +517,7 @@ textarea {
   font-size: 18px;
   cursor: pointer;
   transition: all 0.1s ease;
+  margin-top: 32px;
 }
 
 .cancel-btn {
@@ -626,7 +625,6 @@ textarea {
   justify-content: space-between;
   align-items: center;
   padding: 8px 16px;
-  background: #f6f7f8;
   border-radius: 8px;
   transition: all 125ms ease;
 
@@ -663,7 +661,6 @@ textarea {
   flex-direction: column;
   gap: 8px;
 
-  // Kufizon ne 3 subtasks njelloj si assigned-list
   max-height: 130px;
   overflow-y: auto;
   padding-right: 8px;
@@ -731,7 +728,6 @@ textarea {
     }
   }
 
-  // Scrollbar styling - i njejti si assigned-list
   &::-webkit-scrollbar {
     width: 4px;
   }
@@ -748,7 +744,6 @@ textarea {
   }
 }
 
-// Pjesa "more" - e lëmë ashtu siç është
 .more-subtasks {
   display: flex;
   justify-content: center;
@@ -1121,8 +1116,7 @@ textarea {
   gap: 8px;
   margin-top: 8px;
 
-  // Kufizon ne 3 emra (36px avatar + 8px gap = ~130px per 3)
-  max-height: 130px;
+  max-height: 136px;
   overflow-y: auto;
   padding-right: 8px;
 
@@ -1130,7 +1124,19 @@ textarea {
     display: flex;
     align-items: center;
     gap: 12px;
-    min-height: 40px; // Lartesi fikse per cdo rresht
+    min-height: 40px; 
+    padding: 4px 8px; 
+    border-radius: 8px; 
+    transition: background 0.1s ease;
+    cursor: pointer;
+
+    &:hover {
+      background: #f6f7f8; 
+    }
+
+    &:active {
+      background: #e0e0e0; 
+    }
 
     .avatar {
       width: 36px;
@@ -1148,9 +1154,9 @@ textarea {
     .contact-name {
       font-size: 16px;
       color: #000000;
-      white-space: nowrap; // Nuk e lejon emrin te shkojne ne rresht tjeter
-      overflow: hidden; // Fsheh pjesen qe nuk futet
-      text-overflow: ellipsis; // Shton ... ne fund
+      white-space: nowrap; 
+      overflow: hidden; 
+      text-overflow: ellipsis; 
     }
   }
 
@@ -1176,19 +1182,19 @@ textarea {
   flex-direction: column;
   height: 100%;
   width: 100%;
-  overflow: hidden;  // Fsheh scroll-in e jashtëm
+  overflow: hidden; 
 }
 
 .overlay-header {
-  flex-shrink: 0;    // Nuk tkurret
+  flex-shrink: 0; 
   padding-bottom: 16px;
 }
 
 .overlay-content {
-  flex: 1;           // Merr gjithë hapësirën e mbetur
-  overflow-y: auto;  // Scroll vetëm këtu
+  flex: 1; 
+  overflow-y: auto; 
   padding-right: 8px;
-  
+
   &::-webkit-scrollbar {
     width: 6px;
   }
@@ -1206,7 +1212,76 @@ textarea {
 }
 
 .overlay-footer {
-  flex-shrink: 0;    // Nuk tkurret
+  flex-shrink: 0; 
   padding-top: 16px;
   border-top: 1px solid #d1d1d1;
+}
+
+.subtask-input {
+  position: relative;
+  width: 100%;
+  
+  input {
+    width: 100%;
+    padding: 12px 16px;
+    padding-right: 80px;  
+    border: 1px solid #d1d1d1;
+    border-radius: 10px;
+    font-size: 16px;
+    background: white;
+    color: #2a3647;
+    box-sizing: border-box;
+    
+    &::placeholder {
+      color: #a8a8a8;
+    }
+    
+    &:focus {
+      outline: none;
+      border-color: #29abe2;
+    }
+  }
+  
+  .subtask-actions {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0;                
+  background: white;
+  padding: 2px 4px;
+  border-radius: 6px;
+  pointer-events: none;
+  
+  img {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: opacity 125ms ease;
+    
+    &:hover {
+      opacity: 0.7;
+    }
+    
+    &:first-of-type {
+      margin-right: 4px;
+    }
+    
+    &:last-of-type {
+      margin-left: 4px;
+    }
+  }
+  
+  .subtask-divider {
+    width: 1px;
+    height: 20px;
+    background-color: #d1d1d1;
+    margin: 0 2px;        
+    pointer-events: none;
+  }
+}
+
 }
