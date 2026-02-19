@@ -1,3 +1,11 @@
+/**
+ * BoardSection Component
+ *
+ * Manages the Kanban board including drag & drop,
+ * task creation, editing, deletion and filtering.
+ * Tasks are loaded from Firebase via TaskService
+ * and grouped by status for display.
+ */
 import { Component, OnInit, signal } from '@angular/core';
 import { TaskService } from '../firebase-service/task.service';
 import { CommonModule } from '@angular/common';
@@ -66,10 +74,22 @@ export class BoardSection implements OnInit {
     done: 'done',
   };
   lastPointerX = 0;
+  private statusToColumn: Record<string, ColumnKey> = {
+    todo: 'todo',
+    'in-progress': 'inProgress',
+    'await-feedback': 'awaitFeedback',
+    done: 'done',
+  };
+
   constructor(
     private taskService: TaskService,
     private router: Router,
   ) {}
+
+  /**
+   * Loads all tasks on component initialization,
+   * groups them by status and stores them in the signal state.
+   */
   ngOnInit(): void {
     this.taskService.getTasks().subscribe((allTasks) => {
       const grouped = this.groupTasksByStatus(allTasks);
@@ -78,16 +98,29 @@ export class BoardSection implements OnInit {
     });
   }
 
+  /**
+   * Opens the task overlay for the selected task.
+   * @param task The selected task including its ID
+   */
   openTaskOverlay(task: Task & { id: string }) {
     this.selectedTask = task;
     this.showTaskOverlay = true;
   }
 
+  /**
+   * Closes the task overlay and clears the selected task.
+   */
   closeTaskOverlay() {
     this.showTaskOverlay = false;
     this.selectedTask = null;
   }
 
+  /**
+   * Updates an existing task in the database.
+   *
+   * @param updatedTask Updated task data (without id and createdAt)
+   * @returns Promise<void>
+   */
   async saveTask(updatedTask: Omit<Task, 'id' | 'createdAt'>) {
     if (this.selectedTask?.id) {
       try {
@@ -99,6 +132,12 @@ export class BoardSection implements OnInit {
     }
   }
 
+  /**
+   * Deletes a task by its ID.
+   *
+   * @param taskId The ID of the task to delete
+   * @returns Promise<void>
+   */
   async deleteTask(taskId: string) {
     try {
       await this.taskService.deleteTask(taskId);
@@ -108,15 +147,27 @@ export class BoardSection implements OnInit {
     }
   }
 
+  /**
+   * Opens the add-task dialog for a specific column.
+   *
+   * @param column The target column
+   */
   openAddTaskDialog(column: ColumnKey) {
     this.isAddTaskDialogOpen = true;
     this.addTaskDialogColumn = this.columnToStatus[column];
   }
 
+  /**
+   * Closes the add-task dialog.
+   */
   closeAddTaskDialog() {
     this.isAddTaskDialogOpen = false;
   }
 
+  /**
+   * Filters all tasks based on the current search term
+   * and updates the signal state.
+   */
   filterTasks() {
     const term = this.searchTerm.toLowerCase();
     const filtered: Record<ColumnKey, (Task & { id: string })[]> = {
@@ -128,29 +179,103 @@ export class BoardSection implements OnInit {
     this.tasks.set(filtered);
   }
 
+  /**
+   * Triggered when a task is dropped.
+   * Handles reordering or moving between columns,
+   * updates positions and persists changes.
+   *
+   * @param event Angular CDK drag & drop event
+   */
   drop(event: CdkDragDrop<(Task & { id: string })[]>) {
     const current = this.tasks();
-    if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    if (this.isSameContainer(event)) {
+      this.reorderWithinColumn(event);
     } else {
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex,
-      );
-      const movedTask = event.container.data[event.currentIndex];
-      movedTask.status = this.columnToStatus[event.container.id as ColumnKey];
+      this.moveBetweenColumns(event);
     }
-    [...event.previousContainer.data, ...event.container.data].forEach((task, index) => {
-      task.position = index;
-    });
+    const updatedTasks = this.collectAffectedTasks(event);
+    this.updatePositions(updatedTasks);
+    this.persistTasks(updatedTasks);
     this.tasks.set({ ...current });
-    [...event.previousContainer.data, ...event.container.data].forEach((task) => {
-      this.taskService.updateTask(task.id, { position: task.position, status: task.status });
+  }
+
+  /**
+   * Checks whether the task was moved within the same container.
+   *
+   * @param event DragDrop event
+   * @returns True if the source and target containers are the same
+   */
+  private isSameContainer(event: CdkDragDrop<any>): boolean {
+    return event.previousContainer === event.container;
+  }
+
+  /**
+   * Reorders tasks within the same column.
+   *
+   * @param event DragDrop event
+   */
+  private reorderWithinColumn(event: CdkDragDrop<any>) {
+    moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+  }
+
+  /**
+   * Moves a task between two columns
+   * and updates its status.
+   *
+   * @param event DragDrop event
+   */
+  private moveBetweenColumns(event: CdkDragDrop<any>) {
+    transferArrayItem(
+      event.previousContainer.data,
+      event.container.data,
+      event.previousIndex,
+      event.currentIndex,
+    );
+    const movedTask = event.container.data[event.currentIndex];
+    movedTask.status = this.columnToStatus[event.container.id as ColumnKey];
+  }
+
+  /**
+   * Collects all affected tasks after a drag operation.
+   *
+   * @param event DragDrop event
+   * @returns Array of affected tasks
+   */
+  private collectAffectedTasks(event: CdkDragDrop<any>) {
+    return [...event.previousContainer.data, ...event.container.data];
+  }
+
+  /**
+   * Updates the position property of the given tasks.
+   *
+   * @param tasks List of tasks to update
+   */
+  private updatePositions(tasks: (Task & { id: string })[]) {
+    tasks.forEach((task, index) => {
+      task.position = index;
     });
   }
 
+  /**
+   * Persists position and status updates to the database.
+   *
+   * @param tasks List of tasks to persist
+   */
+  private persistTasks(tasks: (Task & { id: string })[]) {
+    tasks.forEach((task) => {
+      this.taskService.updateTask(task.id, {
+        position: task.position,
+        status: task.status,
+      });
+    });
+  }
+
+  /**
+   * Applies a small rotation effect while dragging,
+   * based on horizontal pointer movement.
+   *
+   * @param event CdkDragMove event
+   */
   onDragMove(event: CdkDragMove) {
     const currentX = event.pointerPosition.x;
     if (this.lastPointerX === 0) {
@@ -160,20 +285,37 @@ export class BoardSection implements OnInit {
     const deltaX = currentX - this.lastPointerX;
     const rotation = Math.max(-8, Math.min(8, deltaX * 0.5));
     const rotationEl = document.querySelector('.cdk-drag-preview .rotation-wrapper') as HTMLElement;
-    if (rotationEl) {
-      rotationEl.style.transform = `rotate(${rotation}deg)`;
-    }
+    rotationEl?.style.setProperty('transform', `rotate(${rotation}deg)`);
     this.lastPointerX = currentX;
   }
 
+  /**
+   * Toggles the visibility of the add-task section
+   * for a specific column.
+   *
+   * @param column Target column
+   */
   toggleAddTask(column: ColumnKey) {
     this.showAddTask[column] = !this.showAddTask[column];
   }
 
+  /**
+   * Wrapper method for toggling the add-task form.
+   *
+   * @param column Target column
+   */
   addTaskToColumn(column: ColumnKey) {
     this.toggleAddTask(column);
   }
 
+  /**
+   * Creates a new task from form data
+   * and stores it in the selected column.
+   *
+   * @param column Target column
+   * @param formData Partial task data from the form
+   * @returns Promise<void>
+   */
   async createTaskFromForm(column: ColumnKey, formData: Partial<Task>) {
     const newTask: Omit<Task, 'createdAt'> = {
       title: formData.title || 'Neue Aufgabe',
@@ -189,10 +331,23 @@ export class BoardSection implements OnInit {
     this.showAddTask[column] = false;
   }
 
+  /**
+   * TrackBy function for ngFor to improve rendering performance.
+   *
+   * @param _index Array index
+   * @param task Task object
+   * @returns Task ID
+   */
   trackById(_index: number, task: Task & { id: string }) {
     return task.id;
   }
 
+  /**
+   * Groups tasks by their status and sorts them by position.
+   *
+   * @param tasks All loaded tasks
+   * @returns Object containing tasks grouped by column
+   */
   private groupTasksByStatus(
     tasks: (Task & { id: string })[],
   ): Record<ColumnKey, (Task & { id: string })[]> {
@@ -202,29 +357,21 @@ export class BoardSection implements OnInit {
       awaitFeedback: [],
       done: [],
     };
-    tasks.forEach((t) => {
-      switch (t.status) {
-        case 'todo':
-          grouped.todo.push(t);
-          break;
-        case 'in-progress':
-          grouped.inProgress.push(t);
-          break;
-        case 'await-feedback':
-          grouped.awaitFeedback.push(t);
-          break;
-        case 'done':
-          grouped.done.push(t);
-          break;
-        default:
-          grouped.todo.push(t);
-      }
+    tasks.forEach((task) => {
+      const key = this.statusToColumn[task.status] ?? 'todo';
+      grouped[key].push(task);
     });
-    Object.keys(grouped).forEach((key) => {
-      grouped[key as ColumnKey].sort((a, b) => a.position - b.position);
-    });
+    Object.values(grouped).forEach((list) => list.sort((a, b) => a.position - b.position));
     return grouped;
   }
+
+  /**
+   * Checks whether a task matches the given search term.
+   *
+   * @param task Task object
+   * @param term Search term (already lowercase)
+   * @returns True if the task matches the search term
+   */
   private matchesSearchTerm(task: Task, term: string): boolean {
     return (
       task.title.toLowerCase().includes(term) ||

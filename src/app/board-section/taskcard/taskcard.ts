@@ -1,3 +1,10 @@
+/**
+ * Taskcard Component
+ *
+ * Represents a single task card within the board.
+ * Displays task details, progress, assigned contacts,
+ * and allows status changes via a context menu.
+ */
 import {
   Component,
   inject,
@@ -28,26 +35,54 @@ export class Taskcard {
   menuOpen = false;
   statusOrder: Task['status'][] = ['todo', 'in-progress', 'await-feedback', 'done'];
 
+  /**
+   * Emits the selected task when the card is clicked.
+   */
   onCardClick() {
     this.openTask.emit(this.task);
   }
 
+  /**
+   * Returns the completion progress percentage of subtasks.
+   *
+   * @param task Optional task (defaults to component task)
+   * @returns Progress percentage (0–100)
+   */
   getSubtaskProgress(task?: Task): number {
     const t = task || this.task;
     if (!t) return 0;
     return this.calculateProgress(t as Task & { id: string });
   }
+
+  /**
+   * Returns the number of completed subtasks.
+   *
+   * @param task Optional task (defaults to component task)
+   * @returns Number of completed subtasks
+   */
   getCompletedCount(task?: Task): number {
     const t = task || this.task;
     return t?.subtasks?.filter((st) => st.completed).length || 0;
   }
 
+  /**
+   * Calculates the progress percentage of a task's subtasks.
+   *
+   * @param task Task including its ID
+   * @returns Progress percentage (0–100)
+   */
   private calculateProgress(task: Task & { id: string }): number {
     if (!task.subtasks?.length) return 0;
     const completed = task.subtasks.filter((st) => st.completed).length;
     return Math.round((completed / task.subtasks.length) * 100);
   }
 
+  /**
+   * Generates initials from a full name.
+   *
+   * @param name Full name string
+   * @returns Uppercase initials
+   */
   getInitials(name: string): string {
     if (!name) return '';
     const parts = name.split(' ');
@@ -55,24 +90,50 @@ export class Taskcard {
     return initials.toUpperCase();
   }
 
+  /**
+   * Retrieves a contact by name from the contact service.
+   *
+   * @param name Contact name
+   * @returns Matching contact object or undefined
+   */
   getContactByName(name: string) {
     return this.contactService.contactList.find((c) => c.name === name);
   }
 
+  /**
+   * Truncates the task title if it exceeds 25 characters.
+   *
+   * @param title Optional title string
+   * @returns Truncated title with ellipsis if necessary
+   */
   getDisplayTitle(title?: string): string {
     return title && title.length >= 25 ? title.slice(0, 25) + '…' : (title ?? '');
   }
 
+  /**
+   * Truncates the task description if it exceeds 50 characters.
+   *
+   * @param description Optional description string
+   * @returns Truncated description with ellipsis if necessary
+   */
   getDisplayDescription(description?: string): string {
     return description && description.length >= 50
       ? description.slice(0, 50) + '…'
       : (description ?? '');
   }
 
+  /**
+   * Toggles the visibility of the task menu.
+   */
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
   }
 
+  /**
+   * Closes the menu when clicking outside the component.
+   *
+   * @param event Mouse click event
+   */
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     if (!this.elementRef.nativeElement.contains(event.target)) {
@@ -80,6 +141,12 @@ export class Taskcard {
     }
   }
 
+  /**
+   * Moves the task status up or down in the predefined status order.
+   *
+   * @param direction Direction to move ('up' or 'down')
+   * @returns Promise<void>
+   */
   async moveStatus(direction: 'up' | 'down') {
     if (!this.task?.id) return;
     const currentIndex = this.statusOrder.indexOf(this.task.status);
