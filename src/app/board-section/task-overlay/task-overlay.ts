@@ -5,6 +5,7 @@ import { Task } from '../../interfaces/task';
 import { Contacts } from '../../interfaces/contacts';
 import { ContactService } from '../../firebase-service/contact-service';
 import { ContactSelector } from './contact-selector/contact-selector';
+import { TaskService } from '../../firebase-service/task.service';
 
 interface Subtask {
   title: string;
@@ -24,7 +25,10 @@ export class TaskOverlay implements OnInit, OnChanges {
   @Output() delete = new EventEmitter<string>();
   @Output() save = new EventEmitter<Omit<Task, 'id' | 'createdAt'>>();
 
-  constructor(private contactService: ContactService) {}
+  constructor(
+    private contactService: ContactService,
+    private taskService: TaskService,
+  ) {}
 
   isEditMode = false;
   isSaving = false;
@@ -198,6 +202,27 @@ export class TaskOverlay implements OnInit, OnChanges {
 
   toggleSubtask(subtask: Subtask) {
     subtask.completed = !subtask.completed;
+    if (this.task && this.task.subtasks) {
+      const index = this.task.subtasks.findIndex((st) => st.title === subtask.title);
+      if (index !== -1) {
+        this.task.subtasks[index] = subtask;
+      }
+    }
+    this.saveCurrentSubtasks();
+  }
+
+  private saveCurrentSubtasks() {
+    if (this.task?.id && this.task.subtasks) {
+      console.log('Ruaj subtasks:', this.task.subtasks);
+
+      this.taskService
+        .updateTask(this.task.id, {
+          subtasks: this.task.subtasks,
+        })
+        .catch((error) => {
+          console.error('Error saving subtasks:', error);
+        });
+    }
   }
 
   startSubtaskEdit(index: number, title: string) {
@@ -241,9 +266,11 @@ export class TaskOverlay implements OnInit, OnChanges {
 
     this.isSaving = true;
 
+    this.save.emit(this.editedTask);
+
+    this.isEditMode = false;
+
     setTimeout(() => {
-      this.save.emit(this.editedTask);
-      this.isEditMode = false;
       this.isSaving = false;
     }, 500);
   }
@@ -256,6 +283,8 @@ export class TaskOverlay implements OnInit, OnChanges {
   }
 
   onClose() {
+    this.saveCurrentSubtasks();
     this.close.emit();
   }
+  
 }

@@ -125,7 +125,7 @@ export class BoardSection implements OnInit {
     if (this.selectedTask?.id) {
       try {
         await this.taskService.updateTask(this.selectedTask.id, updatedTask);
-        this.closeTaskOverlay();
+        // this.closeTaskOverlay();
       } catch (error) {
         console.error(' Error updating task:', error);
       }
