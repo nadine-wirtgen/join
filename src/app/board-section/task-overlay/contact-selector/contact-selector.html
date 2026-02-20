@@ -60,14 +60,8 @@
       }
 
       @if (hiddenContactsCount > 0 && !showAllContacts) {
-        <div class="more-contacts-badge" (click)="toggleShowAll()">
+        <div class="more-contacts-badge static">
           <span class="more-count">+{{ hiddenContactsCount }}</span>
-        </div>
-      }
-
-      @if (showAllContacts && selectedContacts.length > 3) {
-        <div class="more-contacts-badge show-less" (click)="toggleShowAll()">
-          <span class="more-count">−{{ selectedContacts.length - 3 }}</span>
         </div>
       }
     </div>

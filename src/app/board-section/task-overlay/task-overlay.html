@@ -284,12 +284,15 @@
                     >
                       @if (editingSubtaskIndex === i) {
                         <div class="subtask-input existing-subtask">
-                          <input
-                            type="text"
-                            [(ngModel)]="editingSubtaskTitle"
-                            (click)="$event.stopPropagation()"
-                            (keyup.enter)="saveSubtaskEdit(i)"
-                          />
+                          <div class="subtask-content">
+                            <span class="subtask-bullet">•</span>
+                            <input
+                              type="text"
+                              [(ngModel)]="editingSubtaskTitle"
+                              (click)="$event.stopPropagation()"
+                              (keyup.enter)="saveSubtaskEdit(i)"
+                            />
+                          </div>
                           <div class="subtask-actions">
                             <img
                               src="assets/imgs/add-task/trash.png"
@@ -309,13 +312,15 @@
                           </div>
                         </div>
                       } @else {
-                        <span class="subtask-title-text">{{ subtask.title }}</span>
+                        <div class="subtask-content">
+                          <span class="subtask-bullet">•</span>
+                          <span class="subtask-title-text">{{ subtask.title }}</span>
+                        </div>
 
                         @if (hoveredSubtaskIndex === i) {
                           <div class="subtask-actions">
                             <img
                               src="assets/icon/contact-info/edit-default.png"
-                              public\assets\icon\contact-info\edit-default.png
                               alt="Edit subtask"
                               class="subtask-icon edit"
                               (mousedown)="$event.preventDefault()"
