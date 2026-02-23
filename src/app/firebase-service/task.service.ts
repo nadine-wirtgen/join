@@ -32,11 +32,34 @@ export class TaskService {
     return collection(this.firestore, 'tasks');
   }
 
+  // 🔹 Aktueller Filter (neu)
+  private currentStatusFilter: Task['status'] | 'all' = 'all';
+
+  // 🔹 Filter setzen (neu)
+  setStatusFilter(status: Task['status'] | 'all') {
+    this.currentStatusFilter = status;
+  }
+
+  // 🔹 Filter auslesen (neu)
+  getStatusFilter(): Task['status'] | 'all' {
+    return this.currentStatusFilter;
+  }
+
   // 🔹 Alle Tasks als Realtime Observable
   getTasks(): Observable<(Task & { id: string })[]> {
     return collectionData(this.tasksCollection, { idField: 'id' }) as Observable<
       (Task & { id: string })[]
     >;
+  }
+
+  // 🔹 Gefilterte Tasks zurückgeben (neu)
+  getTasksFiltered(): Observable<(Task & { id: string })[]> {
+    return this.getTasks().pipe(
+      map((tasks) => {
+        if (this.currentStatusFilter === 'all') return tasks;
+        return tasks.filter((t) => t.status === this.currentStatusFilter);
+      })
+    );
   }
 
   // 🔹 Tasks direkt nach Status gruppieren (ideal für Board + DragDrop)
