@@ -18,6 +18,7 @@ import { Task } from '../../interfaces/task';
 import { ContactService } from '../../firebase-service/contact-service';
 import { CommonModule, SlicePipe } from '@angular/common';
 import { TaskService } from '../../firebase-service/task.service';
+import { BurgermenuStateService } from '../../firebase-service/burgermenu-state.service';
 
 @Component({
   selector: 'app-taskcard',
@@ -29,10 +30,14 @@ import { TaskService } from '../../firebase-service/task.service';
 export class Taskcard {
   @Input() task!: Task;
   @Output() openTask = new EventEmitter<Task>();
+
+  // Services
   contactService = inject(ContactService);
   private taskService = inject(TaskService);
+  private menuState = inject(BurgermenuStateService); // <- hier korrekt injiziert
   private elementRef = inject(ElementRef);
-  menuOpen = false;
+
+  // Status order
   statusOrder: Task['status'][] = ['todo', 'in-progress', 'await-feedback', 'done'];
 
   /**
@@ -126,7 +131,20 @@ export class Taskcard {
    * Toggles the visibility of the task menu.
    */
   toggleMenu() {
-    this.menuOpen = !this.menuOpen;
+    if (!this.task?.id) return;
+
+    if (this.menuState.isOpen(this.task.id)) {
+      this.menuState.close();
+    } else {
+      this.menuState.open(this.task.id);
+    }
+  }
+
+  /**
+   * Checks if the menu is open for this task.
+   */
+  isMenuOpen(): boolean {
+    return this.task?.id ? this.menuState.isOpen(this.task.id) : false;
   }
 
   /**
@@ -137,7 +155,7 @@ export class Taskcard {
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     if (!this.elementRef.nativeElement.contains(event.target)) {
-      this.menuOpen = false;
+      this.menuState.close();
     }
   }
 
@@ -145,21 +163,80 @@ export class Taskcard {
    * Moves the task status up or down in the predefined status order.
    *
    * @param direction Direction to move ('up' or 'down')
-   * @returns Promise<void>
    */
   async moveStatus(direction: 'up' | 'down') {
     if (!this.task?.id) return;
     const currentIndex = this.statusOrder.indexOf(this.task.status);
     let newIndex = currentIndex;
-    if (direction === 'up' && currentIndex > 0) {
-      newIndex = currentIndex - 1;
-    }
-    if (direction === 'down' && currentIndex < this.statusOrder.length - 1) {
+    if (direction === 'up' && currentIndex > 0) newIndex = currentIndex - 1;
+    if (direction === 'down' && currentIndex < this.statusOrder.length - 1)
       newIndex = currentIndex + 1;
-    }
+
     const newStatus = this.statusOrder[newIndex];
     if (newStatus !== this.task.status) {
       await this.taskService.updateTaskStatus(this.task.id, newStatus);
     }
+  }
+
+  // taskcard.ts
+
+  get movesForTemplate() {
+    return this.task ? this.getAvailableMoves() : [];
+  }
+
+  /**
+   * Returns available statuses for this task based on current status.
+   */
+  getAvailableStatuses(): Task['status'][] {
+    const currentIndex = this.statusOrder.indexOf(this.task.status);
+    const available: Task['status'][] = [];
+
+    if (currentIndex > 0) available.push(this.statusOrder[currentIndex - 1]);
+    if (currentIndex < this.statusOrder.length - 1)
+      available.push(this.statusOrder[currentIndex + 1]);
+
+    return available;
+  }
+
+  /**
+   * Moves task to a specific status.
+   */
+  async moveToStatus(newStatus: Task['status']) {
+    if (!this.task?.id) return;
+    if (newStatus !== this.task.status) {
+      await this.taskService.updateTaskStatus(this.task.id, newStatus);
+    }
+  }
+
+  /**
+   * Returns available moves with direction for menu display.
+   */
+  getAvailableMoves(): { status: Task['status']; direction: 'up' | 'down' }[] {
+    if (!this.task) return [];
+
+    const currentIndex = this.statusOrder.indexOf(this.task.status);
+    const moves: { status: Task['status']; direction: 'up' | 'down' }[] = [];
+
+    if (currentIndex > 0) {
+      moves.push({ status: this.statusOrder[currentIndex - 1], direction: 'up' });
+    }
+    if (currentIndex < this.statusOrder.length - 1) {
+      moves.push({ status: this.statusOrder[currentIndex + 1], direction: 'down' });
+    }
+
+    return moves;
+  }
+
+  /**
+   * Returns the display label for a status.
+   */
+  getStatusLabel(status: Task['status']): string {
+    const labels: Record<Task['status'], string> = {
+      todo: 'To Do',
+      'in-progress': 'In Progress',
+      'await-feedback': 'Await Feedback',
+      done: 'Done',
+    };
+    return labels[status] ?? status;
   }
 }
