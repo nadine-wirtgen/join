@@ -94,8 +94,35 @@ export class BoardSection implements OnInit {
     this.taskService.getTasks().subscribe((allTasks) => {
       const grouped = this.groupTasksByStatus(allTasks);
       this.allTasks = grouped;
-      this.tasks.set(grouped);
+      this.applyFilters();
     });
+  }
+
+  private applyFilters() {
+    const statusFilter = this.taskService.getStatusFilter();
+    const term = this.searchTerm.toLowerCase();
+
+    let filtered = this.allTasks;
+
+    // Statusfilter anwenden
+    if (statusFilter !== 'all') {
+      filtered = {
+        todo: statusFilter === 'todo' ? this.allTasks.todo : [],
+        inProgress: statusFilter === 'in-progress' ? this.allTasks.inProgress : [],
+        awaitFeedback: statusFilter === 'await-feedback' ? this.allTasks.awaitFeedback : [],
+        done: statusFilter === 'done' ? this.allTasks.done : [],
+      };
+    }
+
+    // Suchfilter anwenden
+    const finalFiltered = {
+      todo: filtered.todo.filter((t) => this.matchesSearchTerm(t, term)),
+      inProgress: filtered.inProgress.filter((t) => this.matchesSearchTerm(t, term)),
+      awaitFeedback: filtered.awaitFeedback.filter((t) => this.matchesSearchTerm(t, term)),
+      done: filtered.done.filter((t) => this.matchesSearchTerm(t, term)),
+    };
+
+    this.tasks.set(finalFiltered);
   }
 
   /**
@@ -113,6 +140,7 @@ export class BoardSection implements OnInit {
   closeTaskOverlay() {
     this.showTaskOverlay = false;
     this.selectedTask = null;
+    this.applyFilters();
   }
 
   /**

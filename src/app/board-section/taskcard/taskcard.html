@@ -1,31 +1,40 @@
 <div class="taskCard" (click)="onCardClick()">
   <div class="typAndMoveToContainer">
     @if (task.category == 'User Story') {
-      <div class="typUser">User Story</div>
+      <div>User Story</div>
     } @else {
-      <div class="typTechnical">Technical Task</div>
+      <div>Technical Task</div>
     }
-
-    <img
-      src="assets/icon/task/board/taskcard-Burgermenu.png"
-      class="MoveToBurgermenu"
-      (click)="toggleMenu(); $event.stopPropagation()"
-      alt="burgermenu"
-      *ngIf="!menuOpen"
-    />
-    <div class="menu" *ngIf="menuOpen" (click)="$event.stopPropagation()">
-      <p>Move to</p>
-      <div class="menuContant">
-        <div class="moveToBox" (click)="moveStatus('up')" *ngIf="task.status !== 'todo'">
-          <img src="assets/icon/task/board/arrow_upward.png" />
-          <p>To-do</p>
-        </div>
-        <div class="moveToBox" (click)="moveStatus('down')" *ngIf="task.status !== 'done'">
-          <img src="assets/icon/task/board/arrow_downward.png" />
-          <p>Done</p>
+    @if (!isMenuOpen()) {
+      <img
+        src="assets/icon/task/board/taskcard-Burgermenu.png"
+        class="MoveToBurgermenu"
+        (click)="toggleMenu(); $event.stopPropagation()"
+        alt="burgermenu"
+      />
+    }
+    @if (isMenuOpen()) {
+      <div class="menu" (click)="$event.stopPropagation()">
+        <p>Move to</p>
+        <div class="menuContant">
+          <div
+            class="moveToBox"
+            *ngFor="let move of movesForTemplate"
+            (click)="moveToStatus(move.status)"
+          >
+            <img
+              [src]="
+                move.direction == 'up'
+                  ? 'assets/icon/task/board/arrow_upward.png'
+                  : 'assets/icon/task/board/arrow_downward.png'
+              "
+              alt="arrow"
+            />
+            <p>{{ getStatusLabel(move.status) }}</p>
+          </div>
         </div>
       </div>
-    </div>
+    }
   </div>
   <div>
     <p class="title">{{ getDisplayTitle(task.title) }}</p>

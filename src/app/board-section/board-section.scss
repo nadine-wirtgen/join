@@ -13,13 +13,13 @@ section {
     justify-content: space-between;
     align-items: center;
     h1 {
-      font-size: 48px;
+      font-size: 60px;
     }
     .addBtnSearchContainer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 24px;
+      gap: 32px;
     }
   }
   &:hover {
@@ -29,17 +29,21 @@ section {
 
 .searchSection {
   position: relative;
-  width: 300px;
+  width: 312px;
+  display: flex;
+  align-items: center;
   textarea {
     border-radius: 10px;
     border: 1px solid #a8a8a8;
     resize: none;
     width: 100%;
-    height: 36px;
+    height: 48px;
     padding-right: 40px;
     padding-left: 12px;
-    padding-top: 4px;
+    padding-top: 12px;
     font-size: 20px;
+    font-weight: 400;
+
     &::placeholder {
       color: #d1d1d1;
     }
@@ -53,10 +57,12 @@ section {
   .lensArea {
     position: absolute;
     top: 8px;
-    right: 12px;
+    right: 20px;
     display: flex;
+    align-items: center;
     gap: 16px;
-    img {
+    height: 32px;
+    .lensImg {
       height: 18px;
       object-fit: cover;
     }
@@ -70,14 +76,21 @@ section {
 }
 .addBtn {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   padding: 8px 16px;
   border-radius: 10px;
   background-color: #2a3647;
+  width: 160px;
+  height: 48px;
   p {
     color: #ffffff;
+    font-weight: 700;
+    font-size: 21px;
+  }
+  img {
+    height: 18px;
   }
   &:hover {
     cursor: pointer;
@@ -89,10 +102,9 @@ section {
 .boardContainer {
   display: flex;
   justify-content: space-between;
-  gap: 8px;
+  gap: 16px;
   width: 100%;
-  height: 85%;
-  padding-bottom: 24px;
+  min-height: 285px;
   .listContant {
     display: flex;
     flex-direction: column;
@@ -104,6 +116,7 @@ section {
       align-items: center;
       p {
         font-size: 20px;
+        font-weight: 700;
         color: #42526e;
       }
       img {
@@ -117,7 +130,8 @@ section {
       display: flex;
       flex-direction: column;
       gap: 16px;
-      padding: 16px 2px;
+      padding: 2px;
+      padding-bottom: 8px;
       overflow-y: scroll;
       scrollbar-width: none;
       width: 250px;
@@ -180,7 +194,7 @@ section {
   height: 100%;
 }
 
-@media (max-width: 1300px) {
+@media (max-width: 1350px) {
   section {
     height: auto;
     .headlineContainer {
