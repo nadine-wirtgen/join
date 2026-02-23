@@ -98,13 +98,24 @@ export class BoardSection implements OnInit {
     });
   }
 
+  /**
+   * Applies the currently selected status filter and search term to the task list.
+   *
+   * This method retrieves the active status filter from the TaskService
+   * and filters the `allTasks` collection accordingly. If a specific status
+   * (e.g., 'todo', 'in-progress', 'await-feedback', 'done') is selected,
+   * only the corresponding task array is kept while the others are cleared.
+   *
+   * After adjusting the filtered task structure, it calls `filterTasks()`
+   * to apply additional filtering logic (e.g., search term filtering).
+   *
+   * @private
+   * @returns {void}
+   */
   private applyFilters() {
     const statusFilter = this.taskService.getStatusFilter();
     const term = this.searchTerm.toLowerCase();
-
     let filtered = this.allTasks;
-
-    // Statusfilter anwenden
     if (statusFilter !== 'all') {
       filtered = {
         todo: statusFilter === 'todo' ? this.allTasks.todo : [],
@@ -113,16 +124,22 @@ export class BoardSection implements OnInit {
         done: statusFilter === 'done' ? this.allTasks.done : [],
       };
     }
+    this.filterTasks();
+  }
 
-    // Suchfilter anwenden
-    const finalFiltered = {
-      todo: filtered.todo.filter((t) => this.matchesSearchTerm(t, term)),
-      inProgress: filtered.inProgress.filter((t) => this.matchesSearchTerm(t, term)),
-      awaitFeedback: filtered.awaitFeedback.filter((t) => this.matchesSearchTerm(t, term)),
-      done: filtered.done.filter((t) => this.matchesSearchTerm(t, term)),
+  /**
+   * Filters all tasks based on the current search term
+   * and updates the signal state.
+   */
+  filterTasks() {
+    const term = this.searchTerm.toLowerCase();
+    const filtered: Record<ColumnKey, (Task & { id: string })[]> = {
+      todo: this.allTasks.todo.filter((t) => this.matchesSearchTerm(t, term)),
+      inProgress: this.allTasks.inProgress.filter((t) => this.matchesSearchTerm(t, term)),
+      awaitFeedback: this.allTasks.awaitFeedback.filter((t) => this.matchesSearchTerm(t, term)),
+      done: this.allTasks.done.filter((t) => this.matchesSearchTerm(t, term)),
     };
-
-    this.tasks.set(finalFiltered);
+    this.tasks.set(filtered);
   }
 
   /**
@@ -145,7 +162,6 @@ export class BoardSection implements OnInit {
 
   /**
    * Updates an existing task in the database.
-   *
    * @param updatedTask Updated task data (without id and createdAt)
    * @returns Promise<void>
    */
@@ -162,7 +178,6 @@ export class BoardSection implements OnInit {
 
   /**
    * Deletes a task by its ID.
-   *
    * @param taskId The ID of the task to delete
    * @returns Promise<void>
    */
@@ -177,7 +192,6 @@ export class BoardSection implements OnInit {
 
   /**
    * Opens the add-task dialog for a specific column.
-   *
    * @param column The target column
    */
   openAddTaskDialog(column: ColumnKey) {
@@ -193,25 +207,9 @@ export class BoardSection implements OnInit {
   }
 
   /**
-   * Filters all tasks based on the current search term
-   * and updates the signal state.
-   */
-  filterTasks() {
-    const term = this.searchTerm.toLowerCase();
-    const filtered: Record<ColumnKey, (Task & { id: string })[]> = {
-      todo: this.allTasks.todo.filter((t) => this.matchesSearchTerm(t, term)),
-      inProgress: this.allTasks.inProgress.filter((t) => this.matchesSearchTerm(t, term)),
-      awaitFeedback: this.allTasks.awaitFeedback.filter((t) => this.matchesSearchTerm(t, term)),
-      done: this.allTasks.done.filter((t) => this.matchesSearchTerm(t, term)),
-    };
-    this.tasks.set(filtered);
-  }
-
-  /**
    * Triggered when a task is dropped.
    * Handles reordering or moving between columns,
    * updates positions and persists changes.
-   *
    * @param event Angular CDK drag & drop event
    */
   drop(event: CdkDragDrop<(Task & { id: string })[]>) {
@@ -229,7 +227,6 @@ export class BoardSection implements OnInit {
 
   /**
    * Checks whether the task was moved within the same container.
-   *
    * @param event DragDrop event
    * @returns True if the source and target containers are the same
    */
@@ -239,7 +236,6 @@ export class BoardSection implements OnInit {
 
   /**
    * Reorders tasks within the same column.
-   *
    * @param event DragDrop event
    */
   private reorderWithinColumn(event: CdkDragDrop<any>) {
@@ -249,7 +245,6 @@ export class BoardSection implements OnInit {
   /**
    * Moves a task between two columns
    * and updates its status.
-   *
    * @param event DragDrop event
    */
   private moveBetweenColumns(event: CdkDragDrop<any>) {
@@ -265,7 +260,6 @@ export class BoardSection implements OnInit {
 
   /**
    * Collects all affected tasks after a drag operation.
-   *
    * @param event DragDrop event
    * @returns Array of affected tasks
    */
@@ -275,7 +269,6 @@ export class BoardSection implements OnInit {
 
   /**
    * Updates the position property of the given tasks.
-   *
    * @param tasks List of tasks to update
    */
   private updatePositions(tasks: (Task & { id: string })[]) {
@@ -286,7 +279,6 @@ export class BoardSection implements OnInit {
 
   /**
    * Persists position and status updates to the database.
-   *
    * @param tasks List of tasks to persist
    */
   private persistTasks(tasks: (Task & { id: string })[]) {
@@ -301,7 +293,6 @@ export class BoardSection implements OnInit {
   /**
    * Applies a small rotation effect while dragging,
    * based on horizontal pointer movement.
-   *
    * @param event CdkDragMove event
    */
   onDragMove(event: CdkDragMove) {
@@ -320,7 +311,6 @@ export class BoardSection implements OnInit {
   /**
    * Toggles the visibility of the add-task section
    * for a specific column.
-   *
    * @param column Target column
    */
   toggleAddTask(column: ColumnKey) {
@@ -329,7 +319,6 @@ export class BoardSection implements OnInit {
 
   /**
    * Wrapper method for toggling the add-task form.
-   *
    * @param column Target column
    */
   addTaskToColumn(column: ColumnKey) {
@@ -339,7 +328,6 @@ export class BoardSection implements OnInit {
   /**
    * Creates a new task from form data
    * and stores it in the selected column.
-   *
    * @param column Target column
    * @param formData Partial task data from the form
    * @returns Promise<void>
@@ -361,7 +349,6 @@ export class BoardSection implements OnInit {
 
   /**
    * TrackBy function for ngFor to improve rendering performance.
-   *
    * @param _index Array index
    * @param task Task object
    * @returns Task ID
@@ -372,7 +359,6 @@ export class BoardSection implements OnInit {
 
   /**
    * Groups tasks by their status and sorts them by position.
-   *
    * @param tasks All loaded tasks
    * @returns Object containing tasks grouped by column
    */
@@ -395,7 +381,6 @@ export class BoardSection implements OnInit {
 
   /**
    * Checks whether a task matches the given search term.
-   *
    * @param task Task object
    * @param term Search term (already lowercase)
    * @returns True if the task matches the search term
