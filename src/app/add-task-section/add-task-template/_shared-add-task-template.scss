@@ -28,6 +28,7 @@
 label {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
+  margin-top: 10px; 
   margin-bottom: 6px;
   font-size: 20px;
   color: #2A3647;
@@ -37,12 +38,14 @@ label {
 	display: flex;
 	gap: 32px;
 	flex-direction: row;
-	align-items: center;
+	align-items: stretch; 
 	justify-content: flex-start;
 	width: 100%;
 	max-width: 945px;
 	flex: 1 1 auto;
-	padding-bottom: 100px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	padding-bottom: 100px; 
 	overflow-y: auto;
 	max-height: 100%;
 	
@@ -84,6 +87,7 @@ label {
 	font-size: 16px;
 	line-height: 120%;
 	letter-spacing: 0;
+	min-height: 20px; 
 }
 
 .inline-required-hint {
@@ -116,7 +120,7 @@ label {
 	width: 1px;
 	height: 424px;
 	background-color: #D1D1D1;
-	align-self: center;
+	align-self: stretch;
 }
 
 @media (max-width: 900px) {
@@ -150,7 +154,12 @@ label {
 		max-height: 200px;
 	}
 }
-
+input[type="date"] {
+    cursor: pointer;
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+}
 /* ================== Priority Buttons ================== */
 
 .priority-buttons {
@@ -273,12 +282,13 @@ label {
 		padding: 6px 10px;
 		background-color: #fff;
 		gap: 8px;
+		margin-bottom: 10px;
 	}
 	.avatars-below {
 		display: flex;
 		gap: 6px;
 		margin-top: 8px;
-		margin-bottom: 8px;
+		margin-bottom: 10px;
 		.avatar {
 			width: 28px;
 			height: 28px;
@@ -297,7 +307,7 @@ label {
 
 	.assigned-to-list {
 		position: absolute;
-		top: 68px;
+		top: 80px;
 		left: 0;
 		width: 100%;
 		max-height: 240px;
@@ -422,6 +432,17 @@ label {
 	width: 100%;
 	margin-bottom: 8px;
   
+.subtask-list-container {
+   		 max-height: calc(3 * 48px); /* 3 Subtasks à 48px Höhe */
+  		  min-height: calc(3 * 48px); /* Reserviert immer Platz für 3 Subtasks */
+ 		   overflow-y: auto;            /* Scrollbar erscheint nur, wenn mehr als 3 Subtasks */
+	}
+		.subtask-list {
+    		display: flex;
+    		flex-direction: column;
+   		 gap: 8px; /* Abstand zwischen Subtasks */
+	}
+
 	input {
 		flex: 1;
 		width: 100%;
@@ -445,7 +466,7 @@ label {
 		font-size: 20px;
 		line-height: 120%;
 		letter-spacing: 0.09em;
-		color: #D1D1D1;
+		color: #2A3647; 
 	}
 
 	.subtask-actions {
@@ -495,6 +516,38 @@ label {
 
 .subtask-item {
 	cursor: pointer;
+}
+.subtask-item .subtask-actions {
+    display: none !important;
+}
+.subtask-item:hover .subtask-actions,
+.subtask-item.editing .subtask-actions {
+    display: flex !important;
+}
+.subtask-item .subtask-actions {
+    display: none;
+}
+
+.subtask-item:hover .subtask-actions,
+.subtask-item.editing .subtask-actions {
+    display: flex;
+}
+
+.subtask-item .subtask-divider {
+    display: none;
+}
+.subtask-item:hover .subtask-divider,
+.subtask-item.editing .subtask-divider {
+    display: block;
+}
+
+.subtask-item .subtask-actions {
+    display: none;
+}
+
+.subtask-item:hover .subtask-actions,
+.subtask-item.editing .subtask-actions {
+    display: flex;
 }
 
 .subtask-item.editing {

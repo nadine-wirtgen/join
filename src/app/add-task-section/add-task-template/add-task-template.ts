@@ -176,11 +176,11 @@ export class AddTaskTemplate {
       }
     }
 
-	// Close subtask edit mode when clicking outside any subtask item
-	if (!target.closest('.subtask-item')) {
-		this.editingSubtaskIndex = null;
-		this.editingSubtaskTitle = '';
-	}
+    // Close subtask edit mode when clicking outside any subtask item
+    if (!target.closest('.subtask-item')) {
+      this.editingSubtaskIndex = null;
+      this.editingSubtaskTitle = '';
+    }
   }
 
   clearForm() {
@@ -198,6 +198,11 @@ export class AddTaskTemplate {
     this.categoryInvalid = false;
     this.editingSubtaskIndex = null;
     this.editingSubtaskTitle = '';
+
+    if (this.isDialogMode) {
+      this.closeDialog.emit();
+    }
+
   }
 
   validateTitle() {
