@@ -1,9 +1,9 @@
 <div class="taskCard" (click)="onCardClick()">
   <div class="typAndMoveToContainer">
     @if (task.category == 'User Story') {
-      <div>User Story</div>
+      <div class="typUser">User Story</div>
     } @else {
-      <div>Technical Task</div>
+      <div class="typTechnical">Technical Task</div>
     }
     @if (!isMenuOpen()) {
       <img
