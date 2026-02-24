@@ -20,6 +20,9 @@ type ContactGroup = {
   contacts: Contacts[];
 };
 
+/**
+ * Component for displaying and managing the contact list.
+ */
 @Component({
   selector: 'app-contact-list',
   imports: [ContactDialogTemplate],
@@ -38,45 +41,79 @@ export class ContactList implements OnInit, OnDestroy {
 
   constructor(/*public contactService: ContactService*/) {}
 
+  /**
+   * Angular lifecycle: subscribes to edit requests.
+   */
   ngOnInit(): void {
     this.editSubscription = this.contactService.editRequest$.subscribe(() => {
       this.openContactDia('change');
     });
   }
 
+  /**
+   * Angular lifecycle: unsubscribes from edit requests.
+   */
   ngOnDestroy(): void {
     this.editSubscription?.unsubscribe();
   }
 
+  /**
+   * Opens the contact dialog in the given mode.
+   * @param action Dialog mode ('open' or 'change').
+   */
   openContactDia(action: 'open' | 'change') {
     this.dialogMode = action;
     this.contactDialog?.openWithMode(action);
   }
 
+  /**
+   * Selects a contact and opens the contact view.
+   * @param contact The contact to select.
+   */
   selectContact(contact: Contacts): void {
     this.contactService.setSelectedContact(contact);
     this.openContact();
   }
 
+  /**
+   * Gets the initials for a contact name.
+   * @param name The contact name.
+   */
   getInitials(name?: string): string {
     return this.contactService.getInitials(name);
   }
 
+  /**
+   * Returns a display name, truncated if too long.
+   * @param name The contact name.
+   */
   getDisplayName(name?: string): string {
     if (!name) return '';
     return name.length >= 20 ? name.slice(0, 15) + '…' : name;
   }
 
+  /**
+   * Gets the color for a contact.
+   * @param contact The contact object.
+   */
   getContactColor(contact: Contacts): string {
     return this.contactService.getContactColor(contact);
   }
 
+  /**
+   * Handles the event when a contact is created.
+   * @param contact The created contact.
+   */
   handleContactCreated(contact: Contacts): void {
     this.contactService.setSelectedContact(contact);
     this.openContact();
     this.scrollToContact(contact.id);
   }
 
+  /**
+   * Groups contacts alphabetically by first letter.
+   * @returns Array of contact groups.
+   */
   getContactGroups(): ContactGroup[] {
     const contacts = [...this.contactService.contactList]
       .filter((contact) => contact.name?.trim())
@@ -98,38 +135,51 @@ export class ContactList implements OnInit, OnDestroy {
     return groups;
   }
 
+  /**
+   * Emits the switch event to open the contact view.
+   */
   openContact() {
     this.switch.emit();
   }
 
+  /**
+   * Scrolls to the contact row with the given ID.
+   * @param contactId The contact ID to scroll to.
+   */
   private scrollToContact(contactId?: string): void {
-    if (!contactId || !this.contactRows) {
-      return;
+    if (!contactId || !this.contactRows) return;
+    if (this.tryScrollToContact(contactId)) return;
+    this.waitForContactRowAndScroll(contactId);
+  }
+
+  /**
+   * Tries to scroll to the contact row with the given ID.
+   * @param contactId The contact ID.
+   * @returns True if scrolled, false otherwise.
+   */
+  private tryScrollToContact(contactId: string): boolean {
+    const target = this.contactRows?.find(
+      (row) => row.nativeElement.dataset['contactId'] === contactId
+    );
+    if (target) {
+      target.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      return true;
     }
+    return false;
+  }
 
-    const tryScroll = () => {
-      const target = this.contactRows?.find(
-        (row) => row.nativeElement.dataset['contactId'] === contactId
-      );
-      if (target) {
-        target.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        return true;
-      }
-      return false;
-    };
-
-    if (tryScroll()) {
-      return;
-    }
-
-    const changeSubscription = this.contactRows.changes.subscribe(() => {
-      if (tryScroll()) {
+  /**
+   * Waits for the contact row to appear and then scrolls to it.
+   * @param contactId The contact ID.
+   */
+  private waitForContactRowAndScroll(contactId: string): void {
+    const changeSubscription = this.contactRows!.changes.subscribe(() => {
+      if (this.tryScrollToContact(contactId)) {
         changeSubscription.unsubscribe();
       }
     });
-
     window.setTimeout(() => {
-      if (!tryScroll()) {
+      if (!this.tryScrollToContact(contactId)) {
         changeSubscription.unsubscribe();
       }
     }, 1000);
