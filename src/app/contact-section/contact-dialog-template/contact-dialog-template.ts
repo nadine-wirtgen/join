@@ -6,6 +6,10 @@ import { Contacts } from '../../interfaces/contacts';
 type DialogMode = 'open' | 'change';
 type DialogTextKey = 'title' | 'subtitle' | 'primaryAction' | 'secondaryAction';
 
+/**
+ * Dialog component for adding or editing a contact.
+ * Handles dialog open/close, form actions, and animations.
+ */
 @Component({
   selector: 'app-contact-dialog-template',
   standalone: true,
@@ -48,11 +52,18 @@ export class ContactDialogTemplate implements AfterViewInit, OnDestroy {
     phone: '',
   };
 
+  /**
+   * Opens the dialog in a specific mode ('open' or 'change').
+   * @param mode The dialog mode.
+   */
   openWithMode(mode: DialogMode): void {
     this.mode = mode;
     this.open();
   }
 
+  /**
+   * Angular lifecycle: after view init, sets up cancel event listener.
+   */
   ngAfterViewInit(): void {
     const dialogEl = this.dialog?.nativeElement;
     if (!dialogEl) {
@@ -67,6 +78,9 @@ export class ContactDialogTemplate implements AfterViewInit, OnDestroy {
     dialogEl.addEventListener('cancel', this.cancelListener);
   }
 
+  /**
+   * Angular lifecycle: on destroy, cleans up listeners and timeouts.
+   */
   ngOnDestroy(): void {
     const dialogEl = this.dialog?.nativeElement;
     if (dialogEl && this.cancelListener) {
@@ -76,7 +90,20 @@ export class ContactDialogTemplate implements AfterViewInit, OnDestroy {
     this.clearToastTimeouts();
   }
 
+  /**
+   * Opens the dialog and prepares contact fields.
+   */
   open(): void {
+    this.prepareContactFields();
+    const dialogEl = this.dialog?.nativeElement;
+    if (!dialogEl) return;
+    this.openDialogElement(dialogEl);
+  }
+
+  /**
+   * Prepares the contact fields for the dialog depending on mode.
+   */
+  private prepareContactFields(): void {
     if (this.mode === 'change') {
       const selected = this.contactsService.selectedContact;
       if (selected) {
@@ -87,80 +114,92 @@ export class ContactDialogTemplate implements AfterViewInit, OnDestroy {
     } else {
       this.clearInputFields();
     }
+  }
 
-    const dialogEl = this.dialog?.nativeElement;
-    if (!dialogEl) {
-      return;
-    }
-
+  /**
+   * Opens the dialog element and locks body scroll.
+   * @param dialogEl The dialog HTML element.
+   */
+  private openDialogElement(dialogEl: HTMLDialogElement): void {
     dialogEl.removeAttribute('data-dialog-state');
     this.lockBodyScroll();
     dialogEl.showModal();
   }
 
+  /**
+   * Closes the dialog with animation and resets form.
+   */
   close(): void {
     const dialogEl = this.dialog?.nativeElement;
-    if (!dialogEl) {
-      return;
-    }
+    if (!dialogEl) return;
+    if (!dialogEl.open) return this.finishClose(dialogEl);
+    if (dialogEl.getAttribute('data-dialog-state') === 'closing') return;
+    this.setupDialogCloseAnimation(dialogEl);
+  }
 
-    const finishClose = () => {
-      dialogEl.removeAttribute('data-dialog-state');
-      dialogEl.close();
-      this.unlockBodyScroll();
-      this.contactForm?.resetForm();
-    };
+  /**
+   * Finishes closing the dialog, unlocks scroll, resets form.
+   * @param dialogEl The dialog HTML element.
+   */
+  private finishClose(dialogEl: HTMLDialogElement): void {
+    dialogEl.removeAttribute('data-dialog-state');
+    dialogEl.close();
+    this.unlockBodyScroll();
+    this.contactForm?.resetForm();
+  }
 
-    if (!dialogEl.open) {
-      finishClose();
-      return;
-    }
-
-    if (dialogEl.getAttribute('data-dialog-state') === 'closing') {
-      return;
-    }
-
+  /**
+   * Sets up the close animation and fallback for the dialog.
+   * @param dialogEl The dialog HTML element.
+   */
+  private setupDialogCloseAnimation(dialogEl: HTMLDialogElement): void {
     const animationDuration = 400;
     let fallbackId: number | undefined;
-
     const handleAnimationEnd = (event: AnimationEvent) => {
-      if (event.target !== dialogEl) {
-        return;
-      }
-      if (event.animationName !== 'dialog-exit-right' && event.animationName !== 'dialog-exit-up') {
-        return;
-      }
-
-      if (fallbackId !== undefined) {
-        window.clearTimeout(fallbackId);
-      }
+      if (event.target !== dialogEl) return;
+      if (event.animationName !== 'dialog-exit-right' && event.animationName !== 'dialog-exit-up') return;
+      if (fallbackId !== undefined) window.clearTimeout(fallbackId);
       dialogEl.removeEventListener('animationend', handleAnimationEnd);
-      finishClose();
+      this.finishClose(dialogEl);
     };
-
     fallbackId = window.setTimeout(() => {
       dialogEl.removeEventListener('animationend', handleAnimationEnd);
-      finishClose();
+      this.finishClose(dialogEl);
     }, animationDuration);
-
     dialogEl.addEventListener('animationend', handleAnimationEnd);
     dialogEl.setAttribute('data-dialog-state', 'closing');
   }
 
+  /**
+   * Handles click on the backdrop to close the dialog.
+   * @param event Mouse event.
+   */
   onBackdropClick(event: MouseEvent): void {
     if (event.target === this.dialog?.nativeElement) {
       this.close();
     }
   }
 
+  /**
+   * Gets the dialog text for a given key and mode.
+   * @param key The dialog text key.
+   */
   getText(key: DialogTextKey): string {
     return this.dialogText[this.mode][key];
   }
 
+  /**
+   * Gets the color for a contact.
+   * @param contact The contact object.
+   */
   getContactColor(contact: any): string {
     return this.contactsService.getContactColor(contact);
   }
 
+  /**
+   * Handles the primary action (create or save contact) from the dialog.
+   * @param form The NgForm instance.
+   */
   handlePrimaryAction(form: NgForm): void {
     if (!form.valid) {
       Object.keys(form.controls).forEach(key => {
@@ -176,6 +215,9 @@ export class ContactDialogTemplate implements AfterViewInit, OnDestroy {
     this.saveChanges();
   }
 
+  /**
+   * Saves changes to an existing contact.
+   */
   async saveChanges(): Promise<void> {
     const selected = this.contactsService.selectedContact;
     if (!selected?.id) {
@@ -192,6 +234,9 @@ export class ContactDialogTemplate implements AfterViewInit, OnDestroy {
     this.close();
   }
   
+  /**
+   * Handles the secondary action (cancel or delete contact).
+   */
   handleSecondaryAction(): void {
     if (this.mode === 'open') {
       this.close();
@@ -202,6 +247,10 @@ export class ContactDialogTemplate implements AfterViewInit, OnDestroy {
     this.close();
   }
 
+  /**
+   * Submits a new contact to the database.
+   * @param form The NgForm instance.
+   */
   async submitContact(form: NgForm): Promise<void> {
     const createdContact = await this.contactsService.addContactToDataBase(this.contact);
     form.resetForm();
@@ -213,12 +262,18 @@ export class ContactDialogTemplate implements AfterViewInit, OnDestroy {
     }
   }
 
+  /**
+   * Clears the contact input fields.
+   */
   clearInputFields(): void {
     this.contact.name = '';
     this.contact.email = '';
     this.contact.phone = '';
   }
 
+  /**
+   * Schedules the success toast after closing the dialog.
+   */
   private scheduleSuccessToast(): void {
     if (typeof window === 'undefined') {
       return;
@@ -238,6 +293,9 @@ export class ContactDialogTemplate implements AfterViewInit, OnDestroy {
     }, delayBeforeShow);
   }
 
+  /**
+   * Clears any toast timeouts.
+   */
   private clearToastTimeouts(): void {
     if (this.toastShowTimeoutId !== undefined) {
       window.clearTimeout(this.toastShowTimeoutId);
@@ -249,6 +307,9 @@ export class ContactDialogTemplate implements AfterViewInit, OnDestroy {
     this.toastHideTimeoutId = undefined;
   }
 
+  /**
+   * Locks body scroll for mobile viewports.
+   */
   private lockBodyScroll(): void {
     if (typeof document === 'undefined') {
       return;
@@ -260,6 +321,9 @@ export class ContactDialogTemplate implements AfterViewInit, OnDestroy {
     this.isScrollLocked = true;
   }
 
+  /**
+   * Unlocks body scroll if it was locked.
+   */
   private unlockBodyScroll(): void {
     if (typeof document === 'undefined') {
       return;
@@ -271,6 +335,10 @@ export class ContactDialogTemplate implements AfterViewInit, OnDestroy {
     this.isScrollLocked = false;
   }
 
+  /**
+   * Checks if the viewport is mobile size.
+   * @returns True if mobile viewport.
+   */
   private isMobileViewport(): boolean {
     if (typeof window === 'undefined') {
       return false;

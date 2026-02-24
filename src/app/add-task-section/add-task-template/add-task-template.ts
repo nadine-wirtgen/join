@@ -7,6 +7,10 @@ import { ContactService } from '../../firebase-service/contact-service';
 import { Contacts } from '../../interfaces/contacts';
 import { Task, Subtask } from '../../interfaces/task';
 
+/**
+ * Component for the Add Task Template.
+ * Handles task creation, form validation, subtasks, and UI logic for adding tasks.
+ */
 @Component({
   selector: 'app-add-task-template',
   standalone: true,
@@ -14,11 +18,16 @@ import { Task, Subtask } from '../../interfaces/task';
   templateUrl: './add-task-template.html',
   styleUrl: './add-task-template.scss',
 })
+
 export class AddTaskTemplate {
   @Input() column: Task['status'] = 'todo';
   @Input() isDialogMode = false;
   isCategoryDropdownOpen: boolean = false;
 
+  /**
+   * Opens or closes the category dropdown.
+   * @param event Optional event to stop propagation.
+   */
   toggleCategoryDropdown(event?: Event) {
     if (event) event.stopPropagation();
     const willOpen = !this.isCategoryDropdownOpen;
@@ -28,6 +37,11 @@ export class AddTaskTemplate {
     }
   }
 
+  /**
+   * Selects a category and closes the dropdown.
+   * @param value The selected category value.
+   * @param event The click event.
+   */
   selectCategory(value: string, event: Event) {
     event.stopPropagation();
     this.category = value;
@@ -35,6 +49,10 @@ export class AddTaskTemplate {
     this.categoryInvalid = false;
   }
 
+  /**
+   * Toggles the assigned contacts dropdown arrow.
+   * @param event The click event.
+   */
   toggleDropdownArrow(event: Event) {
     event.stopPropagation();
     if (this.isAssignedDropdownOpen) {
@@ -44,26 +62,38 @@ export class AddTaskTemplate {
     }
   }
 
+
   contactSearchTerm: string = '';
   showAllContacts: boolean = false;
 
+  /**
+   * Opens the assigned contacts dropdown when searching.
+   */
   openDropdownOnSearch() {
     this.showAllContacts = false;
     this.isAssignedDropdownOpen = true;
   }
 
+  /**
+   * Opens the assigned contacts dropdown and shows all contacts.
+   * @param event The click event.
+   */
   openDropdownAll(event: Event) {
     event.stopPropagation();
     this.showAllContacts = true;
     this.isAssignedDropdownOpen = true;
   }
 
+  /**
+   * Returns the filtered list of contacts to show in the dropdown.
+   */
   filteredContactsToShow(): Contacts[] {
     if (this.showAllContacts) return this.contactService.contactList;
     const term = this.contactSearchTerm.trim().toLowerCase();
     if (!term) return this.contactService.contactList;
     return this.contactService.contactList.filter(c => c.name.toLowerCase().includes(term));
   }
+
 
   title = '';
   description = '';
@@ -77,21 +107,30 @@ export class AddTaskTemplate {
   newSubtask = '';
   taskSavedMessage = false;
 
+
   editingSubtaskIndex: number | null = null;
   editingSubtaskTitle = '';
+
 
   isAssignedDropdownOpen = false;
   assignedToContacts: Contacts[] = [];
 
+
   @Output() closeDialog = new EventEmitter<void>();
 
+
+  /**
+   * Constructor for AddTaskTemplate.
+   * @param taskService Service for task operations.
+   * @param contactService Service for contact operations.
+   * @param router Angular router for navigation.
+   */
   constructor(
     private taskService: TaskService,
     public contactService: ContactService,
     private router: Router
   ) {
     this.minDate = new Date().toISOString().split('T')[0];
-
     this.contactService.contactList.forEach(c => {
       if (c.selected === undefined) c.selected = false;
     });
@@ -99,10 +138,17 @@ export class AddTaskTemplate {
   }
   today: string;
 
+  /**
+   * Sets the task priority.
+   * @param value The priority value.
+   */
   setPriority(value: 'urgent' | 'medium' | 'low') {
     this.priority = value;
   }
 
+  /**
+   * Adds a new subtask to the list.
+   */
   addSubtask() {
     if (this.newSubtask.trim()) {
       const subtask: Subtask = { title: this.newSubtask.trim(), completed: false };
@@ -111,6 +157,10 @@ export class AddTaskTemplate {
     }
   }
 
+  /**
+   * Removes a subtask by index.
+   * @param index The index of the subtask to remove.
+   */
   removeSubtask(index: number) {
     this.subtasks.splice(index, 1);
 
@@ -124,11 +174,20 @@ export class AddTaskTemplate {
     }
   }
 
+  /**
+   * Starts editing a subtask.
+   * @param index The subtask index.
+   * @param title The subtask title.
+   */
   startEditSubtask(index: number, title: string) {
     this.editingSubtaskIndex = index;
     this.editingSubtaskTitle = title;
   }
 
+  /**
+   * Saves the edited subtask title.
+   * @param index The subtask index.
+   */
   saveSubtaskEdit(index: number) {
     if (this.editingSubtaskIndex !== index) return;
 
@@ -145,20 +204,35 @@ export class AddTaskTemplate {
     this.editingSubtaskTitle = '';
   }
 
+  /**
+   * Returns a display name, truncated if too long.
+   * @param name The contact name.
+   */
   getDisplayName(name?: string): string {
     if (!name) return '';
     return name.length >= 20 ? name.slice(0, 15) + '…' : name;
   }
 
+  /**
+   * Toggles the assigned contacts dropdown.
+   */
   toggleAssignedDropdown() {
     this.isAssignedDropdownOpen = !this.isAssignedDropdownOpen;
   }
 
+  /**
+   * Toggles selection of a contact for assignment.
+   * @param contact The contact to toggle.
+   */
   toggleAssignedContact(contact: Contacts) {
     contact.selected = !contact.selected;
     this.assignedToContacts = this.contactService.contactList.filter(c => c.selected);
   }
 
+  /**
+   * Handles clicks outside dropdowns and editing areas to close them.
+   * @param event The click event.
+   */
   @HostListener('document:click', ['$event'])
   handleClickOutside(event: MouseEvent) {
     const target = event.target as HTMLElement;
@@ -167,7 +241,6 @@ export class AddTaskTemplate {
     }
 
     if (!target.closest('.category-select')) {
-      // Close category dropdown and validate when it was open
       if (this.isCategoryDropdownOpen) {
         this.isCategoryDropdownOpen = false;
         this.validateCategory();
@@ -176,13 +249,15 @@ export class AddTaskTemplate {
       }
     }
 
-    // Close subtask edit mode when clicking outside any subtask item
     if (!target.closest('.subtask-item')) {
       this.editingSubtaskIndex = null;
       this.editingSubtaskTitle = '';
     }
   }
 
+  /**
+   * Clears the form and resets all fields.
+   */
   clearForm() {
     this.title = '';
     this.description = '';
@@ -202,11 +277,12 @@ export class AddTaskTemplate {
     if (this.isDialogMode) {
       this.closeDialog.emit();
     }
-
   }
 
+  /**
+   * Validates the task title input.
+   */
   validateTitle() {
-    // Mindestens 2 Zeichen, nicht nur Zahlen, keine reinen Leerzeichen
     const trimmed = this.title ? this.title.trim() : '';
     this.titleInvalid =
       !trimmed ||
@@ -216,14 +292,24 @@ export class AddTaskTemplate {
 
   categoryInvalid = false;
 
+  /**
+   * Validates the due date input.
+   */
   validateDueDate() {
     const todayIso = new Date().toISOString().split('T')[0];
     this.dueDateInvalid = !this.dueDate || this.dueDate < todayIso;
   }
+  
+  /**
+   * Validates the category input.
+   */
   validateCategory() {
     this.categoryInvalid = !this.category || !this.category.trim();
   }
 
+  /**
+   * Returns true if the form is valid.
+   */
   get isFormValid(): boolean {
     if (!this.title || !this.title.trim()) return false;
     if (!this.dueDate) return false;
@@ -234,15 +320,27 @@ export class AddTaskTemplate {
     return true;
   }
 
+  /**
+   * Creates a new task after validating the form.
+   */
   async createTask() {
     this.validateTitle();
     this.validateCategory();
-
-    if (this.titleInvalid || !this.isFormValid || this.categoryInvalid) {
-      return;
+    if (this.titleInvalid || !this.isFormValid || this.categoryInvalid) return;
+    const task = this.buildTask();
+    try {
+      await this.taskService.createTask(task);
+      this.handleTaskCreated();
+    } catch (error) {
+      this.handleTaskError(error);
     }
+  }
 
-    const task: Omit<Task, 'createdAt'> = {
+  /**
+   * Builds the task object to be created.
+   */
+  private buildTask(): Omit<Task, 'createdAt'> {
+    return {
       title: this.title,
       description: this.description,
       dueDate: this.dueDate,
@@ -253,25 +351,32 @@ export class AddTaskTemplate {
       status: this.column,
       position: 0,
     };
+  }
 
-    try {
-      await this.taskService.createTask(task);
-      this.clearForm();
-      this.taskSavedMessage = true;
-
-      if (this.isDialogMode) {
-        setTimeout(() => {
-          this.taskSavedMessage = false;
-          this.closeDialog.emit();
-        }, 1000);
-      } else {
-        setTimeout(() => {
-          this.taskSavedMessage = false;
-          this.router.navigate(['/board']);
-        }, 1000);
-      }
-    } catch (error) {
-      console.error('Error creating task:', error);
+  /**
+   * Handles UI and navigation after a task is created.
+   */
+  private handleTaskCreated() {
+    this.clearForm();
+    this.taskSavedMessage = true;
+    if (this.isDialogMode) {
+      setTimeout(() => {
+        this.taskSavedMessage = false;
+        this.closeDialog.emit();
+      }, 1000);
+    } else {
+      setTimeout(() => {
+        this.taskSavedMessage = false;
+        this.router.navigate(['/board']);
+      }, 1000);
     }
+  }
+
+  /**
+   * Handles errors during task creation.
+   * @param error The error object.
+   */
+  private handleTaskError(error: any) {
+    console.error('Error creating task:', error);
   }
 }
