@@ -1,69 +1,56 @@
 <div class="contact-selector">
-  <div class="add-contact-area">
-    <div class="add-contact-input" (click)="toggleDropdown()">
-      <input
-        type="text"
-        placeholder="Select contacts to assign..."
-        readonly
-        [value]="selectedContacts.length ? selectedContacts.length + ' contact(s) selected' : ''"
-      />
-      <span class="dropdown-arrow" [class.rotated]="showDropdown">⌵</span>
-    </div>
 
-    @if (showDropdown) {
-      <div class="contacts-dropdown">
-        <div class="contacts-list">
-          @if (filteredContacts.length > 0) {
-            @for (contact of filteredContacts; track contact.id) {
-              <div class="contact-item">
-                <div class="avatar" [style.backgroundColor]="getContactColor(contact)">
-                  <p>{{ getInitials(contact.name) }}</p>
-                </div>
-                <div class="contact-info">
-                  <span class="contact-name">{{ getDisplayName(contact.name) }}</span>
-                </div>
-                <input
-                  type="checkbox"
-                  class="contact-checkbox"
-                  [checked]="isContactSelected(contact)"
-                  (change)="toggleContact(contact)"
-                  (click)="$event.stopPropagation()"
-                />
-              </div>
-            }
-          } @else {
-            <div class="no-results">
-              @if (searchTerm) {
-                No contacts found for "{{ searchTerm }}"
-              } @else {
-                No contacts available
-              }
-            </div>
-          }
-        </div>
+  <div class="assigned-to-container" (click)="$event.stopPropagation()">
 
-        <div class="dropdown-footer">
-          <button class="close-dropdown" (click)="showDropdown = false">Close</button>
-        </div>
+   <div class="assigned-to-select" (click)="toggleDropdown($event)" style="cursor:pointer;">
+  <input
+    type="text"
+    class="contact-search-select"
+    placeholder="Select contacts to assign"
+    [(ngModel)]="searchTerm"
+    (focus)="showDropdown = true"
+    (input)="showDropdown = true"
+    style="cursor:pointer;"
+  />
+  <img
+    [src]="showDropdown 
+      ? 'assets/imgs/add-task/arrow_drop_up.png'
+      : 'assets/imgs/add-task/arrow_drop_down.png'"
+    class="dropdown-arrow"
+    alt="Dropdown Arrow"
+  />
+</div>
+
+    <div *ngIf="selectedContacts.length > 0" class="avatars-below" (click)="$event.stopPropagation()">
+      <div *ngFor="let contact of selectedContacts | slice:0:3" class="avatar" [style.backgroundColor]="getContactColor(contact)">
+        {{ getInitials(contact.name) }}
       </div>
-    }
-  </div>
-
-  @if (selectedContacts.length > 0) {
-    <div class="selected-badges reverse-order">
-      @for (contact of displayedSelectedContacts; track contact.id) {
-        <div class="contact-badge">
-          <div class="avatar" [style.backgroundColor]="getContactColor(contact)">
-            <p>{{ getInitials(contact.name) }}</p>
-          </div>
-        </div>
-      }
-
-      @if (hiddenContactsCount > 0 && !showAllContacts) {
-        <div class="more-contacts-badge static">
-          <span class="more-count">+{{ hiddenContactsCount }}</span>
-        </div>
-      }
+      <div *ngIf="selectedContacts.length > 3" class="avatar more">
+        +{{ selectedContacts.length - 3 }}
+      </div>
     </div>
-  }
+
+    <div *ngIf="showDropdown" class="assigned-to-list" (click)="$event.stopPropagation()">
+      <div *ngFor="let contact of filteredContacts" class="single-contact" 
+           [class.active]="isContactSelected(contact)" 
+           (click)="toggleContact(contact)">
+        <div class="avatar-letter-box" [style.backgroundColor]="getContactColor(contact)">
+          {{ getInitials(contact.name) }}
+        </div>
+        <span class="contact-name">{{ contact.name }}</span>
+        <img
+          [src]="isContactSelected(contact) 
+            ? 'assets/imgs/add-task/checkbox_active.png'
+            : 'assets/imgs/add-task/checkbox_default.png'"
+          class="checkbox-img"
+          alt="Checkbox"
+        />
+      </div>
+
+      <div *ngIf="filteredContacts.length === 0" class="single-contact">
+        <span class="contact-name">No contacts found</span>
+      </div>
+    </div>
+
+  </div>
 </div>
