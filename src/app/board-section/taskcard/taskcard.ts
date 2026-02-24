@@ -30,11 +30,9 @@ import { BurgermenuStateService } from '../../firebase-service/burgermenu-state.
 export class Taskcard {
   @Input() task!: Task;
   @Output() openTask = new EventEmitter<Task>();
-
-  // Services
   contactService = inject(ContactService);
   private taskService = inject(TaskService);
-  private menuState = inject(BurgermenuStateService); // <- hier korrekt injiziert
+  private menuState = inject(BurgermenuStateService);
   private elementRef = inject(ElementRef);
 
   // Status order
@@ -132,7 +130,6 @@ export class Taskcard {
    */
   toggleMenu() {
     if (!this.task?.id) return;
-
     if (this.menuState.isOpen(this.task.id)) {
       this.menuState.close();
     } else {
@@ -171,15 +168,11 @@ export class Taskcard {
     if (direction === 'up' && currentIndex > 0) newIndex = currentIndex - 1;
     if (direction === 'down' && currentIndex < this.statusOrder.length - 1)
       newIndex = currentIndex + 1;
-
     const newStatus = this.statusOrder[newIndex];
     if (newStatus !== this.task.status) {
       await this.taskService.updateTaskStatus(this.task.id, newStatus);
     }
   }
-
-  // taskcard.ts
-
   get movesForTemplate() {
     return this.task ? this.getAvailableMoves() : [];
   }
@@ -190,11 +183,9 @@ export class Taskcard {
   getAvailableStatuses(): Task['status'][] {
     const currentIndex = this.statusOrder.indexOf(this.task.status);
     const available: Task['status'][] = [];
-
     if (currentIndex > 0) available.push(this.statusOrder[currentIndex - 1]);
     if (currentIndex < this.statusOrder.length - 1)
       available.push(this.statusOrder[currentIndex + 1]);
-
     return available;
   }
 
@@ -213,17 +204,14 @@ export class Taskcard {
    */
   getAvailableMoves(): { status: Task['status']; direction: 'up' | 'down' }[] {
     if (!this.task) return [];
-
     const currentIndex = this.statusOrder.indexOf(this.task.status);
     const moves: { status: Task['status']; direction: 'up' | 'down' }[] = [];
-
     if (currentIndex > 0) {
       moves.push({ status: this.statusOrder[currentIndex - 1], direction: 'up' });
     }
     if (currentIndex < this.statusOrder.length - 1) {
       moves.push({ status: this.statusOrder[currentIndex + 1], direction: 'down' });
     }
-
     return moves;
   }
 
