@@ -1,135 +1,95 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, ElementRef, Renderer2, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ContactService } from '../../../firebase-service/contact-service';
 import { Contacts } from '../../../interfaces/contacts';
-import { Subscription } from 'rxjs';
+import { ContactService } from '../../../firebase-service/contact-service';
 
 @Component({
   selector: 'app-contact-selector',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './contact-selector.html',
-  styleUrls: ['./contact-selector.scss'],
+  styleUrls: ['./contact-selector.scss']
 })
-export class ContactSelector implements OnInit, OnDestroy {
-  @Input() selectedContactNames: string[] = [];
-  @Output() selectedContactsChange = new EventEmitter<Contacts[]>();
+export class ContactSelector implements OnInit, OnChanges, OnDestroy {
 
-  allContacts: Contacts[] = [];
+  @Input() contacts: Contacts[] = [];
+  @Input() selectedContactNames: string[] = [];
+  @Output() selectedContactsChange = new EventEmitter<string[]>();
+
   selectedContacts: Contacts[] = [];
   showDropdown = false;
   searchTerm = '';
-  showAllContacts = false;
+  private clickListener!: () => void;
 
-  private contactListSubscription: Subscription | null = null;
-
-  constructor(public contactService: ContactService) {}
+  constructor(
+    private contactService: ContactService,
+    private elRef: ElementRef,
+    private renderer: Renderer2
+  ) {}
 
   ngOnInit() {
-    this.allContacts = [...this.contactService.contactList];
-    this.updateSelectedContacts();
+    this.syncSelectedContacts();
 
-    this.contactListSubscription = this.contactService.editRequest$.subscribe(() => {
-      this.allContacts = [...this.contactService.contactList];
-      this.updateSelectedContacts();
+    // Dokumenten-Klicklistener
+    this.clickListener = this.renderer.listen('document', 'click', (event: MouseEvent) => {
+      if (!this.elRef.nativeElement.contains(event.target)) {
+        this.showDropdown = false;
+      }
     });
   }
 
-  ngOnDestroy() {
-    this.contactListSubscription?.unsubscribe();
+  ngOnChanges() {
+    this.syncSelectedContacts();
   }
 
-  get filteredContacts() {
-    return this.allContacts.filter((contact) =>
-      contact.name.toLowerCase().includes(this.searchTerm.toLowerCase()),
+  ngOnDestroy() {
+    if (this.clickListener) this.clickListener();
+  }
+
+  private syncSelectedContacts() {
+    if (!this.contacts || !this.selectedContactNames) return;
+    this.selectedContacts = this.contacts.filter(c =>
+      this.selectedContactNames.includes(c.name)
     );
   }
 
-  get displayedSelectedContacts() {
-    if (this.showAllContacts) {
-      return this.selectedContacts;
-    } else {
-      return this.selectedContacts.slice(0, 3);
-    }
+  toggleDropdown(event?: Event) {
+    if (event) event.stopPropagation();
+    this.showDropdown = !this.showDropdown;
   }
 
-  get hiddenContactsCount() {
-    if (this.selectedContacts.length <= 3) {
-      return 0;
-    }
-    return this.selectedContacts.length - 3;
-  }
-
-  private updateSelectedContacts() {
-    this.selectedContacts = this.allContacts.filter((contact) =>
-      this.selectedContactNames.includes(contact.name),
+  get filteredContacts(): Contacts[] {
+    if (!this.searchTerm) return this.contacts;
+    return this.contacts.filter(c =>
+      c.name.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
   }
 
   toggleContact(contact: Contacts) {
-    const index = this.selectedContacts.findIndex((c) => c.id === contact.id);
-
-    if (index === -1) {
-      this.selectedContacts.push(contact);
-      if (contact.id) {
-        this.selectedContactNames = [...this.selectedContactNames, contact.id];
-      }
-    } else {
-      this.selectedContacts.splice(index, 1);
-      if (contact.id) {
-        this.selectedContactNames = this.selectedContactNames.filter((id) => id !== contact.id);
-      }
-    }
-
-    this.selectedContactsChange.emit(this.selectedContacts);
-    this.searchTerm = '';
+    const index = this.selectedContacts.findIndex(c => c.id === contact.id);
+    if (index > -1) this.selectedContacts.splice(index, 1);
+    else this.selectedContacts.push(contact);
+    this.emitSelection();
   }
 
-  addContact(contact: Contacts) {
-    this.toggleContact(contact);
+  isContactSelected(contact: Contacts): boolean {
+    return this.selectedContacts.some(c => c.id === contact.id);
   }
 
-  removeContact(contact: Contacts) {
-    if (contact.name) {
-      this.selectedContactNames = this.selectedContactNames.filter((name) => name !== contact.name);
-      this.updateSelectedContacts();
-      this.selectedContactsChange.emit(this.selectedContacts);
-
-      if (this.selectedContacts.length <= 3) {
-        this.showAllContacts = false;
-      }
-    }
-  }
-
-  toggleDropdown() {
-    this.showDropdown = !this.showDropdown;
-    if (this.showDropdown) {
-      this.searchTerm = '';
-    }
-  }
-
-  toggleShowAll() {
-    this.showAllContacts = !this.showAllContacts;
+  private emitSelection() {
+    this.selectedContactsChange.emit(this.selectedContacts.map(c => c.name));
   }
 
   getInitials(name: string): string {
-    return this.contactService.getInitials(name);
+    if (!name) return '';
+    const parts = name.trim().split(' ');
+    const first = parts[0]?.charAt(0) ?? '';
+    const second = parts.length > 1 ? parts[1].charAt(0) : '';
+    return (first + second).toUpperCase();
   }
 
   getContactColor(contact: Contacts): string {
     return this.contactService.getContactColor(contact);
-  }
-
-  getDisplayName(name: string): string {
-    if (!name) return '';
-    return name.length >= 20 ? name.slice(0, 15) + '…' : name;
-  }
-
-  @Input() showAsList: boolean = true;
-  @Input() showCheckboxes: boolean = false;
-
-  isContactSelected(contact: any): boolean {
-    return this.selectedContacts.some((c) => c.name === contact.name);
   }
 }

@@ -26,8 +26,8 @@ export class TaskOverlay implements OnInit, OnChanges {
   @Output() save = new EventEmitter<Omit<Task, 'id' | 'createdAt'>>();
 
   constructor(
-    private contactService: ContactService,
-    private taskService: TaskService,
+    public contactService: ContactService,
+    private taskService: TaskService
   ) {}
 
   isEditMode = false;
@@ -36,34 +36,11 @@ export class TaskOverlay implements OnInit, OnChanges {
 
   hoveredSubtaskIndex: number | null = null;
   editingSubtaskIndex: number | null = null;
-  editingSubtaskTitle = '';
-  showAllSubtasks = false;
-  showAllSubtasksView = false;
-  showAllSubtasksEdit = false;
-  showAllAssignedInView = false;
-  deleteHover = false;
-  editHover = false;
 
-  get displayedAssignedInView() {
-    if (this.showAllAssignedInView) {
-      return this.assignedContacts;
-    } else {
-      return this.assignedContacts.slice(0, 3);
-    }
-  }
-
-  get hiddenAssignedInViewCount() {
-    if (this.assignedContacts.length <= 3) {
-      return 0;
-    }
-    return this.assignedContacts.length - 3;
-  }
-
-  toggleAssignedInView() {
-    this.showAllAssignedInView = !this.showAllAssignedInView;
-  }
+  isSubtaskInputFocused: boolean = false;
 
   assignedContacts: Contacts[] = [];
+  private isDeleted = false;
 
   editedTask: Omit<Task, 'id' | 'createdAt'> = {
     title: '',
@@ -100,20 +77,20 @@ export class TaskOverlay implements OnInit, OnChanges {
   }
 
   loadAssignedContacts() {
-    if (this.task?.assignedTo?.length && this.contactService) {
-      this.assignedContacts = this.contactService.contactList.filter((contact) => {
-        if (!contact.name) return false;
-        return this.task?.assignedTo?.includes(contact.name) || false;
-      });
+    if (this.task?.assignedTo?.length) {
+      this.assignedContacts = this.contactService.contactList.filter(contact =>
+        (this.task?.assignedTo || []).includes(contact.name)
+      );
     } else {
       this.assignedContacts = [];
     }
   }
 
-  onContactsChange(contacts: Contacts[]) {
-    this.editedTask.assignedTo = contacts
-      .map((c) => c.name)
-      .filter((id): id is string => id !== undefined);
+  onContactsChange(selectedNames: string[]) {
+    this.editedTask.assignedTo = selectedNames || [];
+    this.assignedContacts = this.contactService.contactList.filter(contact =>
+      selectedNames.includes(contact.name)
+    );
   }
 
   getContactColor(contact: Contacts): string {
@@ -121,14 +98,10 @@ export class TaskOverlay implements OnInit, OnChanges {
   }
 
   getInitials(name: string): string {
-    return this.contactService?.getInitials(name) || this.getInitialsLocal(name);
-  }
-
-  private getInitialsLocal(name: string): string {
     if (!name) return '';
     return name
       .split(' ')
-      .map((n) => n[0])
+      .map(n => n[0])
       .join('')
       .toUpperCase()
       .substring(0, 2);
@@ -150,6 +123,14 @@ export class TaskOverlay implements OnInit, OnChanges {
   get categoryColor(): string {
     return this.safeTask.category === 'Technical Task' ? '#1FD7C1' : '#0038FF';
   }
+
+openDatePicker(input: HTMLInputElement) {
+  if (input.showPicker) {
+    input.showPicker();
+  } else {
+    input.focus();
+  }
+}
 
   enableEdit() {
     if (this.task) {
@@ -173,82 +154,51 @@ export class TaskOverlay implements OnInit, OnChanges {
     return d.toISOString().split('T')[0];
   }
 
-  setPriority(priority: 'urgent' | 'medium' | 'low') {
-    this.editedTask.priority = priority;
-  }
-
-  isPriorityActive(priority: string): boolean {
-    return this.editedTask.priority === priority;
-  }
-
   addSubtask() {
     if (this.newSubtaskTitle.trim()) {
-      if (!this.editedTask.subtasks) {
-        this.editedTask.subtasks = [];
-      }
       this.editedTask.subtasks.push({
         title: this.newSubtaskTitle,
-        completed: false,
+        completed: false
       });
       this.newSubtaskTitle = '';
     }
   }
 
   removeSubtask(index: number) {
-    if (this.editedTask.subtasks) {
-      this.editedTask.subtasks.splice(index, 1);
-    }
+    this.editedTask.subtasks.splice(index, 1);
   }
 
-  toggleSubtask(subtask: Subtask) {
-    subtask.completed = !subtask.completed;
-    if (this.task && this.task.subtasks) {
-      const index = this.task.subtasks.findIndex((st) => st.title === subtask.title);
-      if (index !== -1) {
-        this.task.subtasks[index] = subtask;
-      }
-    }
-    this.saveCurrentSubtasks();
-  }
-
-  private saveCurrentSubtasks() {
-    if (this.task?.id && this.task.subtasks) {
-      console.log('Ruaj subtasks:', this.task.subtasks);
-
-      this.taskService
-        .updateTask(this.task.id, {
-          subtasks: this.task.subtasks,
-        })
-        .catch((error) => {
-          console.error('Error saving subtasks:', error);
-        });
-    }
-  }
-
-  startSubtaskEdit(index: number, title: string) {
+  startSubtaskEdit(index: number) {
     this.editingSubtaskIndex = index;
-    this.editingSubtaskTitle = title;
 
     setTimeout(() => {
-      const input = document.querySelector('.subtask-item input');
-      if (input) (input as HTMLInputElement).focus();
+      const input = document.querySelector('.edit-input') as HTMLInputElement;
+      if (input) {
+        input.focus();
+        input.setSelectionRange(input.value.length, input.value.length);
+      }
     });
   }
 
   saveSubtaskEdit(index: number) {
-    if (this.editingSubtaskTitle.trim() && this.editedTask.subtasks) {
-      this.editedTask.subtasks[index].title = this.editingSubtaskTitle;
+    if (!this.editedTask.subtasks[index].title.trim()) {
+      this.removeSubtask(index);
     }
     this.cancelSubtaskEdit();
   }
 
   cancelSubtaskEdit() {
     this.editingSubtaskIndex = null;
-    this.editingSubtaskTitle = '';
   }
 
-  resetSubtaskInput() {
-    this.newSubtaskTitle = '';
+  toggleSubtask(subtask: Subtask) {
+    subtask.completed = !subtask.completed;
+
+    if (this.task?.id) {
+      this.taskService.updateTask(this.task.id, {
+        subtasks: this.editedTask.subtasks
+      }).catch(console.error);
+    }
   }
 
   private isFormValid(): boolean {
@@ -260,31 +210,37 @@ export class TaskOverlay implements OnInit, OnChanges {
   }
 
   onSave() {
-    if (!this.isFormValid()) {
-      return;
-    }
+    if (!this.isFormValid()) return;
 
     this.isSaving = true;
 
-    this.save.emit(this.editedTask);
+    if (this.task) {
+      Object.assign(this.task, this.editedTask);
+    }
 
+    this.save.emit(this.editedTask);
     this.isEditMode = false;
 
-    setTimeout(() => {
-      this.isSaving = false;
-    }, 500);
+    setTimeout(() => (this.isSaving = false), 500);
   }
 
   onDelete() {
     if (this.task?.id) {
+      this.isDeleted = true;
       this.delete.emit(this.task.id);
       this.onClose();
     }
   }
 
   onClose() {
-    this.saveCurrentSubtasks();
     this.close.emit();
   }
-  
+
+  trackByContactId(index: number, contact: Contacts) {
+    return contact.id;
+  }
+
+  trackBySubtask(index: number, subtask: Subtask) {
+    return index;
+  }
 }
