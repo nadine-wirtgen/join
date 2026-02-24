@@ -62,7 +62,7 @@ export class AddTaskTemplate {
     if (this.showAllContacts) return this.contactService.contactList;
     const term = this.contactSearchTerm.trim().toLowerCase();
     if (!term) return this.contactService.contactList;
-    return this.contactService.contactList.filter(c => c.name.toLowerCase().includes(term));
+    return this.contactService.contactList.filter((c) => c.name.toLowerCase().includes(term));
   }
 
   title = '';
@@ -88,11 +88,11 @@ export class AddTaskTemplate {
   constructor(
     private taskService: TaskService,
     public contactService: ContactService,
-    private router: Router
+    private router: Router,
   ) {
     this.minDate = new Date().toISOString().split('T')[0];
 
-    this.contactService.contactList.forEach(c => {
+    this.contactService.contactList.forEach((c) => {
       if (c.selected === undefined) c.selected = false;
     });
     this.today = new Date().toISOString().split('T')[0];
@@ -156,7 +156,7 @@ export class AddTaskTemplate {
 
   toggleAssignedContact(contact: Contacts) {
     contact.selected = !contact.selected;
-    this.assignedToContacts = this.contactService.contactList.filter(c => c.selected);
+    this.assignedToContacts = this.contactService.contactList.filter((c) => c.selected);
   }
 
   @HostListener('document:click', ['$event'])
@@ -192,7 +192,7 @@ export class AddTaskTemplate {
     this.subtasks = [];
     this.newSubtask = '';
     this.assignedToContacts = [];
-    this.contactService.contactList.forEach(c => (c.selected = false));
+    this.contactService.contactList.forEach((c) => (c.selected = false));
     this.titleInvalid = false;
     this.dueDateInvalid = false;
     this.categoryInvalid = false;
@@ -202,16 +202,12 @@ export class AddTaskTemplate {
     if (this.isDialogMode) {
       this.closeDialog.emit();
     }
-
   }
 
   validateTitle() {
     // Mindestens 2 Zeichen, nicht nur Zahlen, keine reinen Leerzeichen
     const trimmed = this.title ? this.title.trim() : '';
-    this.titleInvalid =
-      !trimmed ||
-      trimmed.length < 2 ||
-      /^\d+$/.test(trimmed);
+    this.titleInvalid = !trimmed || trimmed.length < 2 || /^\d+$/.test(trimmed);
   }
 
   categoryInvalid = false;

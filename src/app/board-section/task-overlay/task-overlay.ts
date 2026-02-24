@@ -1,4 +1,15 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  OnChanges,
+  QueryList,
+  ViewChildren,
+  ElementRef,
+  Renderer2,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Task } from '../../interfaces/task';
@@ -25,9 +36,12 @@ export class TaskOverlay implements OnInit, OnChanges {
   @Output() delete = new EventEmitter<string>();
   @Output() save = new EventEmitter<Omit<Task, 'id' | 'createdAt'>>();
 
+  @ViewChildren('subtaskInput') subtaskInputs!: QueryList<ElementRef<HTMLInputElement>>;
+
   constructor(
     public contactService: ContactService,
-    private taskService: TaskService
+    private taskService: TaskService,
+    private renderer: Renderer2,
   ) {}
 
   isEditMode = false;
@@ -36,9 +50,9 @@ export class TaskOverlay implements OnInit, OnChanges {
 
   hoveredSubtaskIndex: number | null = null;
   editingSubtaskIndex: number | null = null;
+  private removeClickListener: (() => void) | null = null;
 
-  isSubtaskInputFocused: boolean = false;
-
+  isSubtaskInputFocused = false;
   assignedContacts: Contacts[] = [];
   private isDeleted = false;
 
@@ -62,8 +76,11 @@ export class TaskOverlay implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
+    this.loadTaskData();
     this.loadAssignedContacts();
   }
+
+  /* ===================== LOAD DATA ===================== */
 
   private loadTaskData() {
     if (this.task) {
@@ -78,18 +95,20 @@ export class TaskOverlay implements OnInit, OnChanges {
 
   loadAssignedContacts() {
     if (this.task?.assignedTo?.length) {
-      this.assignedContacts = this.contactService.contactList.filter(contact =>
-        (this.task?.assignedTo || []).includes(contact.name)
+      this.assignedContacts = this.contactService.contactList.filter((contact) =>
+        (this.task?.assignedTo || []).includes(contact.name),
       );
     } else {
       this.assignedContacts = [];
     }
   }
 
+  /* ===================== CONTACTS ===================== */
+
   onContactsChange(selectedNames: string[]) {
     this.editedTask.assignedTo = selectedNames || [];
-    this.assignedContacts = this.contactService.contactList.filter(contact =>
-      selectedNames.includes(contact.name)
+    this.assignedContacts = this.contactService.contactList.filter((contact) =>
+      selectedNames.includes(contact.name),
     );
   }
 
@@ -101,11 +120,13 @@ export class TaskOverlay implements OnInit, OnChanges {
     if (!name) return '';
     return name
       .split(' ')
-      .map(n => n[0])
+      .map((n) => n[0])
       .join('')
       .toUpperCase()
       .substring(0, 2);
   }
+
+  /* ===================== SAFE VIEW DATA ===================== */
 
   get safeTask() {
     const t = this.task;
@@ -124,20 +145,35 @@ export class TaskOverlay implements OnInit, OnChanges {
     return this.safeTask.category === 'Technical Task' ? '#1FD7C1' : '#0038FF';
   }
 
-openDatePicker(input: HTMLInputElement) {
-  if (input.showPicker) {
-    input.showPicker();
-  } else {
-    input.focus();
+  /* ===================== DATE ===================== */
+
+  openDatePicker(input: HTMLInputElement) {
+    if (input.showPicker) {
+      input.showPicker();
+    } else {
+      input.focus();
+    }
   }
-}
+
+  formatDateForInput(date: string): string {
+    if (!date) return '';
+    return new Date(date).toISOString().split('T')[0];
+  }
+
+  /* ===================== EDIT MODE ===================== */
 
   enableEdit() {
     if (this.task) {
       const { id, createdAt, ...taskData } = this.task;
+      const today = new Date().toISOString().split('T')[0];
+      const dueDate = this.task.dueDate;
+
       this.editedTask = {
         ...taskData,
-        dueDate: this.formatDateForInput(this.task.dueDate),
+        dueDate:
+          dueDate && dueDate !== '2029' && !dueDate.includes('2029')
+            ? this.formatDateForInput(dueDate)
+            : today,
         assignedTo: this.task.assignedTo || [],
       };
       this.isEditMode = true;
@@ -148,20 +184,17 @@ openDatePicker(input: HTMLInputElement) {
     this.isEditMode = false;
   }
 
-  formatDateForInput(date: string): string {
-    if (!date) return '';
-    const d = new Date(date);
-    return d.toISOString().split('T')[0];
-  }
+  /* ===================== SUBTASKS ===================== */
 
   addSubtask() {
-    if (this.newSubtaskTitle.trim()) {
-      this.editedTask.subtasks.push({
-        title: this.newSubtaskTitle,
-        completed: false
-      });
-      this.newSubtaskTitle = '';
-    }
+    if (!this.newSubtaskTitle.trim()) return;
+
+    this.editedTask.subtasks.push({
+      title: this.newSubtaskTitle.trim(),
+      completed: false,
+    });
+
+    this.newSubtaskTitle = '';
   }
 
   removeSubtask(index: number) {
@@ -172,34 +205,73 @@ openDatePicker(input: HTMLInputElement) {
     this.editingSubtaskIndex = index;
 
     setTimeout(() => {
-      const input = document.querySelector('.edit-input') as HTMLInputElement;
+      const input = this.subtaskInputs?.get(index)?.nativeElement;
       if (input) {
         input.focus();
         input.setSelectionRange(input.value.length, input.value.length);
       }
     });
+
+    // Click-Outside Listener
+    this.removeClickListener?.(); // alten Listener entfernen
+    this.removeClickListener = this.renderer.listen('document', 'click', (event: MouseEvent) => {
+      const clickedInside = this.subtaskInputs
+        ?.toArray()
+        [index]?.nativeElement.contains(event.target as Node);
+      if (!clickedInside && this.editingSubtaskIndex !== null) {
+        this.saveSubtaskEdit(this.editingSubtaskIndex);
+        this.removeClickListener?.();
+        this.removeClickListener = null;
+      }
+    });
   }
 
   saveSubtaskEdit(index: number) {
-    if (!this.editedTask.subtasks[index].title.trim()) {
+    const title = this.editedTask.subtasks[index]?.title?.trim();
+
+    if (!title) {
       this.removeSubtask(index);
     }
-    this.cancelSubtaskEdit();
+
+    this.editingSubtaskIndex = null;
+
+    // Click-Outside Listener entfernen
+    this.removeClickListener?.();
+    this.removeClickListener = null;
   }
 
   cancelSubtaskEdit() {
     this.editingSubtaskIndex = null;
+
+    // Listener entfernen
+    this.removeClickListener?.();
+    this.removeClickListener = null;
+  }
+
+  handleSubtaskKey(event: KeyboardEvent, index: number) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.saveSubtaskEdit(index);
+    }
+
+    if (event.key === 'Escape') {
+      this.cancelSubtaskEdit();
+    }
   }
 
   toggleSubtask(subtask: Subtask) {
     subtask.completed = !subtask.completed;
 
     if (this.task?.id) {
-      this.taskService.updateTask(this.task.id, {
-        subtasks: this.editedTask.subtasks
-      }).catch(console.error);
+      this.taskService
+        .updateTask(this.task.id, {
+          subtasks: this.editedTask.subtasks,
+        })
+        .catch(console.error);
     }
   }
+
+  /* ===================== SAVE ===================== */
 
   private isFormValid(): boolean {
     return !!(
@@ -224,17 +296,21 @@ openDatePicker(input: HTMLInputElement) {
     setTimeout(() => (this.isSaving = false), 500);
   }
 
+  /* ===================== DELETE & CLOSE ===================== */
+
   onDelete() {
-    if (this.task?.id) {
-      this.isDeleted = true;
-      this.delete.emit(this.task.id);
-      this.onClose();
-    }
+    if (!this.task?.id) return;
+
+    this.isDeleted = true;
+    this.delete.emit(this.task.id);
+    this.onClose();
   }
 
   onClose() {
     this.close.emit();
   }
+
+  /* ===================== TRACK BY ===================== */
 
   trackByContactId(index: number, contact: Contacts) {
     return contact.id;
