@@ -1,3 +1,4 @@
+/* ====================== OVERLAY BACKDROP ====================== */
 .overlay-backdrop {
   position: fixed;
   inset: 0;
@@ -10,6 +11,7 @@
   animation: fadeIn 0.2s ease;
 }
 
+/* ====================== TASK OVERLAY ====================== */
 .task-overlay {
   position: relative;
   width: min(525px, 95vw);
@@ -27,6 +29,7 @@
   margin: 0;
 }
 
+/* ====================== CLOSE BUTTON ====================== */
 .close-btn {
   position: absolute;
   top: 24px;
@@ -51,6 +54,7 @@
   }
 }
 
+/* ====================== CONTAINER ====================== */
 .task-view-container,
 .task-edit-container {
   display: flex;
@@ -59,12 +63,15 @@
   width: 100%;
 }
 
+.task-view-container .overlay-content,
 .task-edit-container .overlay-content {
   flex: 1;
   overflow-y: auto;
   padding-right: 8px;
+  min-height: 0; // wichtig für Flex + Scroll
 }
 
+/* ====================== CATEGORY / HEADER ====================== */
 .category-badge {
   display: inline-flex;
   align-items: center;
@@ -97,6 +104,7 @@
   overflow-y: auto;
 }
 
+/* ====================== INFO GRID ====================== */
 .info-grid {
   display: flex;
   flex-direction: column;
@@ -134,6 +142,7 @@
   font-weight: 400;
 }
 
+/* ====================== SUBTASKS VIEW ====================== */
 .subtasks-list-view {
   display: flex;
   flex-direction: column;
@@ -154,6 +163,11 @@
       background-color: #f6f7f8;
     }
 
+    &.editing {
+      cursor: default;
+      background-color: transparent !important; // kein Hover-Effekt
+    }
+
     .subtask-checkbox-img {
       width: 20px;
       height: 20px;
@@ -169,7 +183,7 @@
       text-overflow: ellipsis;
       white-space: nowrap;
       font-size: 16px;
-      color: #000;
+      color: #2a3647;
     }
   }
 
@@ -190,6 +204,7 @@
   }
 }
 
+/* ====================== SUBTASKS EDIT MODE ====================== */
 .subtask-list-container {
   max-height: 120px;
   overflow-y: auto;
@@ -207,17 +222,18 @@
   padding: 8px 12px;
   border-radius: 8px;
   border-bottom: 2px solid transparent;
-  transition:
-    background-color 0.2s ease,
-    border 0.2s ease;
+  transition: background-color 0.2s ease;
   position: relative;
 
-  &:hover {
+  &:not(.editing):hover {
     background-color: #f6f7f8;
+    cursor: pointer;
   }
 
   &.editing {
-    border-bottom: 2px solid #29abe2;
+    background-color: transparent !important; // kein Hover
+    border-bottom: 2px solid #29ABE2 !important;
+    cursor: default;
   }
 
   .subtask-bullet {
@@ -242,7 +258,7 @@
     align-items: center;
     gap: 8px;
     margin-left: auto;
-    opacity: 1;
+    opacity: 1; /* immer sichtbar */
   }
 
   .subtask-icon {
@@ -251,9 +267,7 @@
     cursor: pointer;
     padding: 4px;
     border-radius: 50%;
-    transition:
-      background-color 0.15s ease,
-      transform 0.1s ease;
+    transition: background-color 0.15s ease, transform 0.1s ease;
 
     &:hover {
       background-color: #f6f7f8;
@@ -266,8 +280,12 @@
     height: 18px;
     background-color: #d1d1d1;
   }
+
+
+  
 }
 
+/* ====================== SUBTASK INPUT ====================== */
 .subtask-input {
   position: relative;
   display: flex;
@@ -278,6 +296,11 @@
   padding: 6px 12px;
   box-sizing: border-box;
   overflow: visible;
+
+    &:focus-within {
+    border-color: #29ABE2; // gewünschtes Blau
+    box-shadow: 0 0 0 1px #29ABE2; // optional leichtes Highlight
+  }
 
   input {
     flex: 1 1 auto;
@@ -304,18 +327,33 @@
   }
 
   &.active {
-    border-left: 1px solid #29abe2;
-    border-right: 1px solid #29abe2;
-    border-bottom: 1px solid #29abe2;
+    border-left: 1px solid #29ABE2;
+    border-right: 1px solid #29ABE2;
+    border-bottom: 1px solid #29ABE2;
   }
 }
 
+/* ====================== EDIT INPUT ANPASSUNG ====================== */
 .subtask-list .edit-input {
-  border-color: transparent !important;
+  border: none !important;
   outline: none !important;
   box-shadow: none !important;
+  background: transparent !important;
+
+  font-size: inherit;     // gleiche Größe wie .subtask-title-text
+  font-family: inherit;
+  font-weight: inherit;
+  color: inherit;
+  line-height: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0;
+  margin: 0;
+  width: 100%;
 }
 
+/* ====================== ASSIGNED TO ====================== */
 .assigned-section {
   display: flex;
   flex-direction: column;
@@ -375,49 +413,7 @@
   }
 }
 
-.form-group.date-picker {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  cursor: pointer; 
-
-  label {
-    cursor: pointer;
-  }
-
-  input[type='date'] {
-    cursor: pointer; 
-    pointer-events: none;
-  }
-}
-
-.task-overlay .save-btn {
-  background-color: #2a3647;
-  padding: 16px;
-  gap: 4px;
-  font-weight: 700;
-  font-size: 21px;
-  width: 89px;
-  height: 57px;
-  border-radius: 10px;
-  cursor: pointer;
-  border: none;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: #29abe2;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-}
-
+/* ====================== FORM ELEMENTS ====================== */
 .form-group {
   display: flex;
   flex-direction: column;
@@ -457,6 +453,7 @@ textarea {
   resize: vertical;
 }
 
+/* ====================== PRIORITY BUTTONS ====================== */
 .priority-buttons {
   display: flex;
   gap: 10px;
@@ -465,7 +462,7 @@ textarea {
     width: 136px;
     height: 56px;
     padding: 0 12px;
-    border: 1px solid #d1d1d1;
+    border: 1px solid #D1D1D1;
     border-radius: 10px;
     background-color: #fff;
     cursor: pointer;
@@ -473,13 +470,13 @@ textarea {
     font-weight: 400;
     font-size: 20px;
     line-height: 120%;
-    color: #2a3647;
+    color: #2A3647;
     transition: 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.03);
 
     img {
       width: 20px;
@@ -487,44 +484,28 @@ textarea {
     }
 
     &.urgent {
-      &:hover {
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-      }
-      &.active {
-        background-color: #ff3d00;
-        border-color: #ff3d00;
-        color: #fff;
-      }
+      &:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+      &.active { background-color: #FF3D00; border-color: #FF3D00; color: #fff; }
     }
 
     &.medium {
-      &:hover {
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-      }
-      &.active {
-        background-color: #ffa800;
-        border-color: #ffa800;
-        color: #fff;
-      }
+      &:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+      &.active { background-color: #FFA800; border-color: #FFA800; color: #fff; }
     }
 
     &.low {
-      &:hover {
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-      }
-      &.active {
-        background-color: #7ae229;
-        border-color: #7ae229;
-        color: #fff;
-      }
+      &:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+      &.active { background-color: #7AE229; border-color: #7AE229; color: #fff; }
     }
   }
 }
+
+/* ====================== FOOTER ====================== */
 .overlay-footer {
   display: flex;
-  justify-content: flex-end; 
+  justify-content: flex-end;
   align-items: center;
-  gap: 12px; 
+  gap: 12px;
   width: 100%;
   padding-top: 24px;
   flex-shrink: 0;
@@ -541,14 +522,13 @@ textarea {
     padding: 8px 16px;
     background-color: white;
     border: none;
-
-    color: #2a3647; 
+    color:#2A3647;
 
     .btn-icon {
       width: 18px;
       height: 18px;
       object-fit: contain;
-      margin-right: 4px; 
+      margin-right: 4px;
       transition: all 0.1s ease;
     }
 
@@ -575,7 +555,7 @@ textarea {
   }
 
   .save-btn {
-    background-color: #2a3647;
+    background-color: #2A3647;
     color: #fff;
     width: 89px;
     height: 57px;
@@ -590,35 +570,12 @@ textarea {
     gap: 4px;
 
     &:hover {
-      background-color: #29abe2;
+      background-color: #29ABE2;
     }
   }
 }
 
-.task-view-container,
-.task-edit-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-}
-
-.overlay-header {
-  flex-shrink: 0;
-  padding-bottom: 16px;
-}
-
-.overlay-content {
-  flex: 1;
-  overflow-y: auto;
-  padding-right: 8px;
-}
-
-.overlay-footer {
-  flex-shrink: 0;
-  padding-top: 16px;
-}
-
+/* ====================== MEDIA QUERIES ====================== */
 @media (max-width: 768px) {
   .task-overlay {
     border-radius: 24px;
@@ -675,22 +632,13 @@ textarea {
   }
 }
 
+/* ====================== ANIMATIONS ====================== */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
