@@ -1,34 +1,55 @@
 <div class="login-form">
-<div class="login-header">
-  <h1>Log in</h1>
-  <div class="underline-container">
-    <img src="assets/icon/login/underline.png" alt="Underline" />
-  </div>
-</div>
-  <div class="contact-input">
-    <input
-      class="contact-input-field"
-      type="email"
-      placeholder="Email"
-    />
-    <img src="assets/icon/login/mail.png" alt="Mail Icon" />
+  <div class="login-header">
+    <h1>Log in</h1>
+    <div class="underline-container">
+      <img src="assets/icon/login/underline.png" alt="Underline" />
+    </div>
   </div>
 
-  <div class="contact-input">
-    <input
-      class="contact-input-field"
-      type="password"
-      placeholder="Password"
-    />
-    <img src="assets/icon/login/lock.png" alt="Lock Icon" />
+  <!-- Email -->
+  <div class="contact-input-wrapper">
+    <div class="contact-input" [class.error]="loginError">
+      <input
+        class="contact-input-field"
+        type="email"
+        placeholder="Email"
+        [(ngModel)]="email"
+        (input)="clearLoginError()"
+      />
+      <img src="assets/icon/login/mail.png" alt="Mail Icon" />
+    </div>
   </div>
 
+  <!-- Password -->
+  <div class="contact-input-wrapper">
+    <div class="contact-input" [class.error]="loginError">
+      <input
+        class="contact-input-field"
+        [type]="passwordVisible ? 'text' : 'password'"
+        placeholder="Password"
+        [(ngModel)]="password"
+        (input)="clearLoginError()"
+      />
+      <img
+        [src]="'assets/icon/login/' + (passwordVisible ? 'visibility.png' : 'visibility_off.png')"
+        alt="Toggle Password Visibility"
+        (click)="togglePasswordVisibility()"
+        style="cursor: pointer;"
+      />
+    </div>
+  </div>
+
+  <!-- Fehlermeldung -->
+  <div class="login-error" [class.visible]="loginError">
+    Check your email and password. Please try again.
+  </div>
+
+  <!-- Buttons -->
   <div class="login-section-buttons">
-    <button class="login-btn" (click)="login()">
+    <button type="button" class="login-btn" (click)="login()">
       Log in
     </button>
-
-    <button class="guest-btn" (click)="guestLogin()">
+    <button type="button" class="guest-btn" (click)="guestLogin()">
       Guest Log in
     </button>
   </div>

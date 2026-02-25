@@ -1,4 +1,4 @@
-
+/* Grundform der Login-Box */
 .login-form {
   width: 420px;
   max-width: 90%;
@@ -6,14 +6,13 @@
   background: white;
   border-radius: 15px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-
   display: flex;
   flex-direction: column;
   gap: 20px;
   box-sizing: border-box;
 }
 
-
+/* Header */
 .login-header {
   display: flex;
   flex-direction: column;
@@ -25,12 +24,6 @@
     font-size: 24px;
   }
 
-  .underline-container {
-    width: 50px;
-    display: flex;
-    justify-content: center;
-  }
-
   .underline-container img {
     width: 50px;
     height: 3px;
@@ -38,119 +31,131 @@
   }
 }
 
+/* Wrapper für Input */
+.contact-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
 
+/* Input-Felder */
 .contact-input {
   display: flex;
   align-items: center;
   height: 50px;
-  border: 1px solid #D1D1D1;
+  border: 1px solid #d1d1d1;
   border-radius: 10px;
   padding: 0 15px;
   gap: 10px;
   box-sizing: border-box;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+
+  &:focus-within {
+    border: 1px solid #29abe2;
+    box-shadow: 0 0 0 2px rgba(41, 171, 226, 0.2);
+  }
+
+  &.error {
+    border: 1px solid #cc0033;
+    box-shadow: 0 0 0 2px rgba(204, 0, 51, 0.2);
+  }
 }
 
 .contact-input-field {
-  flex: 1;        
-  min-width: 0;   
+  flex: 1;
+  min-width: 0;
   border: none;
   outline: none;
   font-size: 16px;
+  background: transparent;
 }
 
+/* Icons neben Inputs */
 .contact-input img {
   width: 20px;
   height: 20px;
-  flex-shrink: 0; 
+  flex-shrink: 0;
 }
 
+/* -------------------------------- */
+/* Fehlermeldung (KEIN Springen mehr) */
+/* -------------------------------- */
 
+.login-error {
+  min-height: 20px;          /* reserviert Platz */
+  font-size: 14px;
+  margin: 8px 0 12px 0;
+  opacity: 0;                /* unsichtbar */
+  color: #cc0033;
+  transition: opacity 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.login-error.visible {
+  opacity: 1;                /* sichtbar bei Fehler */
+}
+
+/* Buttons am unteren Bereich */
 .login-section-buttons {
   display: flex;
   gap: 12px;
-}
-
-
-@media (min-width: 768px) {
-  .login-section-buttons {
-    flex-direction: row;
-  }
 
   .login-btn,
   .guest-btn {
     flex: 1;
-  }
-}
-
-
-@media (max-width: 767px) {
-  .login-section-buttons {
-    flex-direction: column;
-    align-items: center;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.2s ease;
   }
 
-  .login-btn,
+  .login-btn {
+    background-color: #1e2a3c;
+    color: white;
+    border: none;
+
+    &:hover {
+      background-color: #29abe2;
+    }
+  }
+
   .guest-btn {
-    width: 50%;
+    background: transparent;
+    border: 1px solid #1e2a3c;
+
+    &:hover {
+      border-color: #29abe2;
+      color: #29abe2;
+    }
   }
 }
 
-
-.login-btn {
-  background-color: #1E2A3C;
-  color: white;
-  border-radius: 8px;
-  padding: 12px;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.login-btn:hover {
-  background-color: #29ABE2;
-}
-
-.guest-btn {
-  background: transparent;
-  border: 1px solid #1E2A3C;
-  border-radius: 8px;
-  padding: 12px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.guest-btn:hover {
-  color: #29ABE2;
-  border-color: #29ABE2;
-}
-
-
+/* Responsive für kleine Bildschirme */
 @media (max-width: 420px) {
   .login-form {
-    width: 100%;        
-    padding: 20px 15px; 
+    width: 100%;
+    padding: 20px 15px;
   }
 
   .login-header h1 {
-    font-size: 20px;    
+    font-size: 20px;
   }
 
   .contact-input {
-    height: 45px;       
+    height: 45px;
     padding: 0 10px;
-    gap: 8px;           
+    gap: 8px;
   }
 
   .contact-input-field {
     font-size: 14px;
-    flex: 1;           
-    min-width: 0;      
   }
 
   .contact-input img {
-    width: 20px;        
-    height: 20px;
-    flex-shrink: 0;     
+    width: 18px;
+    height: 18px;
   }
 
   .login-section-buttons {
@@ -159,7 +164,7 @@
 
   .login-btn,
   .guest-btn {
-    width: 100%;        
+    width: 100%;
     padding: 10px;
     font-size: 14px;
   }
