@@ -1,57 +1,135 @@
-<div class="signup-form">
+<div class="signup-wrapper">
 
-  <button
-    class="back-btn"
-    routerLink="/login"
-    aria-label="Back to login"
-  >
-    <img
-      src="assets/icon/login/arrow_left.png"
-      alt="Back"
-    />
+  <!-- 🔹 Back Button -->
+  <button class="back-btn" routerLink="/login" aria-label="Back to login" type="button">
+    <img src="assets/icon/login/arrow_left.png" alt="Back" />
   </button>
 
-  <div class="signup-header">
-    <h1>Sign up</h1>
-    <div class="underline"></div>
+  <!-- 🔹 Signup Form -->
+  <div class="signup-form">
+    <div class="signup-header">
+      <h1>Sign up</h1>
+      <div class="underline"></div>
+    </div>
+
+    <!-- 🔹 Name -->
+    <div class="input-group-wrapper">
+      <div class="input-group"
+        [class.error]="nameModel.invalid && nameModel.touched && !nameFocused && nameModel.value?.length > 0">
+        <input
+          type="text"
+          placeholder="Name"
+          name="name"
+          [(ngModel)]="name"
+          #nameModel="ngModel"
+          required
+          minlength="5"
+          (focus)="nameFocused = true"
+          (blur)="nameFocused = false"
+        />
+        <img src="assets/icon/login/person.png" alt="User" />
+      </div>
+      <div class="error-message"
+        [class.show]="nameModel.invalid && nameModel.touched && !nameFocused && nameModel.value?.length > 0">
+        Name must be at least 5 characters.
+      </div>
+    </div>
+
+    <!-- 🔹 Email -->
+    <div class="input-group-wrapper">
+      <div class="input-group"
+        [class.error]="emailModel.invalid && emailModel.touched && !emailFocused && emailModel.value?.length > 0">
+        <input
+          type="email"
+          placeholder="Email"
+          name="email"
+          [(ngModel)]="email"
+          #emailModel="ngModel"
+          required
+          pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
+          (focus)="emailFocused = true"
+          (blur)="emailFocused = false"
+        />
+        <img src="assets/icon/login/mail.png" alt="Email" />
+      </div>
+      <div class="error-message"
+        [class.show]="emailModel.invalid && emailModel.touched && !emailFocused && emailModel.value?.length > 0">
+        Enter a valid email.
+      </div>
+    </div>
+
+    <!-- 🔹 Password -->
+    <div class="input-group-wrapper">
+      <div class="input-group"
+        [class.error]="!isPasswordSecure && passwordModel.touched && !passwordFocused && passwordModel.value?.length > 0">
+        <input
+          [type]="passwordVisible ? 'text' : 'password'"
+          placeholder="Password"
+          name="password"
+          [(ngModel)]="password"
+          #passwordModel="ngModel"
+          required
+          (focus)="passwordFocused = true"
+          (blur)="passwordFocused = false"
+        />
+        <img
+          src="assets/icon/login/{{ passwordVisible ? 'visibility.png' : 'visibility_off.png' }}"
+          alt="Toggle Password Visibility"
+          (click)="togglePasswordVisibility()"
+          style="cursor: pointer;"
+        />
+      </div>
+      <div class="error-message"
+        [class.show]="!isPasswordSecure && passwordModel.touched && !passwordFocused && passwordModel.value?.length > 0">
+        Password must be at least 6 characters, include uppercase, lowercase, and a number.
+      </div>
+    </div>
+
+    <!-- 🔹 Confirm Password -->
+    <div class="input-group-wrapper">
+      <div class="input-group"
+        [class.error]="confirmModel.touched && !confirmFocused && passwordMismatch && confirmModel.value?.length > 0">
+        <input
+          [type]="confirmPasswordVisible ? 'text' : 'password'"
+          placeholder="Confirm Password"
+          name="confirmPassword"
+          [(ngModel)]="confirmPassword"
+          #confirmModel="ngModel"
+          required
+          (focus)="confirmFocused = true"
+          (blur)="confirmFocused = false"
+        />
+        <img
+          src="assets/icon/login/{{ confirmPasswordVisible ? 'visibility.png' : 'visibility_off.png' }}"
+          alt="Toggle Confirm Password Visibility"
+          (click)="toggleConfirmPasswordVisibility()"
+          style="cursor: pointer;"
+        />
+      </div>
+      <div class="error-message"
+        [class.show]="confirmModel.touched && !confirmFocused && passwordMismatch && confirmModel.value?.length > 0">
+        Your passwords don't match. Please try again.
+      </div>
+    </div>
+
+    <!-- 🔹 Privacy -->
+    <label class="privacy">
+      <input type="checkbox" [(ngModel)]="acceptedPrivacy" name="privacy" />
+      I accept the <a routerLink="/privacy">Privacy Policy</a>
+    </label>
+
+    <!-- 🔹 Sign Up Button -->
+    <button
+      type="button"
+      [disabled]="!isFormValid() || isLoading"
+      (click)="signup()">
+      {{ isLoading ? 'Signing up...' : 'Sign up' }}
+    </button>
+
+    <!-- 🔹 Success Overlay INSIDE FORM -->
+    <div class="success-overlay" [class.show]="signupSuccess">
+      You Signed Up successfully
+    </div>
   </div>
 
-  <div class="input-group">
-    <input type="text" placeholder="Name" [(ngModel)]="name" />
-    <img src="assets/icon/login/person.png" alt="User" />
-  </div>
-
-  <div class="input-group">
-    <input type="email" placeholder="Email" [(ngModel)]="email" />
-    <img src="assets/icon/login/mail.png" alt="Email" />
-  </div>
-
-  <div class="input-group">
-    <input type="password" placeholder="Password" [(ngModel)]="password" />
-    <img src="assets/icon/login/lock.png" alt="Password" />
-  </div>
-
-  <div class="input-group">
-    <input
-      type="password"
-      placeholder="Confirm Password"
-      [(ngModel)]="confirmPassword"
-    />
-    <img src="assets/icon/login/lock.png" alt="Confirm Password" />
-  </div>
-
-  <label class="privacy">
-    <input type="checkbox" [(ngModel)]="acceptedPrivacy" />
-    I accept the <a href="#">Privacy policy</a>
-  </label>
-
-  <button [disabled]="!acceptedPrivacy || isLoading" (click)="signup()">
-    {{ isLoading ? 'Signing up...' : 'Sign up' }}
-  </button>
-
-@if (signupSuccess) {
-  <div class="success-msg">
-    You Signed Up successfully
-  </div>
-}
 </div>

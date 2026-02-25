@@ -1,22 +1,34 @@
+.signup-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+  background: #f5f5f5;
+}
+
+/* ----------------------------- */
+/* 🔹 Signup Form */
 .signup-form {
-  position: relative; 
+  position: relative; /* Overlay bezieht sich darauf */
   width: 400px;
   max-width: 90%;
   padding: 40px;
   background: white;
   border-radius: 15px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
   gap: 15px;
   font-family: sans-serif;
 
- 
   .signup-header {
-    position: relative;
     display: flex;
     flex-direction: column;
-    align-items: center; 
+    align-items: center;
     gap: 8px;
 
     h1 {
@@ -32,6 +44,12 @@
     }
   }
 
+  .input-group-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-height: 55px;
+  }
 
   .input-group {
     display: flex;
@@ -41,28 +59,67 @@
     padding: 0 10px;
     height: 45px;
     gap: 10px;
+    transition: border 0.2s ease, box-shadow 0.2s ease;
 
     input {
-      flex: 1;        
-      min-width: 0;  
+      flex: 1;
+      min-width: 0;
       border: none;
       outline: none;
       font-size: 14px;
+      background: transparent !important;
+      color: #000;
+
+      /* 🔹 Entfernt gelbe Autofill-Hintergrundfarbe in Chrome/Safari */
+      &:-webkit-autofill,
+      &:-webkit-autofill:hover,
+      &:-webkit-autofill:focus,
+      &:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0px 1000px white inset;
+        -webkit-text-fill-color: #000;
+        transition: background-color 5000s ease-in-out 0s;
+      }
     }
 
     img {
       width: 20px;
       height: 20px;
-      flex-shrink: 0; 
+      flex-shrink: 0;
+    }
+
+    &:focus-within {
+      border: 1px solid #29ABE2;
+      box-shadow: 0 0 0 2px rgba(41,171,226,0.2);
+    }
+
+    &.error {
+      border: 1px solid red;
+      box-shadow: 0 0 0 2px rgba(255,0,0,0.2);
     }
   }
 
+  .error-message {
+    font-size: 13px;
+    color: red;
+    height: 15px;
+    margin: 0;
+    visibility: hidden;
+  }
+
+  .error-message.show {
+    visibility: visible;
+  }
 
   .privacy {
     display: flex;
     align-items: center;
     font-size: 12px;
     gap: 6px;
+
+    input[type='checkbox'] {
+      width: 16px;
+      height: 16px;
+    }
 
     a {
       color: #29ABE2;
@@ -74,7 +131,6 @@
     }
   }
 
- 
   button:not(.back-btn) {
     padding: 12px;
     border-radius: 8px;
@@ -83,6 +139,7 @@
     color: white;
     cursor: pointer;
     font-size: 14px;
+    transition: background-color 0.2s ease;
 
     &:hover:not(:disabled) {
       background-color: #29ABE2;
@@ -93,37 +150,55 @@
       cursor: not-allowed;
     }
   }
-
-
-  .success-msg {
-    background-color: #1E2A3C;
-    color: white;
-    padding: 10px;
-    border-radius: 8px;
-    text-align: center;
-    font-size: 14px;
-  }
 }
 
+/* ----------------------------- */
+/* 🔹 Success Overlay */
+.success-overlay {
+  position: absolute;
+  bottom: 0;               /* Startpunkt unten */
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  width: 90%;
+  max-width: 360px;
+  padding: 15px;
+  background-color: #1E2A3C;
+  color: white;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 14px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  opacity: 0;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  z-index: 10;
+}
 
+.success-overlay.show {
+  top: 50%;               /* Mitte der Form */
+  bottom: auto;
+  transform: translateX(-50%) translateY(-50%);
+  opacity: 1;
+}
+
+/* ----------------------------- */
+/* 🔹 Back Button */
 .back-btn {
   position: absolute;
-  top: 14%;             
-  left: 12px;             
-  transform: translateY(-50%); 
-
+  top: 28%;
+  left: 58px;
+  transform: translateY(-50%);
   width: 40px;
   height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-
   border: none;
   border-radius: 50%;
-  cursor: pointer;      
+  cursor: pointer;
   background: transparent;
   transition: background-color 0.2s ease, transform 0.15s ease;
-  z-index: 10;          
+  z-index: 10;
+
   img {
     width: 32px;
     height: 32px;
@@ -131,57 +206,53 @@
   }
 
   &:hover {
-    background-color: #E3F3FB; 
-    transform: translateY(-50%) scale(1.05); 
+    background-color: #E3F3FB;
+    transform: translateY(-50%) scale(1.05);
   }
 
   &:active {
     transform: translateY(-50%) scale(0.95);
   }
-
-  @media (max-width: 420px) {
-    top: 12%;           
-    width: 32px;
-    height: 32px;
-
-    img {
-      width: 24px;
-      height: 24px;
-    }
-
-    cursor: pointer;     
-    z-index: 20;        
-  }
 }
 
-
+/* ----------------------------- */
+/* 🔹 Responsive */
 @media (max-width: 420px) {
   .signup-form {
     width: 100%;
     padding: 20px 15px;
-  }
 
-  .signup-header h1 {
-    font-size: 20px;
-  }
+    .signup-header h1 {
+      font-size: 20px;
+    }
 
-  .input-group {
-    height: 45px;
-    padding: 0 10px;
-    gap: 8px;
+    .input-group-wrapper {
+      min-height: 55px;
+    }
 
-    input {
+    .input-group {
+      height: 45px;
+      padding: 0 10px;
+      gap: 8px;
+
+      input {
+        font-size: 14px;
+      }
+
+      img {
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    button:not(.back-btn) {
+      padding: 10px;
       font-size: 14px;
     }
-
-    img {
-      width: 20px;
-      height: 20px;
-    }
   }
 
-  button:not(.back-btn) {
-    padding: 10px;
-    font-size: 14px;
+  .success-overlay {
+    width: 100%;
+    max-width: unset;
   }
 }
