@@ -17,7 +17,7 @@ export class SummarySection implements OnInit, OnDestroy {
   greeting: string = '';
   userName: string = 'Sofia Nadiner Müller-mayer-Trapper';
   maxUserNameLength: number = 15;
-  urgentTodoCount: number = 0;
+  urgentCount: number = 0;
   isMobile = false;
   showGreetingOnly = false;
 
@@ -34,7 +34,7 @@ export class SummarySection implements OnInit, OnDestroy {
     this.groupedTasks$ = this.taskService.getTasksGroupedByStatus().pipe(
       map((grouped) => {
         this.setUpcomingDeadline(grouped);
-        this.urgentTodoCount = grouped.todo.filter((t) => t.priority === 'urgent').length;
+        this.setUrgent(grouped);
         return grouped;
       }),
     );
@@ -72,13 +72,13 @@ export class SummarySection implements OnInit, OnDestroy {
     else this.greeting = 'Good evening';
   }
 
+  private setUrgent(grouped: GroupedTasks) {
+    const allTasks = [...grouped.todo, ...grouped.inProgress, ...grouped.awaitFeedback];
+    this.urgentCount = allTasks.filter((t) => t.priority === 'urgent').length;
+  }
+
   private setUpcomingDeadline(grouped: GroupedTasks) {
-    const allTasks = [
-      ...grouped.todo,
-      ...grouped.inProgress,
-      ...grouped.awaitFeedback,
-      ...grouped.done,
-    ];
+    const allTasks = [...grouped.todo, ...grouped.inProgress, ...grouped.awaitFeedback];
     const nextTask = allTasks
       .filter((t) => t.dueDate)
       .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())[0];
