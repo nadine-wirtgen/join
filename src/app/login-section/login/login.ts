@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../firebase-service/auth.servic';
+import { ContactService } from '../../firebase-service/contact-service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -15,26 +16,52 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./login.scss'],
 })
 export class LoginComponent {
+
   email = '';
   password = '';
   loginError = false;
-
-  // 🔹 Passwort Sichtbarkeit
   passwordVisible: boolean = false;
 
   constructor(
     private auth: AuthService,
-     private router: Router
+    private router: Router,
+    private contactService: ContactService
   ) {}
 
   // 🔹 Login Methode
   async login() {
-    const result = await this.auth.login(this.email, this.password);
+    try {
+      const result = await this.auth.login(this.email, this.password);
 
-    if (result.success) {
-      this.loginError = false;
-      this.router.navigate(['/summary']);
-    } else {
+      if (result.success) {
+        this.loginError = false;
+
+        // 🔎 Kontakt anhand der Email suchen
+        const foundContact = this.contactService.contactList.find(
+          contact => contact.email === this.email
+        );
+
+        if (foundContact) {
+          // ✅ User global speichern
+          this.contactService.setCurrentUser(
+            foundContact.name,
+            foundContact.email
+          );
+
+          console.log('Aktueller User:', foundContact.name);
+        } else {
+          console.warn('Kein Kontakt mit dieser Email gefunden');
+        }
+
+        // ✅ Navigation zur Summary
+        this.router.navigate(['/summary']);
+
+      } else {
+        this.loginError = true;
+      }
+
+    } catch (error) {
+      console.error('Login Fehler:', error);
       this.loginError = true;
     }
   }
@@ -42,6 +69,9 @@ export class LoginComponent {
   // 🔹 Guest Login
   async guestLogin() {
     await this.auth.guestLogin();
+
+    this.contactService.setCurrentUser('Guest', 'guest@local');
+
     this.router.navigate(['/summary'], {
       state: { fromLogin: true, guest: true },
     });
