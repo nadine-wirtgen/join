@@ -24,14 +24,14 @@ export class LoginComponent {
 
   constructor(
     private auth: AuthService,
-    private router: Router
+     private router: Router
   ) {}
 
   // 🔹 Login Methode
   async login() {
-    const success = await this.auth.login(this.email, this.password);
+    const result = await this.auth.login(this.email, this.password);
 
-    if (success) {
+    if (result.success) {
       this.loginError = false;
       this.router.navigate(['/summary']);
     } else {
