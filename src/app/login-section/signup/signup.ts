@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../firebase-service/auth.servic';
+import { ContactService } from '../../firebase-service/contact-service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -13,7 +14,11 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./signup.scss']
 })
 export class SignupComponent {
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private contactService: ContactService
+  ) {}
 
   // 🔹 Form Fields
   name: string = '';
@@ -91,9 +96,14 @@ export class SignupComponent {
     this.signupSuccess = false;
 
     this.authService.signup(this.email, this.password, this.name)
-      .then((result) => {
+      .then(async (result) => {
         this.isLoading = false;
         if (result.success) {
+          // Kontakt anlegen mit Name und Email
+          await this.contactService.addContactToDataBase({
+            name: this.name,
+            email: this.email
+          });
           this.signupSuccess = true;
           setTimeout(() => {
             this.signupSuccess = false;
