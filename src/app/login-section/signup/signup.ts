@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthService } from '../../firebase-service/auth.servic';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -12,6 +13,7 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./signup.scss']
 })
 export class SignupComponent {
+  constructor(private router: Router, private authService: AuthService) {}
 
   // 🔹 Form Fields
   name: string = '';
@@ -37,7 +39,6 @@ export class SignupComponent {
   // 🔹 Regex für sicheres Passwort
   securePasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
 
-  constructor(private router: Router) {}
 
   // 🔹 Prüfen ob Passwort sicher ist
   get isPasswordSecure(): boolean {
@@ -89,16 +90,18 @@ export class SignupComponent {
     this.isLoading = true;
     this.signupSuccess = false;
 
-    setTimeout(() => {
-      this.isLoading = false;
-      this.signupSuccess = true;
-
-      // 🔹 Overlay nach 3 Sekunden automatisch wieder ausblenden
-      setTimeout(() => {
-        this.signupSuccess = false;
-        this.router.navigate(['/login']);
-      }, 3000);
-
-    }, 800);
+    this.authService.signup(this.email, this.password, this.name)
+      .then((result) => {
+        this.isLoading = false;
+        if (result.success) {
+          this.signupSuccess = true;
+          setTimeout(() => {
+            this.signupSuccess = false;
+            this.router.navigate(['/login']);
+          }, 3000);
+        } else {
+          alert('Fehler beim Erstellen des Accounts: ' + result.error);
+        }
+      });
   }
 }

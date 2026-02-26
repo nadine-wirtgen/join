@@ -1,29 +1,44 @@
+import { Auth, createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword, User } from '@angular/fire/auth';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  constructor(private auth: Auth) {
+    this.loggedInSubject.next(false);
+  }
   private loggedInSubject = new BehaviorSubject<boolean>(false);
   isLoggedIn$ = this.loggedInSubject.asObservable();
 
-  constructor() {
-    this.loggedInSubject.next(false);
+
+
+  /**
+   * Komplettes Signup inkl. Profilname setzen und Fehlerbehandlung
+   */
+  async signup(email: string, password: string, name: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      const cred = await createUserWithEmailAndPassword(this.auth, email, password);
+      if (name && cred.user) {
+        await updateProfile(cred.user, { displayName: name });
+      }
+      return { success: true };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
   }
 
-  // 🔹 Login als Promise
-  login(email: string, password: string): Promise<boolean> {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        // Demo: nur fester User
-        if (email === 'demo@test.com' && password === '1234') {
-          this.loggedInSubject.next(true);
-          resolve(true);
-        } else {
-          this.loggedInSubject.next(false);
-          resolve(false);
-        }
-      }, 200); // kleine Verzögerung simuliert echten Login
-    });
+  /**
+   * Login mit Firebase Authentication
+   */
+  async login(email: string, password: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      const cred = await signInWithEmailAndPassword(this.auth, email, password);
+      this.loggedInSubject.next(true);
+      return { success: true };
+    } catch (error: any) {
+      this.loggedInSubject.next(false);
+      return { success: false, error: error.message };
+    }
   }
 
   // 🔹 Gast-Login
