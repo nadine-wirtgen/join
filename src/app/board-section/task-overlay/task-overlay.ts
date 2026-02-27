@@ -5,17 +5,15 @@ import {
   EventEmitter,
   OnInit,
   OnChanges,
-  QueryList,
-  ViewChildren,
-  ElementRef,
-  Renderer2,
+  SimpleChanges,
+  HostListener
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Task } from '../../interfaces/task';
 import { Contacts } from '../../interfaces/contacts';
 import { ContactService } from '../../firebase-service/contact-service';
-import { ContactSelector } from './contact-selector/contact-selector';
+import { AssignedToSelectComponent } from '../../shared/assigned-to-select/assigned-to-select';
 import { TaskService } from '../../firebase-service/task.service';
 
 interface Subtask {
@@ -26,7 +24,7 @@ interface Subtask {
 @Component({
   selector: 'app-task-overlay',
   standalone: true,
-  imports: [CommonModule, FormsModule, ContactSelector],
+  imports: [CommonModule, FormsModule, AssignedToSelectComponent],
   templateUrl: './task-overlay.html',
   styleUrls: ['./task-overlay.scss'],
 })
@@ -36,25 +34,15 @@ export class TaskOverlay implements OnInit, OnChanges {
   @Output() delete = new EventEmitter<string>();
   @Output() save = new EventEmitter<Omit<Task, 'id' | 'createdAt'>>();
 
-  @ViewChildren('subtaskInput') subtaskInputs!: QueryList<ElementRef<HTMLInputElement>>;
-
-  constructor(
-    public contactService: ContactService,
-    private taskService: TaskService,
-    private renderer: Renderer2,
-  ) {}
-
   isEditMode = false;
   isSaving = false;
   today = new Date().toISOString().split('T')[0];
 
-  hoveredSubtaskIndex: number | null = null;
   editingSubtaskIndex: number | null = null;
-  private removeClickListener: (() => void) | null = null;
+  hoveredSubtaskIndex: number | null = null;
+  newSubtaskTitle = '';
 
-  isSubtaskInputFocused = false;
   assignedContacts: Contacts[] = [];
-  private isDeleted = false;
 
   editedTask: Omit<Task, 'id' | 'createdAt'> = {
     title: '',
@@ -68,72 +56,242 @@ export class TaskOverlay implements OnInit, OnChanges {
     position: 0,
   };
 
-  newSubtaskTitle = '';
+  constructor(
+    public contactService: ContactService,
+    private taskService: TaskService,
+  ) {}
 
-  ngOnInit() {
-    this.loadTaskData();
-    this.loadAssignedContacts();
-  }
+/**
+ * Angular lifecycle hook.
+ * Called once after component is initialized.
+ * Loads the task data and assigned contacts.
+ */
+ngOnInit() {
+  this.loadTaskData();
+  this.loadAssignedContacts();
+}
 
-  ngOnChanges() {
-    this.loadTaskData();
-    this.loadAssignedContacts();
-  }
+/**
+ * Angular lifecycle hook.
+ * Called whenever input properties change.
+ * Reloads task data and assigned contacts to reflect changes.
+ * 
+ * @param _ - SimpleChanges object (not used)
+ */
+ngOnChanges(_: SimpleChanges) {
+  this.loadTaskData();
+  this.loadAssignedContacts();
+}
 
-  /* ===================== LOAD DATA ===================== */
-
+  /**
+   * Load the task data into the editable form
+   */
   private loadTaskData() {
-    if (this.task) {
-      const { id, createdAt, ...taskData } = this.task;
-      this.editedTask = {
-        ...taskData,
-        dueDate: this.formatDateForInput(this.task.dueDate),
-        assignedTo: this.task.assignedTo || [],
-      };
-    }
+    if (!this.task) return;
+    this.editedTask = this.extractEditableTask(this.task);
   }
 
-  loadAssignedContacts() {
+  /**
+   * Extract editable fields from a task
+   */
+  private extractEditableTask(task: Task & { id: string }) {
+    const { id, createdAt, ...taskData } = task;
+    return {
+      ...taskData,
+      dueDate: this.formatDateForInput(task.dueDate),
+      assignedTo: task.assignedTo || [],
+    };
+  }
+
+  /**
+   * Load contacts assigned to the task
+   */
+  private loadAssignedContacts() {
     if (this.task?.assignedTo?.length) {
-      this.assignedContacts = this.contactService.contactList.filter((contact) =>
-        (this.task?.assignedTo || []).includes(contact.name),
+      this.assignedContacts = this.contactService.contactList.filter(c =>
+        (this.task?.assignedTo || []).includes(c.name)
       );
     } else {
       this.assignedContacts = [];
     }
   }
 
-  /* ===================== CONTACTS ===================== */
-
-  onContactsChange(selectedNames: string[]) {
-    this.editedTask.assignedTo = selectedNames || [];
-    this.assignedContacts = this.contactService.contactList.filter((contact) =>
-      selectedNames.includes(contact.name),
-    );
+  /**
+   * Update contacts when selection changes
+   */
+  onContactsChange(selectedContacts: Contacts[]) {
+    this.editedTask.assignedTo = selectedContacts.map(c => c.name);
+    this.assignedContacts = [...selectedContacts];
   }
 
+  /**
+   * Get color for a contact avatar
+   */
   getContactColor(contact: Contacts): string {
-    return this.contactService?.getContactColor(contact) || '#2A3647';
+    return this.contactService.getContactColor(contact);
   }
 
+  /**
+   * Get initials from contact name
+   */
   getInitials(name: string): string {
     if (!name) return '';
     return name
       .split(' ')
-      .map((n) => n[0])
+      .map(n => n[0])
       .join('')
       .toUpperCase()
       .substring(0, 2);
   }
 
-  /* ===================== SAFE VIEW DATA ===================== */
+  /**
+   * Start editing a subtask
+   */
+  startSubtaskEdit(index: number) {
+    this.editingSubtaskIndex = index;
+  }
 
+  /**
+   * Save the edited subtask
+   */
+  saveSubtaskEdit(index: number) {
+    const title = this.editedTask.subtasks[index]?.title?.trim();
+    if (!title) this.removeSubtask(index);
+    this.editingSubtaskIndex = null;
+  }
+
+  /**
+   * Cancel subtask editing
+   */
+  cancelSubtaskEdit() {
+    this.editingSubtaskIndex = null;
+  }
+
+  /**
+   * Handle keyboard input for subtask editing
+   */
+  handleSubtaskKey(event: KeyboardEvent, index: number) {
+    if (event.key === 'Enter') this.saveSubtaskEdit(index);
+    if (event.key === 'Escape') this.cancelSubtaskEdit();
+  }
+
+  /**
+   * Add a new subtask
+   */
+  addSubtask() {
+    if (!this.newSubtaskTitle.trim()) return;
+    this.editedTask.subtasks.push(this.createSubtask(this.newSubtaskTitle));
+    this.newSubtaskTitle = '';
+  }
+
+  /**
+   * Create a subtask object
+   */
+  private createSubtask(title: string): Subtask {
+    return { title: title.trim(), completed: false };
+  }
+
+  /**
+   * Remove a subtask by index
+   */
+  removeSubtask(index: number) {
+    this.editedTask.subtasks.splice(index, 1);
+  }
+
+  /**
+   * Toggle completion status of a subtask
+   */
+  toggleSubtask(subtask: Subtask) {
+    subtask.completed = !subtask.completed;
+    this.updateSubtasksInTask();
+  }
+
+  /**
+   * Update subtasks in Firebase if task exists
+   */
+  private updateSubtasksInTask() {
+    if (!this.task?.id) return;
+    this.taskService.updateTask(this.task.id, { subtasks: this.editedTask.subtasks })
+      .catch(console.error);
+  }
+
+  /**
+   * Enable edit mode
+   */
+  enableEdit() {
+    if (!this.task) return;
+    this.editedTask = this.extractEditableTask(this.task);
+    this.isEditMode = true;
+  }
+
+  /**
+   * Cancel edit mode
+   */
+  cancelEdit() {
+    this.isEditMode = false;
+  }
+
+  /**
+   * Check if form is valid
+   */
+  private isFormValid(): boolean {
+    return !!(this.editedTask.title?.trim() &&
+      this.editedTask.dueDate &&
+      this.editedTask.dueDate >= this.today);
+  }
+
+  /**
+   * Save task changes
+   */
+  onSave() {
+    if (!this.isFormValid()) return;
+    this.isSaving = true;
+    if (this.task) Object.assign(this.task, this.editedTask);
+    this.save.emit(this.editedTask);
+    this.isEditMode = false;
+    this.resetSavingFlag();
+  }
+
+  /**
+   * Reset saving flag after a delay
+   */
+  private resetSavingFlag() {
+    setTimeout(() => (this.isSaving = false), 500);
+  }
+
+  /**
+   * Delete the task
+   */
+  onDelete() {
+    if (!this.task?.id) return;
+    this.delete.emit(this.task.id);
+    this.onClose();
+  }
+
+  /**
+   * Close overlay
+   */
+  onClose() {
+    this.close.emit();
+  }
+
+  /**
+   * Format date for input[type=date]
+   */
+  formatDateForInput(date: string): string {
+    if (!date) return '';
+    return new Date(date).toISOString().split('T')[0];
+  }
+
+  /**
+   * Return safe task object for view mode
+   */
   get safeTask() {
     const t = this.task;
     return {
       title: t?.title || 'Untitled Task',
       description: t?.description || 'No description provided',
-      dueDate: t?.dueDate || new Date().toISOString().split('T')[0],
+      dueDate: t?.dueDate || this.today,
       priority: t?.priority?.toLowerCase() || 'medium',
       category: t?.category || 'User Story',
       assignedTo: t?.assignedTo || [],
@@ -141,182 +299,32 @@ export class TaskOverlay implements OnInit, OnChanges {
     };
   }
 
+  /**
+   * Get category color
+   */
   get categoryColor(): string {
     return this.safeTask.category === 'Technical Task' ? '#1FD7C1' : '#0038FF';
   }
 
-  /* ===================== DATE ===================== */
-
-  openDatePicker(input: HTMLInputElement) {
-    if (input.showPicker) {
-      input.showPicker();
-    } else {
-      input.focus();
-    }
-  }
-
-  formatDateForInput(date: string): string {
-    if (!date) return '';
-    return new Date(date).toISOString().split('T')[0];
-  }
-
-  /* ===================== EDIT MODE ===================== */
-
-  enableEdit() {
-    if (this.task) {
-      const { id, createdAt, ...taskData } = this.task;
-      const today = new Date().toISOString().split('T')[0];
-      const dueDate = this.task.dueDate;
-
-      this.editedTask = {
-        ...taskData,
-        dueDate:
-          dueDate && dueDate !== '2029' && !dueDate.includes('2029')
-            ? this.formatDateForInput(dueDate)
-            : today,
-        assignedTo: this.task.assignedTo || [],
-      };
-      this.isEditMode = true;
-    }
-  }
-
-  cancelEdit() {
-    this.isEditMode = false;
-  }
-
-  /* ===================== SUBTASKS ===================== */
-
-  addSubtask() {
-    if (!this.newSubtaskTitle.trim()) return;
-
-    this.editedTask.subtasks.push({
-      title: this.newSubtaskTitle.trim(),
-      completed: false,
-    });
-
-    this.newSubtaskTitle = '';
-  }
-
-  removeSubtask(index: number) {
-    this.editedTask.subtasks.splice(index, 1);
-  }
-
-  startSubtaskEdit(index: number) {
-    this.editingSubtaskIndex = index;
-
-    setTimeout(() => {
-      const input = this.subtaskInputs?.get(index)?.nativeElement;
-      if (input) {
-        input.focus();
-        input.setSelectionRange(input.value.length, input.value.length);
-      }
-    });
-
-    // Click-Outside Listener
-    this.removeClickListener?.(); // alten Listener entfernen
-    this.removeClickListener = this.renderer.listen('document', 'click', (event: MouseEvent) => {
-      const clickedInside = this.subtaskInputs
-        ?.toArray()
-        [index]?.nativeElement.contains(event.target as Node);
-      if (!clickedInside && this.editingSubtaskIndex !== null) {
-        this.saveSubtaskEdit(this.editingSubtaskIndex);
-        this.removeClickListener?.();
-        this.removeClickListener = null;
-      }
-    });
-  }
-
-  saveSubtaskEdit(index: number) {
-    const title = this.editedTask.subtasks[index]?.title?.trim();
-
-    if (!title) {
-      this.removeSubtask(index);
-    }
-
-    this.editingSubtaskIndex = null;
-
-    // Click-Outside Listener entfernen
-    this.removeClickListener?.();
-    this.removeClickListener = null;
-  }
-
-  cancelSubtaskEdit() {
-    this.editingSubtaskIndex = null;
-
-    // Listener entfernen
-    this.removeClickListener?.();
-    this.removeClickListener = null;
-  }
-
-  handleSubtaskKey(event: KeyboardEvent, index: number) {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      this.saveSubtaskEdit(index);
-    }
-
-    if (event.key === 'Escape') {
-      this.cancelSubtaskEdit();
-    }
-  }
-
-  toggleSubtask(subtask: Subtask) {
-    subtask.completed = !subtask.completed;
-
-    if (this.task?.id) {
-      this.taskService
-        .updateTask(this.task.id, {
-          subtasks: this.editedTask.subtasks,
-        })
-        .catch(console.error);
-    }
-  }
-
-  /* ===================== SAVE ===================== */
-
-  private isFormValid(): boolean {
-    return !!(
-      this.editedTask.title?.trim() &&
-      this.editedTask.dueDate &&
-      this.editedTask.dueDate >= this.today
-    );
-  }
-
-  onSave() {
-    if (!this.isFormValid()) return;
-
-    this.isSaving = true;
-
-    if (this.task) {
-      Object.assign(this.task, this.editedTask);
-    }
-
-    this.save.emit(this.editedTask);
-    this.isEditMode = false;
-
-    setTimeout(() => (this.isSaving = false), 500);
-  }
-
-  /* ===================== DELETE & CLOSE ===================== */
-
-  onDelete() {
-    if (!this.task?.id) return;
-
-    this.isDeleted = true;
-    this.delete.emit(this.task.id);
-    this.onClose();
-  }
-
-  onClose() {
-    this.close.emit();
-  }
-
-  /* ===================== TRACK BY ===================== */
-
+  /**
+   * Track by contact id for ngFor
+   */
   trackByContactId(index: number, contact: Contacts) {
     return contact.id;
   }
 
+  /**
+   * Track by index for subtasks
+   */
   trackBySubtask(index: number, subtask: Subtask) {
     return index;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const overlay = document.querySelector('.task-overlay');
+    if (overlay && !overlay.contains(event.target as Node)) {
+      this.onClose();
+    }
   }
 }

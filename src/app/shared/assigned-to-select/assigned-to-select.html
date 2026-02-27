@@ -1,0 +1,56 @@
+<div class="contact-selector">
+  <div class="assigned-to-container">
+
+    <div class="assigned-to-select">
+      <input
+        type="text"
+        class="contact-search-select"
+        placeholder="Select contacts to assign"
+        [value]="contactSearchTerm"
+        (focus)="openDropdown()"
+        (input)="onInputChange($event)"
+      />
+
+      <img
+        [src]="isDropdownOpen
+          ? 'assets/imgs/add-task/arrow_drop_up.png'
+          : 'assets/imgs/add-task/arrow_drop_down.png'"
+        class="dropdown-arrow"
+        alt="Dropdown Arrow"
+        (click)="toggleDropdown()"
+      />
+    </div>
+
+    <div *ngIf="selectedContacts.length > 0" class="avatars-below">
+      <div *ngFor="let c of selectedContacts | slice:0:3" class="avatar" [style.backgroundColor]="getContactColor(c)">
+        {{ getInitials(c.name) }}
+      </div>
+      <div *ngIf="selectedContacts.length > 3" class="avatar more">
+        +{{ selectedContacts.length - 3 }}
+      </div>
+    </div>
+
+    <div *ngIf="isDropdownOpen" class="assigned-to-list">
+      <div *ngFor="let contact of filteredContacts()" class="single-contact" [class.active]="isSelected(contact)" (click)="toggleContact(contact)">
+        <div class="avatar-letter-box" [style.backgroundColor]="getContactColor(contact)">
+          {{ getInitials(contact.name) }}
+        </div>
+        <span class="contact-name">
+          {{ contact.name }}<span *ngIf="isCurrentUser(contact)"> (You)</span>
+        </span>
+        <img
+          [src]="isSelected(contact)
+            ? 'assets/imgs/add-task/checkbox_active.png'
+            : 'assets/imgs/add-task/checkbox_default.png'"
+          class="checkbox-img"
+          alt="Checkbox"
+        />
+      </div>
+
+      <div *ngIf="filteredContacts().length === 0" class="single-contact">
+        <span class="contact-name">No contacts found</span>
+      </div>
+    </div>
+    
+  </div>
+</div>
