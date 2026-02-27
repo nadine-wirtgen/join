@@ -51,7 +51,7 @@
                 <span class="label">Urgent</span>
               </div>
             </div>
-            <div>
+            <div class="mobil-icon-line">
               <img class="summary-icon-line" src="assets/icon/summary/line.png" />
             </div>
             <div class="counter-text">
@@ -87,20 +87,19 @@
       </div>
     </ng-container>
 
-    @if ((!isMobile || showGreetingOnly) && userName !== 'Guest') {
+    @if (!isMobile || showGreetingOnly) {
       <div class="greeting">
-        <div class="greeting-text">{{ greeting }},</div>
-        <span class="user-name" [title]="userName">
-          {{
-            userName.length > maxUserNameLength
-              ? (userName | slice: 0 : maxUserNameLength) + '...'
-              : userName
-          }}
-        </span>
-      </div>
-    } @else if (!isMobile || showGreetingOnly) {
-      <div class="greeting">
-        <div class="greeting-text">{{ greeting }}!</div>
+        <div class="greeting-text">{{ greeting }}{{ userName !== 'Guest' ? ',' : '!' }}</div>
+
+        @if (userName !== 'Guest') {
+          <span class="user-name" [title]="userName">
+            {{
+              userName.length > maxUserNameLength
+                ? (userName | slice: 0 : maxUserNameLength) + '...'
+                : userName
+            }}
+          </span>
+        }
       </div>
     }
   </div>
