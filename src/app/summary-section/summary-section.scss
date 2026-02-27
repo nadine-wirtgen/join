@@ -244,6 +244,9 @@
 }
 
 @media (max-width: 1229px) {
+  .summary-section .summary-information {
+    flex-direction: column-reverse;
+  }
   .summary-section .summary-information .greeting {
     .greeting-text {
       font-size: 36px !important;
@@ -255,7 +258,6 @@
 
   .summary-section .summary-information .metrics .metric .urgent {
     padding: 28px;
-    width: 100%;
   }
 }
 
@@ -278,7 +280,7 @@
     }
   }
 
-  .summary-section .metrics {
+  .summary-section .summary-information .metrics .metric .urgent {
     width: 100%;
   }
 }
@@ -301,8 +303,20 @@
 
 @media (max-width: 600px) {
   .summary-section .metrics {
-    .summary-icon-general,
     .summary-icon-urgent {
+      width: 40px !important;
+      height: 40px !important;
+    }
+  }
+  .summary-section .summary-information .metrics .metric .urgent {
+    height: 140px;
+    gap: 40px;
+  }
+}
+
+@media (max-width: 460px) {
+  .summary-section .metrics {
+    .summary-icon-general {
       width: 40px !important;
       height: 40px !important;
     }
@@ -311,12 +325,6 @@
       height: 40px !important;
     }
   }
-  .summary-section .summary-information .metrics .metric .urgent {
-    gap: 40px;
-  }
-}
-
-@media (max-width: 460px) {
   .summary-section .greeting {
     .greeting-text {
       font-size: 28px !important;
@@ -325,30 +333,59 @@
       font-size: 36px !important;
     }
   }
+  .summary-section .summary-information .metrics .metric .urgent {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 420px) {
+  .summary-section .summary-information .metrics .metric .metric-card {
+    flex-direction: column-reverse;
+  }
+  .summary-section .summary-information .metrics .metric .urgent {
+    flex-direction: column;
+    gap: 0;
+    .summary-icon-line {
+      rotate: calc(90deg);
+    }
+  }
 }
 
 @media (max-width: 360px) {
   .summary-section {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    .greeting-text {
-      font-size: 24px !important;
-    }
-    .user-name {
-      font-size: 32px !important;
-    }
+    padding: 12px;
+  }
+
+  .summary-section .summary-information .metrics .metric .urgent {
+    padding: 16px;
+  }
+
+  .summary-section .summary-information .metrics .metric .metric-card,
+  .summary-section .summary-information .metrics .metric .metric-card-bottom {
+    padding: 12px;
+    height: auto;
   }
 }
 
+// @media (max-width: 360px) {
+//   .summary-section {
+//     padding: 16px;
+//     width: 100%;
+//     display: flex;
+//     flex-direction: column;
+//     justify-content: center;
+//     align-items: center;
+//     text-align: center;
+//     .greeting-text {
+//       font-size: 24px !important;
+//     }
+//     .user-name {
+//       font-size: 32px !important;
+//     }
+//   }
+// }
+
 @media (max-width: 340px) {
-  .summary-section {
-    padding: 10px;
-  }
   .summary-section .summary-information .greeting {
     .greeting-text {
       font-size: 22px !important;
