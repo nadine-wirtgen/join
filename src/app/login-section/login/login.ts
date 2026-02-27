@@ -8,15 +8,11 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule
-  ],
+  imports: [CommonModule, FormsModule],
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
 })
 export class LoginComponent {
-
   email = '';
   password = '';
   loginError = false;
@@ -25,7 +21,7 @@ export class LoginComponent {
   constructor(
     private auth: AuthService,
     private router: Router,
-    private contactService: ContactService
+    private contactService: ContactService,
   ) {}
 
   // 🔹 Login Methode
@@ -38,15 +34,12 @@ export class LoginComponent {
 
         // 🔎 Kontakt anhand der Email suchen
         const foundContact = this.contactService.contactList.find(
-          contact => contact.email === this.email
+          (contact) => contact.email === this.email,
         );
 
         if (foundContact) {
           // ✅ User global speichern
-          this.contactService.setCurrentUser(
-            foundContact.name,
-            foundContact.email
-          );
+          this.contactService.setCurrentUser(foundContact.name, foundContact.email);
 
           console.log('Aktueller User:', foundContact.name);
         } else {
@@ -54,12 +47,12 @@ export class LoginComponent {
         }
 
         // ✅ Navigation zur Summary
-        this.router.navigate(['/summary']);
-
+        this.router.navigate(['/summary'], {
+          state: { fromLogin: true },
+        });
       } else {
         this.loginError = true;
       }
-
     } catch (error) {
       console.error('Login Fehler:', error);
       this.loginError = true;
