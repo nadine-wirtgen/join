@@ -44,15 +44,17 @@
           </div>
 
           <a class="metric-card urgent" routerLink="/board">
-            <img class="summary-icon-urgent" src="assets/icon/summary/urgent.png" />
-            <div class="counter-text">
-              <span class="count">{{ urgentCount }}</span>
-              <span class="label">Urgent</span>
+            <div class="urgentContant">
+              <img class="summary-icon-urgent" src="assets/icon/summary/urgent.png" />
+              <div class="counter-text">
+                <span class="count">{{ urgentCount }}</span>
+                <span class="label">Urgent</span>
+              </div>
             </div>
             <img class="summary-icon-line" src="assets/icon/summary/line.png" />
             <div class="counter-text">
               <span class="deadline">{{ upcomingDeadline | date: 'MMMM d, yy' }}</span>
-              <span class="label">Upcoming Deadline</span>
+              <span class="deadlinelabel">Upcoming Deadline</span>
             </div>
           </a>
 
@@ -83,15 +85,21 @@
       </div>
     </ng-container>
 
-    <div class="greeting" *ngIf="!isMobile || showGreetingOnly">
-      <div class="greeting-text">{{ greeting }},</div>
-      <span class="user-name" [title]="userName">
-        {{
-          userName.length > maxUserNameLength
-            ? (userName | slice: 0 : maxUserNameLength) + '...'
-            : userName
-        }}
-      </span>
-    </div>
+    @if ((!isMobile || showGreetingOnly) && userName !== 'Guest') {
+      <div class="greeting">
+        <div class="greeting-text">{{ greeting }},</div>
+        <span class="user-name" [title]="userName">
+          {{
+            userName.length > maxUserNameLength
+              ? (userName | slice: 0 : maxUserNameLength) + '...'
+              : userName
+          }}
+        </span>
+      </div>
+    } @else if (!isMobile || showGreetingOnly) {
+      <div class="greeting">
+        <div class="greeting-text">{{ greeting }}!</div>
+      </div>
+    }
   </div>
 </div>
