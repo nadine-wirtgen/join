@@ -1,55 +1,67 @@
-/* Layout und Optik für das Add-Task-Dialog-Overlay */
-
 .add-task-dialog-overlay {
-	position: fixed;
-	inset: 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	z-index: 2000;
+  position: fixed;
+  top: 0;
+  left: 232px;                     // Sidebar-Offset
+  width: calc(100% - 232px);       // nur der restliche Bereich
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
 }
 
 .add-task-dialog-backdrop {
-	position: absolute;
-	inset: 0;
-	background: rgba(0, 0, 0, 0.2);
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.3); // halbtransparent
+  z-index: 1;
 }
 
 .add-task-dialog-container {
-	position: relative;
-	z-index: 1;
-	width: min(100% - 32px, 1100px);
-	max-height: 90vh;
-	background: #f6f7fb;
-	border-radius: 30px;
-	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-	overflow: hidden;
-}
+  position: relative;
+  z-index: 2;
+  width: calc(100% - 140px);
+  max-width: 1100px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #f6f7fb;
+  border-radius: 30px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+    position: fixed;
+  
+  top: 50%;
+  transform: translateY(-50%);     
 
-.add-task-dialog-container {
-	position: relative;
-	z-index: 1;
-	width: min(100% - 32px, 1100px);
-	max-height: 90vh;
-	background: #f6f7fb;
-	border-radius: 30px;
-	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-	overflow: hidden;
+  left: 232px;                     
+  width: calc(100% - 232px);  
 }
 
 .dialog-close-btn {
-	position: absolute;
-	top: 16px;
-	right: 24px;
-	z-index: 3000;
-	border: none;
-	background: transparent;
-	font-size: 24px;
-	line-height: 1;
-	cursor: pointer;
-	color: #2a3647;
+  position: absolute;
+  top: 16px;
+  right: 24px;
+  z-index: 3;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
 }
 
-.dialog-close-btn:hover {
-	transform: scale(1.1);
+
+@media (max-width: 780px) {
+  .add-task-dialog-container {
+    position: fixed;
+    left: 0;                         
+    width: 100%;                    
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: center;
+    z-index: 2000;
+  }
+
+ 
 }
