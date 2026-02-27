@@ -57,7 +57,7 @@ export class SummarySection implements OnInit, OnDestroy {
   }
 
   private checkMobile(width: number) {
-    this.isMobile = width <= 768;
+    this.isMobile = width <= 1000;
     if (this.isMobile && this.fromLogin) {
       this.showGreetingOnly = true;
       if (this.greetingTimeout) clearTimeout(this.greetingTimeout);
