@@ -29,7 +29,19 @@
     }
   }
 
-  @media (max-width: 1200px) {
+  @media (max-width: 1300px) {
+    .summary-headline {
+      width: 100%;
+      h1 {
+        font-size: 48px;
+      }
+      h3 {
+        font-size: 20px;
+      }
+    }
+  }
+
+  @media (max-width: 1000px) {
     .summary-headline {
       flex-direction: column;
       align-items: flex-start;
@@ -50,7 +62,6 @@
       }
     }
   }
-
   .summary-information {
     display: flex;
     flex-direction: row;
@@ -88,14 +99,14 @@
           flex: 1;
           background: #fff;
           border-radius: 1rem;
-          padding: 1rem;
+          padding: 24px;
           box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
           display: flex;
           justify-content: center;
           align-items: center;
-          gap: 16px;
+          gap: 13px;
           transition: all 0.25s ease;
-          height: 160px;
+          height: auto;
           .icon-wrapper {
             position: relative;
             width: 69px;
@@ -211,19 +222,20 @@
       }
     }
   }
-
   .summary-icon-urgent {
     width: 69px;
     height: 69px;
     object-fit: contain;
   }
-
   .summary-icon-line {
     height: 60px;
   }
 }
 
 @media (max-width: 1364px) {
+  .summary-section {
+    padding: 40px;
+  }
   .summary-section .summary-information .greeting {
     .greeting-text {
       font-size: 40px !important;
@@ -232,7 +244,6 @@
       font-size: 55px !important;
     }
   }
-
   .summary-section .summary-information .metrics {
     .count {
       font-size: 47px !important;
@@ -244,6 +255,9 @@
 }
 
 @media (max-width: 1229px) {
+  .summary-section .summary-information {
+    flex-direction: column-reverse;
+  }
   .summary-section .summary-information .greeting {
     .greeting-text {
       font-size: 36px !important;
@@ -252,10 +266,8 @@
       font-size: 47px !important;
     }
   }
-
   .summary-section .summary-information .metrics .metric .urgent {
     padding: 28px;
-    width: 100%;
   }
 }
 
@@ -269,7 +281,7 @@
     flex-direction: column;
     width: 100%;
     .greeting {
-      align-items: start;
+      align-items: center;
       width: 100%;
       max-width: 100%;
       order: -1;
@@ -277,13 +289,12 @@
       text-align: center;
     }
   }
-
-  .summary-section .metrics {
+  .summary-section .summary-information .metrics .metric .urgent {
     width: 100%;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1000px) {
   .summary-section .metrics {
     flex: 1;
     padding-bottom: 80px;
@@ -312,6 +323,7 @@
     }
   }
   .summary-section .summary-information .metrics .metric .urgent {
+    height: 140px;
     gap: 40px;
   }
 }
@@ -325,30 +337,47 @@
       font-size: 36px !important;
     }
   }
+  .summary-section .summary-information .metrics .metric .urgent {
+    gap: 20px;
+  }
 }
 
-@media (max-width: 360px) {
+// @media (max-width: 430px) {
+//   // .summary-section .summary-information .metrics .metric .metric-card {
+//   //   flex-direction: column-reverse;
+//   // }
+//   .summary-section .summary-information .metrics .metric .urgent {
+//     flex-direction: column;
+//     gap: 0;
+//     .summary-icon-line {
+//       rotate: calc(90deg);
+//     }
+//   }
+// }
+
+@media (max-width: 430px) {
   .summary-section {
-    width: 100%;
-    height: 100vh;
-    display: flex;
+    padding: 12px;
+  }
+  .summary-section .summary-information .metrics .metric .urgent {
+    padding: 16px;
+  }
+  .summary-section .summary-information .metrics .metric .metric-card,
+  .summary-section .summary-information .metrics .metric .metric-card-bottom {
+    padding: 12px;
+    height: auto;
+  }
+  .summary-section .summary-information .metrics .metric .urgent {
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    .greeting-text {
-      font-size: 24px !important;
-    }
-    .user-name {
-      font-size: 32px !important;
+    gap: 0;
+    .summary-icon-line {
+      rotate: calc(90deg);
+      height: 40px;
     }
   }
 }
 
 @media (max-width: 340px) {
-  .summary-section {
-    padding: 10px;
-  }
   .summary-section .summary-information .greeting {
     .greeting-text {
       font-size: 22px !important;
