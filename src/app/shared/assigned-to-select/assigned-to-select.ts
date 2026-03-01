@@ -132,11 +132,32 @@ export class AssignedToSelectComponent implements OnInit, OnDestroy, OnChanges {
    * Filters contacts by search term and sorts them alphabetically.
    * @returns filtered and sorted contacts
    */
-  filteredContacts(): Contacts[] {
-    return this.contacts
-      .filter(c => c.name.toLowerCase().includes(this.contactSearchTerm.toLowerCase()))
-      .sort((a, b) => a.name.localeCompare(b.name));
-  }
+/**
+ * Filters contacts by the current search term.
+ * 
+ * If the currently logged-in user exists in the filtered list,
+ * they will always be placed at the top of the result.
+ * 
+ * All remaining contacts are sorted alphabetically by name.
+ *
+ * @returns Contacts[] Filtered and sorted contacts list
+ */
+filteredContacts(): Contacts[] {
+  const term = this.contactSearchTerm.toLowerCase();
+  const currentUserName = this.contactService.currentUserName;
+
+  const filtered = this.contacts.filter(c =>
+    c.name.toLowerCase().includes(term)
+  );
+
+  const currentUser = filtered.find(c => c.name === currentUserName);
+
+  const others = filtered
+    .filter(c => c.name !== currentUserName)
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  return currentUser ? [currentUser, ...others] : others;
+}
 
   /**
    * Returns initials for a contact name.

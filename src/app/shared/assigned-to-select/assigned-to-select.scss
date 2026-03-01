@@ -5,13 +5,11 @@
   max-height: 100px;
 }
 
-
 .assigned-to-container {
   position: relative;
   width: 100%;
   font-family: 'Inter', sans-serif;
   min-height: 40px;
-
 
   .assigned-to-select {
     display: flex;
@@ -54,7 +52,6 @@
       }
     }
   }
-
 
   .assigned-to-list {
     position: absolute;
@@ -103,13 +100,26 @@
         border: 2px solid #fff;
       }
 
-      .contact-name {
+      .contact-name-wrapper {
+        display: flex;
+        align-items: center;
         flex: 1;
         min-width: 0;
+        gap: 6px;
+      }
+
+      .contact-name-text {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        min-width: 0;
         font-size: 20px;
+      }
+
+      .you-label {
+        flex-shrink: 0;
+        font-size: 16px;
+        color: #888;
       }
 
       .checkbox-img {
@@ -126,7 +136,6 @@
       min-height: 40px;
     }
   }
-
 
   .avatars-below {
     position: absolute;
@@ -173,7 +182,7 @@
     font-size: 16px !important;
   }
 
-  .single-contact .contact-name {
+  .single-contact .contact-name-text {
     font-size: 16px !important;
   }
 
