@@ -41,6 +41,8 @@ export class TaskOverlay implements OnInit, OnChanges {
   editingSubtaskIndex: number | null = null;
   hoveredSubtaskIndex: number | null = null;
   newSubtaskTitle = '';
+  subtaskBackup: string | null = null;
+  originalDueDate: string | null = null;
 
   assignedContacts: Contacts[] = [];
 
@@ -59,40 +61,32 @@ export class TaskOverlay implements OnInit, OnChanges {
   constructor(
     public contactService: ContactService,
     private taskService: TaskService,
-  ) {}
+  ) { }
 
-/**
- * Angular lifecycle hook.
- * Called once after component is initialized.
- * Loads the task data and assigned contacts.
- */
-ngOnInit() {
-  this.loadTaskData();
-  this.loadAssignedContacts();
-}
+  /** Angular lifecycle hook: initialize component */
+  ngOnInit() {
+    this.loadTaskData();
+    this.loadAssignedContacts();
+  }
 
-/**
- * Angular lifecycle hook.
- * Called whenever input properties change.
- * Reloads task data and assigned contacts to reflect changes.
- * 
- * @param _ - SimpleChanges object (not used)
- */
-ngOnChanges(_: SimpleChanges) {
-  this.loadTaskData();
-  this.loadAssignedContacts();
-}
+  /** Angular lifecycle hook: respond to input changes */
+  ngOnChanges(_: SimpleChanges) {
+    this.loadTaskData();
+    this.loadAssignedContacts();
+  }
 
-  /**
-   * Load the task data into the editable form
-   */
+  /** Load task data into editedTask */
   private loadTaskData() {
     if (!this.task) return;
+
     this.editedTask = this.extractEditableTask(this.task);
+    this.originalDueDate = this.editedTask.dueDate;
   }
 
   /**
-   * Extract editable fields from a task
+   * Extract editable fields from task
+   * @param task Task with id
+   * @returns Editable task object
    */
   private extractEditableTask(task: Task & { id: string }) {
     const { id, createdAt, ...taskData } = task;
@@ -103,9 +97,7 @@ ngOnChanges(_: SimpleChanges) {
     };
   }
 
-  /**
-   * Load contacts assigned to the task
-   */
+  /** Load contacts assigned to the task */
   private loadAssignedContacts() {
     if (this.task?.assignedTo?.length) {
       this.assignedContacts = this.contactService.contactList.filter(c =>
@@ -117,7 +109,8 @@ ngOnChanges(_: SimpleChanges) {
   }
 
   /**
-   * Update contacts when selection changes
+   * Update assigned contacts when selection changes
+   * @param selectedContacts Array of selected contacts
    */
   onContactsChange(selectedContacts: Contacts[]) {
     this.editedTask.assignedTo = selectedContacts.map(c => c.name);
@@ -125,7 +118,9 @@ ngOnChanges(_: SimpleChanges) {
   }
 
   /**
-   * Get color for a contact avatar
+   * Get color for a contact
+   * @param contact Contact object
+   * @returns Hex color string
    */
   getContactColor(contact: Contacts): string {
     return this.contactService.getContactColor(contact);
@@ -133,6 +128,8 @@ ngOnChanges(_: SimpleChanges) {
 
   /**
    * Get initials from contact name
+   * @param name Contact name
+   * @returns Initials string
    */
   getInitials(name: string): string {
     if (!name) return '';
@@ -144,107 +141,101 @@ ngOnChanges(_: SimpleChanges) {
       .substring(0, 2);
   }
 
-  /**
-   * Start editing a subtask
-   */
+  /** Start editing a subtask */
   startSubtaskEdit(index: number) {
     this.editingSubtaskIndex = index;
+    this.subtaskBackup = this.editedTask.subtasks[index]?.title || '';
   }
 
   /**
-   * Save the edited subtask
+   * Save changes to a subtask
+   * @param index Subtask index
    */
   saveSubtaskEdit(index: number) {
     const title = this.editedTask.subtasks[index]?.title?.trim();
     if (!title) this.removeSubtask(index);
     this.editingSubtaskIndex = null;
+    this.subtaskBackup = null;
   }
 
-  /**
-   * Cancel subtask editing
-   */
+  /** Cancel editing a subtask and restore original title */
   cancelSubtaskEdit() {
-    this.editingSubtaskIndex = null;
+    if (this.editingSubtaskIndex !== null && this.subtaskBackup !== null) {
+      this.editedTask.subtasks[this.editingSubtaskIndex].title = this.subtaskBackup;
+      this.editingSubtaskIndex = null;
+      this.subtaskBackup = null;
+    }
   }
 
   /**
-   * Handle keyboard input for subtask editing
+   * Handle key events for subtask input
+   * @param event KeyboardEvent
+   * @param index Subtask index
    */
   handleSubtaskKey(event: KeyboardEvent, index: number) {
     if (event.key === 'Enter') this.saveSubtaskEdit(index);
     if (event.key === 'Escape') this.cancelSubtaskEdit();
   }
 
-  /**
-   * Add a new subtask
-   */
+  /** Add a new subtask */
   addSubtask() {
     if (!this.newSubtaskTitle.trim()) return;
-    this.editedTask.subtasks.push(this.createSubtask(this.newSubtaskTitle));
+    this.editedTask.subtasks.push({ title: this.newSubtaskTitle.trim(), completed: false });
     this.newSubtaskTitle = '';
   }
 
   /**
-   * Create a subtask object
-   */
-  private createSubtask(title: string): Subtask {
-    return { title: title.trim(), completed: false };
-  }
-
-  /**
-   * Remove a subtask by index
+   * Remove a subtask
+   * @param index Index of subtask to remove
    */
   removeSubtask(index: number) {
     this.editedTask.subtasks.splice(index, 1);
+    if (this.editingSubtaskIndex === index) {
+      this.editingSubtaskIndex = null;
+      this.subtaskBackup = null;
+    }
   }
 
   /**
    * Toggle completion status of a subtask
+   * @param subtask Subtask object
    */
   toggleSubtask(subtask: Subtask) {
     subtask.completed = !subtask.completed;
     this.updateSubtasksInTask();
   }
 
-  /**
-   * Update subtasks in Firebase if task exists
-   */
+  /** Update subtasks in backend if task exists */
   private updateSubtasksInTask() {
     if (!this.task?.id) return;
     this.taskService.updateTask(this.task.id, { subtasks: this.editedTask.subtasks })
       .catch(console.error);
   }
 
-  /**
-   * Enable edit mode
-   */
+  /** Enable edit mode */
   enableEdit() {
     if (!this.task) return;
     this.editedTask = this.extractEditableTask(this.task);
     this.isEditMode = true;
   }
 
-  /**
-   * Cancel edit mode
-   */
+  /** Cancel edit mode */
   cancelEdit() {
     this.isEditMode = false;
   }
 
-  /**
-   * Check if form is valid
-   */
+  /** Check if the form is valid */
   private isFormValid(): boolean {
-    return !!(this.editedTask.title?.trim() &&
-      this.editedTask.dueDate &&
-      this.editedTask.dueDate >= this.today);
+    return !!(
+      this.editedTask.title?.trim() &&
+      this.editedTask.dueDate
+    );
   }
 
-  /**
-   * Save task changes
-   */
+  /** Save the task */
   onSave() {
     if (!this.isFormValid()) return;
+
     this.isSaving = true;
     if (this.task) Object.assign(this.task, this.editedTask);
     this.save.emit(this.editedTask);
@@ -252,40 +243,34 @@ ngOnChanges(_: SimpleChanges) {
     this.resetSavingFlag();
   }
 
-  /**
-   * Reset saving flag after a delay
-   */
+  /** Reset the saving flag */
   private resetSavingFlag() {
     setTimeout(() => (this.isSaving = false), 500);
   }
 
-  /**
-   * Delete the task
-   */
+  /** Delete the task */
   onDelete() {
     if (!this.task?.id) return;
     this.delete.emit(this.task.id);
     this.onClose();
   }
 
-  /**
-   * Close overlay
-   */
+  /** Close the overlay */
   onClose() {
     this.close.emit();
   }
 
   /**
-   * Format date for input[type=date]
+   * Format date string for input[type=date]
+   * @param date Date string
+   * @returns YYYY-MM-DD formatted string
    */
   formatDateForInput(date: string): string {
     if (!date) return '';
     return new Date(date).toISOString().split('T')[0];
   }
 
-  /**
-   * Return safe task object for view mode
-   */
+  /** Return safe task object for view */
   get safeTask() {
     const t = this.task;
     return {
@@ -299,27 +284,45 @@ ngOnChanges(_: SimpleChanges) {
     };
   }
 
-  /**
-   * Get category color
-   */
+  /** Check if due date is in the past */
+  isDateInPast(): boolean {
+    if (!this.editedTask.dueDate) return false;
+    if (this.editedTask.dueDate === this.originalDueDate) return false;
+
+    const selected = new Date(this.editedTask.dueDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return selected < today;
+  }
+
+  /** Get color for category */
   get categoryColor(): string {
     return this.safeTask.category === 'Technical Task' ? '#1FD7C1' : '#0038FF';
   }
 
   /**
-   * Track by contact id for ngFor
+   * Track contact for ngFor
+   * @param index Index
+   * @param contact Contact object
    */
   trackByContactId(index: number, contact: Contacts) {
     return contact.id;
   }
 
   /**
-   * Track by index for subtasks
+   * Track subtask for ngFor
+   * @param index Index
+   * @param subtask Subtask object
    */
   trackBySubtask(index: number, subtask: Subtask) {
     return index;
   }
 
+  /**
+   * Handle clicks outside overlay to close
+   * @param event MouseEvent
+   */
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     const overlay = document.querySelector('.task-overlay');

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AssignedToSelect } from './assigned-to-select';
+import { AssignedToSelectComponent } from './assigned-to-select';
 
-describe('AssignedToSelect', () => {
-  let component: AssignedToSelect;
-  let fixture: ComponentFixture<AssignedToSelect>;
+describe('AssignedToSelectComponent', () => {
+  let component: AssignedToSelectComponent;
+  let fixture: ComponentFixture<AssignedToSelectComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AssignedToSelect]
+      imports: [AssignedToSelectComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AssignedToSelect);
+    fixture = TestBed.createComponent(AssignedToSelectComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
