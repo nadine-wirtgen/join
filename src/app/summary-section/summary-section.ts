@@ -3,6 +3,7 @@ import { TaskService, GroupedTasks } from '../firebase-service/task.service';
 import { Observable, map } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { ContactService } from '../firebase-service/contact-service';
 
 @Component({
   standalone: true,
@@ -15,18 +16,22 @@ export class SummarySection implements OnInit, OnDestroy {
   groupedTasks$!: Observable<GroupedTasks>;
   upcomingDeadline: Date | null = null;
   greeting: string = '';
-  userName: string = 'Sofia Nadiner Müller-mayer-Trapper';
+  userName: string = '';
   maxUserNameLength: number = 15;
-  urgentTodoCount: number = 0;
+  urgentCount: number = 0;
   isMobile = false;
   showGreetingOnly = false;
 
   private fromLogin = false;
   private greetingTimeout: any;
 
-  constructor(private taskService: TaskService) {}
+  constructor(
+    private taskService: TaskService,
+    public contactService: ContactService,
+  ) {}
 
   ngOnInit(): void {
+    this.userName = this.contactService.currentUserName || 'Guest';
     this.setGreeting();
     this.fromLogin = history.state?.fromLogin === true;
     this.checkMobile(window.innerWidth);
@@ -34,7 +39,7 @@ export class SummarySection implements OnInit, OnDestroy {
     this.groupedTasks$ = this.taskService.getTasksGroupedByStatus().pipe(
       map((grouped) => {
         this.setUpcomingDeadline(grouped);
-        this.urgentTodoCount = grouped.todo.filter((t) => t.priority === 'urgent').length;
+        this.setUrgent(grouped);
         return grouped;
       }),
     );
@@ -52,7 +57,7 @@ export class SummarySection implements OnInit, OnDestroy {
   }
 
   private checkMobile(width: number) {
-    this.isMobile = width <= 768;
+    this.isMobile = width <= 1000;
     if (this.isMobile && this.fromLogin) {
       this.showGreetingOnly = true;
       if (this.greetingTimeout) clearTimeout(this.greetingTimeout);
@@ -72,15 +77,15 @@ export class SummarySection implements OnInit, OnDestroy {
     else this.greeting = 'Good evening';
   }
 
+  private setUrgent(grouped: GroupedTasks) {
+    const allTasks = [...grouped.todo, ...grouped.inProgress, ...grouped.awaitFeedback];
+    this.urgentCount = allTasks.filter((t) => t.priority === 'urgent').length;
+  }
+
   private setUpcomingDeadline(grouped: GroupedTasks) {
-    const allTasks = [
-      ...grouped.todo,
-      ...grouped.inProgress,
-      ...grouped.awaitFeedback,
-      ...grouped.done,
-    ];
+    const allTasks = [...grouped.todo, ...grouped.inProgress, ...grouped.awaitFeedback];
     const nextTask = allTasks
-      .filter((t) => t.dueDate)
+      .filter((t) => t.dueDate && t.priority === 'urgent')
       .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())[0];
     this.upcomingDeadline = nextTask ? new Date(nextTask.dueDate) : null;
   }

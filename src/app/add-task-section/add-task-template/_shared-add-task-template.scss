@@ -129,6 +129,7 @@ label {
 }
 
 /* ================== Formularelemente ================== */
+
 .form-group {
 	display: flex;
 	flex-direction: column;
@@ -457,8 +458,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 		letter-spacing: 0;
 		color: #000000;
 	}
-
-	/* entfernt, damit nur die gezielte Regel greift */
 
 	.subtask-actions {
 		position: absolute;

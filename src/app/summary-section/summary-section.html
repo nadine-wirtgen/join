@@ -2,7 +2,7 @@
   <div class="summary-headline headlineContainer" *ngIf="!isMobile || !showGreetingOnly">
     <h1>Join 360</h1>
     <img class="borderlineDestop" src="assets/icon/contact-info/borderline.png" />
-    <h3>Better with a team</h3>
+    <h3>Key Metrics at a Glance</h3>
     <img class="borderlineMobil" src="assets/icon/contact-info/borderline-mobil.png" />
   </div>
 
@@ -44,15 +44,19 @@
           </div>
 
           <a class="metric-card urgent" routerLink="/board">
-            <img class="summary-icon-urgent" src="assets/icon/summary/urgent.png" />
-            <div class="counter-text">
-              <span class="count">{{ urgentTodoCount }}</span>
-              <span class="label">Urgent</span>
+            <div class="urgentContant">
+              <img class="summary-icon-urgent" src="assets/icon/summary/urgent.png" />
+              <div class="counter-text">
+                <span class="count">{{ urgentCount }}</span>
+                <span class="label">Urgent</span>
+              </div>
             </div>
-            <img class="summary-icon-line" src="assets/icon/summary/line.png" />
+            <div class="mobil-icon-line">
+              <img class="summary-icon-line" src="assets/icon/summary/line.png" />
+            </div>
             <div class="counter-text">
               <span class="deadline">{{ upcomingDeadline | date: 'MMMM d, yy' }}</span>
-              <span class="label">Upcoming Deadline</span>
+              <span class="deadlinelabel">Upcoming Deadline</span>
             </div>
           </a>
 
@@ -83,15 +87,20 @@
       </div>
     </ng-container>
 
-    <div class="greeting" *ngIf="!isMobile || showGreetingOnly">
-      <div class="greeting-text">{{ greeting }},</div>
-      <span class="user-name" [title]="userName">
-        {{
-          userName.length > maxUserNameLength
-            ? (userName | slice: 0 : maxUserNameLength) + '...'
-            : userName
-        }}
-      </span>
-    </div>
+    @if (!isMobile || showGreetingOnly) {
+      <div class="greeting">
+        <div class="greeting-text">{{ greeting }}{{ userName !== 'Guest' ? ',' : '!' }}</div>
+
+        @if (userName !== 'Guest') {
+          <span class="user-name" [title]="userName">
+            {{
+              userName.length > maxUserNameLength
+                ? (userName | slice: 0 : maxUserNameLength) + '...'
+                : userName
+            }}
+          </span>
+        }
+      </div>
+    }
   </div>
 </div>

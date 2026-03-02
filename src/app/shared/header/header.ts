@@ -1,7 +1,15 @@
-import { Component, HostListener, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  AfterViewInit,
+  ElementRef,
+  ViewChild,
+  OnInit
+} from '@angular/core';
 import { Router, RouterLink, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { AuthService } from '../../firebase-service/auth.servic';
+import { ContactService } from '../../firebase-service/contact-service';
 
 @Component({
   selector: 'app-header',
@@ -10,13 +18,12 @@ import { AuthService } from '../../firebase-service/auth.servic';
   templateUrl: './header.html',
   styleUrls: ['./header.scss'],
 })
-export class Header implements AfterViewInit {
-  userInitials: string = '';
+export class Header implements OnInit, AfterViewInit {
+
+  userInitials: string = 'G';
 
   isMobile = false;
-
   isHelpOpen = false;
-
   showPopup: boolean = false;
 
   appTitle: string = 'Kanban Project Management Tool';
@@ -34,8 +41,8 @@ export class Header implements AfterViewInit {
   constructor(
     private router: Router,
     private auth: AuthService,
+    private contactService: ContactService
   ) {
-    this.initializeUser();
     this.checkScreenSize();
 
     window.addEventListener('resize', () => this.checkScreenSize());
@@ -47,12 +54,27 @@ export class Header implements AfterViewInit {
       });
   }
 
+  ngOnInit(): void {
+    this.setUserInitials();
+  }
+
+  // 🔹 Initialen aus aktuellem Service-Wert holen
+  private setUserInitials() {
+    const name = this.contactService.currentUserName;
+
+    if (!name) {
+      this.userInitials = 'G';
+      return;
+    }
+
+    this.userInitials = this.contactService.getInitials(name) || 'G';
+  }
+
   logout() {
-    localStorage.removeItem('userInitials');
-    this.userInitials = 'GU';
+    this.contactService.clearCurrentUser(); // setzt Name auf null
+    this.userInitials = 'G';
     this.showPopup = false;
     this.auth.logout();
-    localStorage.removeItem('userInitials');
     this.router.navigate(['/login']);
   }
 
@@ -64,13 +86,9 @@ export class Header implements AfterViewInit {
     this.isMobile = window.innerWidth < 768;
   }
 
-  private initializeUser() {
-    const savedInitials = localStorage.getItem('userInitials');
-    this.userInitials = savedInitials || 'SM';
-  }
-
   toggleHeaderPopup() {
     this.showPopup = !this.showPopup;
+
     if (this.showPopup) {
       setTimeout(() => {
         this.setupPopupAutoClose();
@@ -93,17 +111,6 @@ export class Header implements AfterViewInit {
       });
     }
   }
-
-  closePopup() {
-    this.showPopup = false;
-  }
-
-  // logout() {
-  //   console.log('Logging out...');
-  //   localStorage.removeItem('userInitials');
-  //   this.userInitials = 'GU';
-  //   this.showPopup = false;
-  // }
 
   @HostListener('document:click', ['$event'])
   closePopupOnOutsideClick(event: MouseEvent) {
