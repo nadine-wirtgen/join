@@ -5,6 +5,19 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ContactService } from '../firebase-service/contact-service';
 
+/**
+ * SummarySection component.
+ *
+ * Displays an overview of grouped tasks including:
+ * - Urgent task count
+ * - Upcoming urgent deadline
+ * - Time-based greeting
+ * - Responsive behavior for mobile devices
+ *
+ * The component reacts to window resizing and optionally shows
+ * a temporary greeting screen after login on mobile devices.
+ */
+
 @Component({
   standalone: true,
   imports: [CommonModule, RouterModule],
@@ -25,17 +38,28 @@ export class SummarySection implements OnInit, OnDestroy {
   private fromLogin = false;
   private greetingTimeout: any;
 
+  /**
+   * Creates an instance of SummarySection.
+   *
+   * @param taskService Service for retrieving and grouping tasks.
+   * @param contactService Service for accessing current user information.
+   */
   constructor(
     private taskService: TaskService,
     public contactService: ContactService,
   ) {}
 
+  /**
+   * Angular lifecycle hook.
+   * Initializes user data, greeting, responsive settings,
+   * and subscribes to grouped task data.
+   */
   ngOnInit(): void {
     this.userName = this.contactService.currentUserName || 'Guest';
     this.setGreeting();
     this.fromLogin = history.state?.fromLogin === true;
     this.checkMobile(window.innerWidth);
-    this.setMaxUserNameLength(window.innerWidth);
+    this.setMaxUserNameLength();
     this.groupedTasks$ = this.taskService.getTasksGroupedByStatus().pipe(
       map((grouped) => {
         this.setUpcomingDeadline(grouped);
@@ -45,17 +69,32 @@ export class SummarySection implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * Angular lifecycle hook.
+   * Clears any active greeting timeout to prevent memory leaks.
+   */
   ngOnDestroy(): void {
     if (this.greetingTimeout) clearTimeout(this.greetingTimeout);
   }
 
+  /**
+   * Handles window resize events.
+   *
+   * @param event The resize event.
+   */
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     const width = event.target.innerWidth;
     this.checkMobile(width);
-    this.setMaxUserNameLength(width);
+    this.setMaxUserNameLength();
   }
 
+  /**
+   * Checks whether the viewport width qualifies as mobile.
+   * Optionally shows a temporary greeting screen after login.
+   *
+   * @param width Current viewport width in pixels.
+   */
   private checkMobile(width: number) {
     this.isMobile = width <= 1000;
     if (this.isMobile && this.fromLogin) {
@@ -70,6 +109,12 @@ export class SummarySection implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Sets the greeting message based on the current time of day.
+   * - Before 12:00 → "Good morning"
+   * - Before 18:00 → "Good afternoon"
+   * - Otherwise → "Good evening"
+   */
   private setGreeting() {
     const hour = new Date().getHours();
     if (hour < 12) this.greeting = 'Good morning';
@@ -77,11 +122,22 @@ export class SummarySection implements OnInit, OnDestroy {
     else this.greeting = 'Good evening';
   }
 
+  /**
+   * Calculates and sets the number of urgent tasks
+   * across todo, inProgress, and awaitFeedback groups.
+   *
+   * @param grouped Tasks grouped by status.
+   */
   private setUrgent(grouped: GroupedTasks) {
     const allTasks = [...grouped.todo, ...grouped.inProgress, ...grouped.awaitFeedback];
     this.urgentCount = allTasks.filter((t) => t.priority === 'urgent').length;
   }
 
+  /**
+   * Determines and sets the nearest upcoming urgent deadline.
+   *
+   * @param grouped Tasks grouped by status.
+   */
   private setUpcomingDeadline(grouped: GroupedTasks) {
     const allTasks = [...grouped.todo, ...grouped.inProgress, ...grouped.awaitFeedback];
     const nextTask = allTasks
@@ -90,17 +146,12 @@ export class SummarySection implements OnInit, OnDestroy {
     this.upcomingDeadline = nextTask ? new Date(nextTask.dueDate) : null;
   }
 
-  private setMaxUserNameLength(width: number) {
-    if (width <= 320) {
-      this.maxUserNameLength = 8;
-    } else if (width <= 360) {
-      this.maxUserNameLength = 10;
-    } else if (width <= 460) {
-      this.maxUserNameLength = 12;
-    } else if (width <= 768) {
-      this.maxUserNameLength = 15;
-    } else {
-      this.maxUserNameLength = 20;
-    }
+  /**
+   * Sets the maximum allowed user name length to a fixed value.
+   *
+   * @returns {number} The updated maximum user name length.
+   */
+  private setMaxUserNameLength() {
+    return (this.maxUserNameLength = 12);
   }
 }
