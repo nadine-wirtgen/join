@@ -6,7 +6,6 @@
     </div>
   </div>
 
-  <!-- Email -->
   <div class="contact-input-wrapper">
     <div class="contact-input" [class.error]="loginError">
       <input
@@ -20,7 +19,6 @@
     </div>
   </div>
 
-  <!-- Password -->
   <div class="contact-input-wrapper">
     <div class="contact-input" [class.error]="loginError">
       <input
@@ -39,12 +37,10 @@
     </div>
   </div>
 
-  <!-- Fehlermeldung -->
   <div class="login-error" [class.visible]="loginError">
     Check your email and password. Please try again.
   </div>
 
-  <!-- Buttons -->
   <div class="login-section-buttons">
     <button type="button" class="login-btn" (click)="login()">
       Log in
