@@ -31,7 +31,6 @@ label {
   margin-top: 10px; 
   margin-bottom: 6px;
   font-size: 20px;
-  color: #2A3647;
 }
 
 .add-task-section {
@@ -96,7 +95,7 @@ label {
 	font-size: 16px;
 	line-height: 120%;
 	letter-spacing: 0;
-	color: #2A3647;
+	color: #D1D1D1 !important;
 	margin-top: 16px;
 	margin-bottom: 0;
 	display: block;
@@ -178,7 +177,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 		font-weight: 400;
 		font-size: 20px;
 		line-height: 120%;
-		color: #2A3647;
 		transition: 0.2s ease;
 		display: flex;
 		align-items: center;
@@ -433,14 +431,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 	margin-bottom: 8px;
   
 .subtask-list-container {
-   		 max-height: calc(3 * 48px); /* 3 Subtasks à 48px Höhe */
-  		  min-height: calc(3 * 48px); /* Reserviert immer Platz für 3 Subtasks */
- 		   overflow-y: auto;            /* Scrollbar erscheint nur, wenn mehr als 3 Subtasks */
+   		 max-height: calc(3 * 48px);
+  		  min-height: calc(3 * 48px);
+ 		   overflow-y: auto;
 	}
 		.subtask-list {
     		display: flex;
     		flex-direction: column;
-   		 gap: 8px; /* Abstand zwischen Subtasks */
+   		 gap: 8px;
 	}
 
 	input {
@@ -456,18 +454,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 		font-weight: 400;
 		font-size: 20px;
 		line-height: 120%;
-		letter-spacing: 0.09em;
+		letter-spacing: 0;
 		color: #000000;
 	}
 
-	input::placeholder {
-		font-family: 'Inter', sans-serif;
-		font-weight: 400;
-		font-size: 20px;
-		line-height: 120%;
-		letter-spacing: 0.09em;
-		color: #2A3647; 
-	}
+	/* entfernt, damit nur die gezielte Regel greift */
 
 	.subtask-actions {
 		position: absolute;
@@ -595,13 +586,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 @media (max-width: 1240px) {
-  .add-task-section{
-    flex-direction: column;
-  }
+	.add-task-section{
+		flex-direction: column;
+		gap: 0;
+	}
 	.add-task-container:not(.dialog-mode) .add-task-section {
-    align-items: flex-start !important;
-    justify-content: flex-start !important;
-  }
+		align-items: flex-start !important;
+		justify-content: flex-start !important;
+	}
 }
 
 @media (min-width: 1250px) and (max-height: 855px) {

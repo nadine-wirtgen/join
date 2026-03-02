@@ -30,6 +30,7 @@ export class SignupComponent {
   // 🔹 UI States
   isLoading: boolean = false;
   signupSuccess: boolean = false;
+  emailAlreadyInUse: boolean = false;
 
   // 🔹 Focus States für Fehleranzeige
   nameFocused: boolean = false;
@@ -94,12 +95,12 @@ export class SignupComponent {
 
     this.isLoading = true;
     this.signupSuccess = false;
+    this.emailAlreadyInUse = false;
 
     this.authService.signup(this.email, this.password, this.name)
       .then(async (result) => {
         this.isLoading = false;
         if (result.success) {
-          // Kontakt anlegen mit Name und Email
           await this.contactService.addContactToDataBase({
             name: this.name,
             email: this.email
@@ -110,7 +111,11 @@ export class SignupComponent {
             this.router.navigate(['/login']);
           }, 3000);
         } else {
-          alert('Fehler beim Erstellen des Accounts: ' + result.error);
+          if (result.error?.includes('auth/email-already-in-use')) {
+            this.emailAlreadyInUse = true;
+          } else {
+            alert('Fehler beim Erstellen des Accounts: ' + result.error);
+          }
         }
       });
   }

@@ -29,9 +29,10 @@
         />
         <img src="assets/icon/login/person.png" alt="User" />
       </div>
-      <div class="error-message"
-        [class.show]="nameModel.invalid && nameModel.touched && !nameFocused && nameModel.value?.length > 0">
-        Name must be at least 5 characters.
+      <div class="error-message" [class.show]="nameModel.invalid && nameModel.touched && !nameFocused && nameModel.value?.length > 0">
+        @if (nameModel.invalid && nameModel.touched && !nameFocused && nameModel.value?.length > 0) {
+          Name must be at least 5 characters.
+        }
       </div>
     </div>
 
@@ -52,9 +53,12 @@
         />
         <img src="assets/icon/login/mail.png" alt="Email" />
       </div>
-      <div class="error-message"
-        [class.show]="emailModel.invalid && emailModel.touched && !emailFocused && emailModel.value?.length > 0">
-        Enter a valid email.
+      <div class="error-message" [class.show]="(emailModel.invalid && emailModel.touched && !emailFocused && emailModel.value?.length > 0) || emailAlreadyInUse">
+        @if (emailAlreadyInUse) {
+          Email already in use.
+        } @else if (emailModel.invalid && emailModel.touched && !emailFocused && emailModel.value?.length > 0) {
+          Enter a valid email.
+        }
       </div>
     </div>
 
@@ -79,9 +83,10 @@
           style="cursor: pointer;"
         />
       </div>
-      <div class="error-message"
-        [class.show]="!isPasswordSecure && passwordModel.touched && !passwordFocused && passwordModel.value?.length > 0">
-        Password must be at least 6 characters, include uppercase, lowercase, and a number.
+      <div class="error-message" [class.show]="!isPasswordSecure && passwordModel.touched && !passwordFocused && passwordModel.value?.length > 0">
+        @if (!isPasswordSecure && passwordModel.touched && !passwordFocused && passwordModel.value?.length > 0) {
+          Password must be at least 6 characters, include uppercase, lowercase, and a number.
+        }
       </div>
     </div>
 
@@ -106,9 +111,10 @@
           style="cursor: pointer;"
         />
       </div>
-      <div class="error-message"
-        [class.show]="confirmModel.touched && !confirmFocused && passwordMismatch && confirmModel.value?.length > 0">
-        Your passwords don't match. Please try again.
+      <div class="error-message" [class.show]="confirmModel.touched && !confirmFocused && passwordMismatch && confirmModel.value?.length > 0">
+        @if (confirmModel.touched && !confirmFocused && passwordMismatch && confirmModel.value?.length > 0) {
+          Your passwords don't match. Please try again.
+        }
       </div>
     </div>
 
