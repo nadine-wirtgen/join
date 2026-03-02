@@ -48,8 +48,10 @@ export class AddTaskTemplate implements OnInit {
     this.today = new Date().toISOString().split('T')[0];
   }
 
+  /**
+   * Initializes the component and loads all contacts from the service.
+   */
   ngOnInit(): void {
-    // Contacts laden
     collectionData(this.contactService.getContactsRef(), { idField: 'id' })
       .pipe(
         map((contacts: any[]) =>
@@ -67,14 +69,27 @@ export class AddTaskTemplate implements OnInit {
       });
   }
 
+  /**
+   * Sets the priority of the task.
+   * @param value The priority value ('urgent', 'medium', or 'low').
+   */
   setPriority(value: 'urgent' | 'medium' | 'low') { this.priority = value; }
 
+  /**
+   * Toggles the category dropdown open or closed.
+   * @param event Optional event to stop propagation.
+   */
   toggleCategoryDropdown(event?: Event) {
     if (event) event.stopPropagation();
     this.isCategoryDropdownOpen = !this.isCategoryDropdownOpen;
     if (!this.isCategoryDropdownOpen) this.validateCategory();
   }
 
+  /**
+   * Selects a category and closes the dropdown.
+   * @param value The selected category value.
+   * @param event The click event to stop propagation.
+   */
   selectCategory(value: string, event: Event) {
     event.stopPropagation();
     this.category = value;
@@ -82,6 +97,9 @@ export class AddTaskTemplate implements OnInit {
     this.categoryInvalid = false;
   }
 
+  /**
+   * Adds a new subtask to the subtasks array if not empty.
+   */
   addSubtask() {
     if (this.newSubtask.trim()) {
       this.subtasks.push({ title: this.newSubtask.trim(), completed: false });
@@ -89,6 +107,10 @@ export class AddTaskTemplate implements OnInit {
     }
   }
 
+  /**
+   * Removes a subtask at the given index and updates editing state if necessary.
+   * @param index The index of the subtask to remove.
+   */
   removeSubtask(index: number) {
     this.subtasks.splice(index, 1);
     if (this.editingSubtaskIndex !== null) {
@@ -101,11 +123,20 @@ export class AddTaskTemplate implements OnInit {
     }
   }
 
+  /**
+   * Starts editing a subtask at the given index.
+   * @param index The index of the subtask to edit.
+   * @param title The current title of the subtask.
+   */
   startEditSubtask(index: number, title: string) {
     this.editingSubtaskIndex = index;
     this.editingSubtaskTitle = title;
   }
 
+  /**
+   * Saves the edited subtask title or removes the subtask if the title is empty.
+   * @param index The index of the subtask being edited.
+   */
   saveSubtaskEdit(index: number) {
     if (this.editingSubtaskIndex !== index) return;
     const trimmedTitle = this.editingSubtaskTitle.trim();
@@ -116,6 +147,10 @@ export class AddTaskTemplate implements OnInit {
   }
 
   @HostListener('document:click', ['$event'])
+  /**
+   * Handles clicks outside certain elements to close dropdowns or stop editing.
+   * @param event The mouse event.
+   */
   handleClickOutside(event: MouseEvent) {
     const target = event.target as HTMLElement;
 
@@ -127,13 +162,16 @@ export class AddTaskTemplate implements OnInit {
       }
     }
 
-    // Subtask Editing abbrechen
+   
     if (!target.closest('.subtask-item')) {
       this.editingSubtaskIndex = null;
       this.editingSubtaskTitle = '';
     }
   }
 
+  /**
+   * Clears the form fields and resets the component state.
+   */
   clearForm() {
     this.title = '';
     this.description = '';
@@ -153,23 +191,38 @@ export class AddTaskTemplate implements OnInit {
     if (this.isDialogMode) this.closeDialog.emit();
   }
 
+  /**
+   * Validates the title field and sets the invalid state.
+   */
   validateTitle() {
     const trimmed = this.title ? this.title.trim() : '';
     this.titleInvalid = !trimmed || trimmed.length < 2 || /^\d+$/.test(trimmed);
   }
 
+  /**
+   * Validates the due date field and sets the invalid state.
+   */
   validateDueDate() {
     const todayIso = new Date().toISOString().split('T')[0];
     this.dueDateInvalid = !this.dueDate || this.dueDate < todayIso;
   }
 
+  /**
+   * Validates the category field and sets the invalid state.
+   */
   validateCategory() { this.categoryInvalid = !this.category || !this.category.trim(); }
 
+  /**
+   * Returns whether the form is valid based on required fields.
+   */
   get isFormValid(): boolean {
     const todayIso = new Date().toISOString().split('T')[0];
     return !!this.title && !!this.dueDate && this.dueDate >= todayIso && !!this.category?.trim();
   }
 
+  /**
+   * Creates a new task if the form is valid and handles errors.
+   */
   async createTask() {
     this.validateTitle();
     this.validateCategory();
@@ -195,6 +248,10 @@ export class AddTaskTemplate implements OnInit {
     }
   }
 
+  /**
+   * Handles UI updates after a task is created.
+   * @private
+   */
   private handleTaskCreated() {
     this.clearForm();
     this.taskSavedMessage = true;
