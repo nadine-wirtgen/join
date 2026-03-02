@@ -27,32 +27,42 @@ export type GroupedTasks = {
 export class TaskService {
   constructor(private firestore: Firestore) {}
 
-  // 🔹 Getter für Firestore Collection (verhindert TS2729 Fehler)
   private get tasksCollection() {
     return collection(this.firestore, 'tasks');
   }
 
-  // 🔹 Aktueller Filter (neu)
   private currentStatusFilter: Task['status'] | 'all' = 'all';
 
-  // 🔹 Filter setzen (neu)
+  /**
+   * Sets the current status filter for tasks.
+   * @param status The status to filter by ('todo', 'in-progress', 'await-feedback', 'done', or 'all').
+   */
   setStatusFilter(status: Task['status'] | 'all') {
     this.currentStatusFilter = status;
   }
 
-  // 🔹 Filter auslesen (neu)
+  /**
+   * Gets the current status filter for tasks.
+   * @returns The current status filter.
+   */
   getStatusFilter(): Task['status'] | 'all' {
     return this.currentStatusFilter;
   }
 
-  // 🔹 Alle Tasks als Realtime Observable
+  /**
+   * Returns all tasks as a realtime observable.
+   * @returns Observable of all tasks with their IDs.
+   */
   getTasks(): Observable<(Task & { id: string })[]> {
     return collectionData(this.tasksCollection, { idField: 'id' }) as Observable<
       (Task & { id: string })[]
     >;
   }
 
-  // 🔹 Gefilterte Tasks zurückgeben (neu)
+  /**
+   * Returns tasks filtered by the current status filter as an observable.
+   * @returns Observable of filtered tasks.
+   */
   getTasksFiltered(): Observable<(Task & { id: string })[]> {
     return this.getTasks().pipe(
       map((tasks) => {
@@ -62,7 +72,10 @@ export class TaskService {
     );
   }
 
-  // 🔹 Tasks direkt nach Status gruppieren (ideal für Board + DragDrop)
+  /**
+   * Returns tasks grouped by their status as an observable.
+   * @returns Observable of grouped tasks.
+   */
   getTasksGroupedByStatus(): Observable<GroupedTasks> {
     return this.getTasks().pipe(
       map((tasks) => ({
@@ -74,7 +87,11 @@ export class TaskService {
     );
   }
 
-  // 🔹 Neue Aufgabe erstellen
+  /**
+   * Creates a new task in Firestore.
+   * @param task The task data to create (without createdAt).
+   * @returns Promise resolving to the created document reference.
+   */
   async createTask(task: Omit<Task, 'createdAt'> & { position: number }) {
     return addDoc(this.tasksCollection, {
       ...task,
@@ -82,31 +99,50 @@ export class TaskService {
     });
   }
 
-  // 🔹 Status ändern (wichtig für Drag & Drop)
+  /**
+   * Updates the status of a task (for drag & drop).
+   * @param taskId The ID of the task to update.
+   * @param status The new status for the task.
+   */
   async updateTaskStatus(taskId: string, status: Task['status']) {
     const docRef = doc(this.firestore, `tasks/${taskId}`);
     await updateDoc(docRef, { status });
   }
 
-  // 🔹 Task komplett aktualisieren
+  /**
+   * Updates a task with new data.
+   * @param taskId The ID of the task to update.
+   * @param taskData The partial task data to update.
+   */
   async updateTask(taskId: string, taskData: Partial<Omit<Task, 'id' | 'createdAt'>>) {
     const docRef = doc(this.firestore, `tasks/${taskId}`);
     await updateDoc(docRef, taskData as DocumentData);
   }
 
-  // 🔹 Task löschen
+  /**
+   * Deletes a task from Firestore.
+   * @param taskId The ID of the task to delete.
+   */
   async deleteTask(taskId: string) {
     const docRef = doc(this.firestore, `tasks/${taskId}`);
     await deleteDoc(docRef);
   }
 
+  /**
+   * Updates the positions of multiple tasks in Firestore.
+   * @param tasks Array of tasks with their IDs.
+   */
   async updateTasksPositions(tasks: (Task & { id: string })[]) {
     for (let i = 0; i < tasks.length; i++) {
       await this.updateTask(tasks[i].id, { position: i });
     }
   }
 
-  // 🔹 Subtask Fortschritt berechnen (0-100%)
+  /**
+   * Calculates the progress of subtasks as a percentage (0-100).
+   * @param task The task to calculate progress for.
+   * @returns The progress percentage.
+   */
   getSubtaskProgress(task: Task): number {
     if (!task.subtasks || task.subtasks.length === 0) return 0;
 
@@ -114,7 +150,11 @@ export class TaskService {
     return Math.round((completed / task.subtasks.length) * 100);
   }
 
-  // 🔹 Anzahl abgeschlossener Subtasks
+  /**
+   * Returns the number of completed subtasks for a task.
+   * @param task The task to count completed subtasks for.
+   * @returns The number of completed subtasks.
+   */
   getCompletedCount(task: Task): number {
     return task.subtasks?.filter((st) => st.completed).length || 0;
   }

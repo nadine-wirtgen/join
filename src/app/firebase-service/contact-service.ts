@@ -51,18 +51,29 @@ export class ContactService implements OnDestroy {
     );
   }
 
-  // ✅ User global speichern (NEU)
+  /**
+   * Sets the current user's name and email globally.
+   * @param name The user's name.
+   * @param email The user's email address.
+   */
   setCurrentUser(name: string, email: string) {
     this.currentUserName = name;
     this.currentUserEmail = email;
   }
 
-  // Optional: User zurücksetzen (Logout)
+  /**
+   * Clears the current user's name and email (logout).
+   */
   clearCurrentUser() {
     this.currentUserName = null;
     this.currentUserEmail = null;
   }
 
+  /**
+   * Adds a new contact to the database.
+   * @param contact The contact to add.
+   * @returns Promise resolving to the created contact or null on error.
+   */
   async addContactToDataBase(contact: Contacts): Promise<Contacts | null> {
     try {
       const docRef = await addDoc(collection(this.firebaseDB, 'contacts'), contact);
@@ -80,6 +91,10 @@ export class ContactService implements OnDestroy {
     }
   }
 
+  /**
+   * Deletes a contact from the database.
+   * @param contact The contact to delete.
+   */
   async deleteContactOnDatabase(contact: Contacts) {
     if (contact.id) {
       await deleteDoc(
@@ -88,6 +103,10 @@ export class ContactService implements OnDestroy {
     }
   }
 
+  /**
+   * Updates a contact in the database.
+   * @param contact The contact to update.
+   */
   async updateContact(contact: Contacts) {
     if (!contact.id) return;
 
@@ -108,6 +127,11 @@ export class ContactService implements OnDestroy {
     }
   }
 
+  /**
+   * Returns a plain object with only the contact's name, email, and phone.
+   * @param contact The contact to clean.
+   * @returns An object with name, email, and phone.
+   */
   getCleanJson(contact: Contacts): {} {
     return {
       name: contact.name,
@@ -116,14 +140,26 @@ export class ContactService implements OnDestroy {
     };
   }
 
+  /**
+   * Sets the selected contact.
+   * @param contact The contact to select.
+   */
   setSelectedContact(contact: Contacts): void {
     this.selectedContact = contact;
   }
 
+  /**
+   * Emits an edit request event.
+   */
   requestEdit(): void {
     this.editRequest$.next();
   }
 
+  /**
+   * Returns the color assigned to a contact.
+   * @param contact The contact to get the color for.
+   * @returns The color as a string.
+   */
   getContactColor(contact: Contacts | null | undefined): string {
     if (!contact) return this.colorPalette[0];
 
@@ -131,6 +167,11 @@ export class ContactService implements OnDestroy {
     return this.contactColorMap.get(key) ?? this.colorPalette[0];
   }
 
+  /**
+   * Returns the initials for a given name.
+   * @param name The name to extract initials from.
+   * @returns The initials as a string.
+   */
   getInitials(name?: string): string {
     if (!name?.trim()) return '';
 
@@ -141,11 +182,18 @@ export class ContactService implements OnDestroy {
     return (first + last).toUpperCase();
   }
 
+  /**
+   * Deletes a contact from the contact list and database by index.
+   * @param index The index of the contact to delete.
+   */
   deleteContact(index: number) {
     const contact = this.contactList[index];
     this.deleteContactOnDatabase(contact);
   }
 
+  /**
+   * Deletes the currently selected contact from the database and clears selection.
+   */
   deleteSelectedContact(): void {
     if (!this.selectedContact) return;
 
@@ -153,14 +201,26 @@ export class ContactService implements OnDestroy {
     this.selectedContact = null;
   }
 
+  /**
+   * Cleans up the subscription when the service is destroyed.
+   */
   ngOnDestroy() {
     this.unsubscribe();
   }
 
+  /**
+   * Returns the Firestore collection reference for contacts.
+   */
   getContactsRef() {
     return collection(this.firebaseDB, 'contacts');
   }
 
+  /**
+   * Returns a Contacts object with the given id and data.
+   * @param id The contact's id.
+   * @param obj The contact data.
+   * @returns The Contacts object.
+   */
   getContactsObject(id: string, obj: Contacts): Contacts {
     return {
       id: id,
@@ -170,10 +230,20 @@ export class ContactService implements OnDestroy {
     };
   }
 
+  /**
+   * Returns a Firestore document reference for a single document.
+   * @param colId The collection id.
+   * @param docId The document id.
+   * @returns The document reference.
+   */
   getSingleDoc(colId: string, docId: string) {
     return doc(collection(this.firebaseDB, colId), docId);
   }
 
+  /**
+   * Rebuilds the color map for all contacts based on their sorted order.
+   * @private
+   */
   private rebuildColorMap(): void {
     const sorted = [...this.contactList].sort((a, b) =>
       a.name.localeCompare(b.name, 'de', { sensitivity: 'base' })
@@ -188,6 +258,12 @@ export class ContactService implements OnDestroy {
     });
   }
 
+  /**
+   * Returns a unique key for a contact based on id or name/email.
+   * @param contact The contact to get the key for.
+   * @returns The unique key as a string.
+   * @private
+   */
   private getContactKey(contact: Contacts): string {
     return contact.id ?? `${contact.name}|${contact.email}`;
   }
