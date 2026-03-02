@@ -2,12 +2,10 @@
 @import 'normal-add-task-template';
 @import 'dialog-add-task-template';
 
-// Styles für die normale Ansicht nur anwenden, wenn .add-task-container NICHT die Klasse .dialog-mode hat
 .add-task-container:not(.dialog-mode) {
   @import 'normal-add-task-template';
 }
 
-// Styles für die Dialog-Ansicht nur anwenden, wenn .add-task-container die Klasse .dialog-mode hat
 .add-task-container.dialog-mode {
   @import 'dialog-add-task-template';
 }
