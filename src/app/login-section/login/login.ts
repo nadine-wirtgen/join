@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
 })
-export class Login {
+export class LoginComponent {
   email = '';
   password = '';
   loginError = false;
