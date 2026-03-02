@@ -12,11 +12,11 @@ import { CommonModule } from '@angular/common';
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
 })
-export class LoginComponent {
+export class Login {
   email = '';
   password = '';
   loginError = false;
-  passwordVisible: boolean = false;
+  passwordVisible = false;
 
   constructor(
     private auth: AuthService,
@@ -24,7 +24,10 @@ export class LoginComponent {
     private contactService: ContactService,
   ) {}
 
-  // 🔹 Login Methode
+  /**
+   * Authenticates the user with email and password.
+   * On success, loads the corresponding contact and navigates to the summary page.
+   */
   async login() {
     try {
       const result = await this.auth.login(this.email, this.password);
@@ -32,52 +35,51 @@ export class LoginComponent {
       if (result.success) {
         this.loginError = false;
 
-        // 🔎 Kontakt anhand der Email suchen
         const foundContact = this.contactService.contactList.find(
           (contact) => contact.email === this.email,
         );
 
         if (foundContact) {
-          // ✅ User global speichern
           this.contactService.setCurrentUser(foundContact.name, foundContact.email);
-
-          console.log('Aktueller User:', foundContact.name);
         } else {
-          console.warn('Kein Kontakt mit dieser Email gefunden');
+          console.warn('No contact found with this email');
         }
 
-        // ✅ Navigation zur Summary
-        this.router.navigate(['/summary'], {
+        await this.router.navigate(['/summary'], {
           state: { fromLogin: true },
         });
       } else {
         this.loginError = true;
       }
     } catch (error) {
-      console.error('Login Fehler:', error);
+      console.error('Login error:', error);
       this.loginError = true;
     }
   }
 
-  // 🔹 Guest Login
+  /**
+   * Logs in the user as a guest and navigates to the summary page.
+   */
   async guestLogin() {
     await this.auth.guestLogin();
-
     this.contactService.setCurrentUser('Guest', 'guest@local');
-
-    this.router.navigate(['/summary'], {
+    await this.router.navigate(['/summary'], {
       state: { fromLogin: true, guest: true },
     });
   }
 
-  // 🔹 Fehlermeldung zurücksetzen
+  /**
+   * Resets the login error flag when the user modifies the input fields.
+   */
   clearLoginError() {
     if (this.loginError) {
       this.loginError = false;
     }
   }
 
-  // 🔹 Toggle Passwort Sichtbarkeit
+  /**
+   * Toggles the visibility of the password field.
+   */
   togglePasswordVisibility() {
     this.passwordVisible = !this.passwordVisible;
   }

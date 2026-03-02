@@ -1,4 +1,3 @@
-/* Grundform der Login-Box */
 .login-form {
   width: 420px;
   max-width: 90%;
@@ -12,7 +11,6 @@
   box-sizing: border-box;
 }
 
-/* Header */
 .login-header {
   display: flex;
   flex-direction: column;
@@ -31,14 +29,12 @@
   }
 }
 
-/* Wrapper für Input */
 .contact-input-wrapper {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-/* Input-Felder */
 .contact-input {
   display: flex;
   align-items: center;
@@ -70,22 +66,17 @@
   background: transparent;
 }
 
-/* Icons neben Inputs */
 .contact-input img {
   width: 20px;
   height: 20px;
   flex-shrink: 0;
 }
 
-/* -------------------------------- */
-/* Fehlermeldung (KEIN Springen mehr) */
-/* -------------------------------- */
-
 .login-error {
-  min-height: 20px;          /* reserviert Platz */
+  min-height: 20px;
   font-size: 14px;
   margin: 8px 0 12px 0;
-  opacity: 0;                /* unsichtbar */
+  opacity: 0;
   color: #cc0033;
   transition: opacity 0.2s ease;
   display: flex;
@@ -93,10 +84,9 @@
 }
 
 .login-error.visible {
-  opacity: 1;                /* sichtbar bei Fehler */
+  opacity: 1;
 }
 
-/* Buttons am unteren Bereich */
 .login-section-buttons {
   display: flex;
   gap: 12px;
@@ -132,7 +122,6 @@
   }
 }
 
-/* Responsive für kleine Bildschirme */
 @media (max-width: 420px) {
   .login-form {
     width: 100%;
