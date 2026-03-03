@@ -1,39 +1,7 @@
-<header>
-  <div class="header-left">
-    <img [src]="logoPath" alt="JOIN Logo" class="logo-mobile" />
+<ng-container *ngIf="isLoggedIn$ | async; else loggedOut">
+  <app-header-logged-in></app-header-logged-in>
+</ng-container>
 
-    <h1>{{ appTitle }}</h1>
-    <span class="mobile-logo"></span>
-  </div>
-
-  <div class="header-right">
-    @if (!isHelpOpen && !isMobile) {
-      <a [routerLink]="helpRoute">
-        <img class="help" [src]="helpIconPath" alt="Help Icon" />
-      </a>
-    }
-
-    <span class="initials" (click)="toggleHeaderPopup()">
-      {{ userInitials }}
-    </span>
-  </div>
-
-  @if (showPopup && !isMobile) {
-    <div #desktopPopup class="header-popup desktop-popup" (click)="$event.stopPropagation()">
-      <a [routerLink]="legalNoticeRoute">Legal Notice</a>
-      <a [routerLink]="privacyPolicyRoute">Privacy Policy</a>
-      <a (click)="logout()">Logout</a>
-    </div>
-  }
-
-  @if (showPopup && isMobile) {
-    <div #mobilePopup class="header-popup mobile-popup" (click)="$event.stopPropagation()">
-      <a class="help-in-popup" [routerLink]="helpRoute">Help</a>
-      <a [routerLink]="legalNoticeRoute">Legal Notice</a>
-      <a [routerLink]="privacyPolicyRoute">Privacy Policy</a>
-      <a (click)="logout()">Logout</a>
-    </div>
-  }
-
-  <div id="popup-message-box"></div>
-</header>
+<ng-template #loggedOut>
+  <app-header-logged-out></app-header-logged-out>
+</ng-template>

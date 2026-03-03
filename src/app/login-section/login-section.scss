@@ -201,6 +201,7 @@
   transition: opacity 1s ease;
   pointer-events: auto;
   flex-wrap: nowrap;
+  z-index: 30;
 }
 
 .legal-footer.show { opacity: 1; }
