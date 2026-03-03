@@ -29,24 +29,24 @@
         (input)="clearLoginError()"
       />
       <img
-        [src]="'assets/icon/login/' + (passwordVisible ? 'visibility.png' : 'visibility_off.png')"
+        [src]="
+          !password
+            ? 'assets/icon/login/lock.png'
+            : 'assets/icon/login/' + (passwordVisible ? 'visibility.png' : 'visibility_off.png')
+        "
         alt="Toggle Password Visibility"
         (click)="togglePasswordVisibility()"
-        style="cursor: pointer;"
+        style="cursor: pointer"
       />
+    </div>
+
+    <div class="login-error" [class.visible]="loginError">
+      Check your email and password. Please try again.
     </div>
   </div>
 
-  <div class="login-error" [class.visible]="loginError">
-    Check your email and password. Please try again.
-  </div>
-
   <div class="login-section-buttons">
-    <button type="button" class="login-btn" (click)="login()">
-      Log in
-    </button>
-    <button type="button" class="guest-btn" (click)="guestLogin()">
-      Guest Log in
-    </button>
+    <button type="button" class="login-btn" (click)="login()">Log in</button>
+    <button type="button" class="guest-btn" (click)="guestLogin()">Guest Log in</button>
   </div>
 </div>
