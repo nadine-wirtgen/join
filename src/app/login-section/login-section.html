@@ -1,30 +1,27 @@
-<div class="container" [class.animate-bg]="startAnimation">
+<div class="container"
+     [class.animate-bg]="animationShouldPlay && startAnimation"
+     [class.animation-ended]="animationPlayed"
+     [class.mobile]="isMobile">
 
-  <!-- Logo -->
-  <div class="logo" [class.animate]="startAnimation">
+  <div class="logo"
+       [class.animate]="animationShouldPlay && startAnimation"
+       [class.animation-ended]="animationPlayed">
     <img class="logo-light" src="assets/icon/login/logo_light.png" />
     <img class="logo-dark" src="assets/icon/login/logo_dark.png" />
   </div>
 
-  <!-- Login Form -->
   <div class="login-form-wrapper" [class.show]="startAnimation">
     <router-outlet></router-outlet>
+
+    <div *ngIf="showSignupLink" class="signup-link" [class.show]="startAnimation">
+      Not a Join user?
+      <button class="signup-btn" routerLink="/login/signup">Sign up</button>
+    </div>
   </div>
 
-  <!-- Sign-up Link -->
-@if (showSignupLink) {
-  <div class="signup-link" [class.show]="startAnimation">
-    Not a Join user?
-    <button class="signup-btn" routerLink="/login/signup">
-      Sign up
-    </button>
-  </div>
-}
-
-  <!-- Footer -->
+ 
   <div class="legal-footer" [class.show]="startAnimation">
     <a routerLink="/privacy">Privacy Policy</a>
     <a routerLink="/legal">Legal notice</a>
   </div>
-
 </div>

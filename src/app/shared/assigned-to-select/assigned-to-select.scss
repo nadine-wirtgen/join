@@ -186,12 +186,7 @@
     font-size: 16px !important;
   }
 
-  .avatar,
-  .avatar-letter-box {
-    width: 36px !important;
-    height: 36px !important;
-    font-size: 14px !important;
-  }
+  
 }
 
 @media (max-width: 340px) {
@@ -200,10 +195,5 @@
     gap: 4px;
   }
 
-  .avatars-below .avatar,
-  .avatars-below .avatar.more {
-    width: 32px !important;
-    height: 32px !important;
-    font-size: 12px !important;
-  }
+ 
 }
