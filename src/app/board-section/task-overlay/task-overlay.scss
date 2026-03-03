@@ -19,7 +19,6 @@
   }
 }
 
-
 .task-overlay {
   position: relative;
   width: min(525px, 95vw);
@@ -75,16 +74,13 @@
   }
 }
 
-
 .scrollable-middle {
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
   padding: 20px;
   max-height: calc(95vh - 48px*2 - 57px - 24px);
-  margin-top:20px;
 }
-
 
 .category-badge {
   display: inline-flex;
@@ -182,7 +178,7 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    max-height: 136px;
+    max-height: 156px;
     overflow-y: auto;
     padding-right: 8px;
 
@@ -190,15 +186,15 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      min-height: 40px;
-      padding: 4px 8px;
+      min-height: 44px;
+      padding: 0px 8px;
       border-radius: 8px;
       transition: background 0.1s ease;
       cursor: pointer;
 
       .avatar {
-        width: 36px;
-        height: 36px;
+        width: 42px;
+        height: 42px;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -294,9 +290,7 @@
   }
 }
 
-
 .task-container--view {
-
 
   .subtasks-list-view {
     display: flex;
@@ -364,16 +358,14 @@
   }
 }
 
-
 .task-container--edit {
-
 
   .overlay-header {
     position: relative;
 
     .close-btn {
       position: absolute;
-      top: -10px;
+      top: -24px;
       right: 0px;
       width: 32px;
       height: 32px;
@@ -395,7 +387,6 @@
       }
     }
   }
-
 
   .form-group {
     display: flex;
@@ -448,7 +439,7 @@
     }
   }
 
-   .priority-buttons {
+  .priority-buttons {
     display: flex;
     gap: 10px;
     margin-top: 8px;
@@ -581,6 +572,11 @@
           background-color: #f6f7f8;
         }
 
+        .subtask-bullet {
+          margin-right: 6px;
+          flex-shrink: 0;
+        }
+
         .subtask-title-text {
           flex: 1;
           font-size: 16px;
@@ -588,20 +584,6 @@
           text-overflow: ellipsis;
           white-space: nowrap;
           cursor: text;
-        }
-
-        &.editing .edit-input {
-          width: 100%;
-          font-size: 16px;
-          padding: 2px 0;
-          border: none;
-          border-bottom: 2px solid #29ABE2;
-          outline: none;
-          background: transparent;
-        }
-
-        .subtask-bullet {
-          margin-right: 6px;
         }
 
         .subtask-actions {
@@ -621,10 +603,28 @@
             background: #d1d1d1;
           }
         }
+
+        &.editing {
+          border-bottom: 2px solid #29ABE2; 
+          border-radius: 0; 
+          padding-bottom: 2px;
+
+          .edit-input {
+            flex: 1; 
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 16px;
+            padding: 2px 0;
+          }
+        }
       }
     }
   }
 
+
+
+  
   .subtask-input {
     display: flex;
     align-items: center;
@@ -650,9 +650,60 @@
       display: flex;
       gap: 8px;
     }
+
+    .subtask-actions {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    &.active:focus-within .subtask-actions {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
   }
 
-   .overlay-footer {
+  .subtask-input {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  border: 1px solid #d1d1d1;
+  border-radius: 10px;
+  position: relative;
+  width: 100%;
+  gap: 8px;
+
+  input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    padding-right: 80px;
+  }
+
+  .subtask-actions {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 8px;
+
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+
+  &.active {
+    .subtask-actions {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+}
+
+  .overlay-footer {
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -698,10 +749,11 @@
 }
 
 @media (max-width: 550px) {
-    .task-container--edit .priority-buttons .priority {
+  .task-container--edit .priority-buttons .priority {
     width: 100% !important; 
     justify-content: center; 
   }
+
   .priority-buttons {
     flex-direction: column;
     align-items: stretch; 

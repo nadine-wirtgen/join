@@ -122,7 +122,6 @@
               </div>
             </div>
 
-   
             <div class="form-group">
               <label>Description</label>
               <textarea [(ngModel)]="editedTask.description" name="description"></textarea>
@@ -141,7 +140,7 @@
               </div>
             </div>
 
-                 <div class="form-group">
+            <div class="form-group">
               <label>Priority</label>
               <div class="priority-buttons">
                 <button type="button" class="priority urgent" [class.active]="editedTask.priority==='urgent'"
@@ -165,7 +164,7 @@
               </div>
             </div>
 
-             <div class="form-group">
+            <div class="form-group">
               <label>Assigned to</label>
               <app-assigned-to-select [contacts]="contactService.contactList" [selectedContacts]="assignedContacts"
                 (selectedContactsChange)="onContactsChange($event)">
@@ -175,17 +174,19 @@
             <div class="form-group">
               <label>Subtasks</label>
 
-              <div class="subtask-input">
-                <input type="text" [(ngModel)]="newSubtaskTitle" name="newSubtask" placeholder="Add new subtask"
-                  (keyup.enter)="addSubtask()" />
+              <div class="subtask-input" [class.active]="newSubtaskTitle.trim().length > 0">
+                <input #subtaskInput="ngModel" type="text" [(ngModel)]="newSubtaskTitle" name="newSubtask"
+                  placeholder="Add new subtask" (keyup.enter)="addSubtask()" />
+
                 <div class="subtask-actions">
                   <img src="assets/imgs/add-task/delete_grey.png" class="subtask-icon delete"
                     (click)="newSubtaskTitle=''" />
+
                   <div class="subtask-divider"></div>
+
                   <img src="assets/imgs/add-task/check_grey.png" class="subtask-icon check" (click)="addSubtask()" />
                 </div>
               </div>
-
               <div class="subtask-list-container">
                 <div class="subtask-list">
                   <div *ngFor="let subtask of editedTask.subtasks; let i = index" class="subtask-item"

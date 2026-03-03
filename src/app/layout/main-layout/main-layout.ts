@@ -8,9 +8,9 @@ import { NavBar } from '../../shared/nav-bar/nav-bar';
   selector: 'app-main-layout',
   standalone: true,
   imports: [
-    RouterModule,      // router-outlet
-    NavBar,  // <app-sidebar>
-    Header,   // <app-header>
+    RouterModule,      
+    NavBar,  
+    Header,   
   ],
   templateUrl: './main-layout.html',
   styleUrls: ['./main-layout.scss'],
