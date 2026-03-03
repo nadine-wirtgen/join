@@ -1,11 +1,3 @@
-@import 'shared-add-task-template';
-@import 'normal-add-task-template';
-@import 'dialog-add-task-template';
-
-.add-task-container:not(.dialog-mode) {
-  @import 'normal-add-task-template';
-}
-
-.add-task-container.dialog-mode {
-  @import 'dialog-add-task-template';
-}
+@use 'shared-add-task-template';
+@use 'normal-add-task-template';
+@use 'dialog-add-task-template';

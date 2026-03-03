@@ -588,11 +588,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 @media (max-width: 1240px) {
-	.add-task-section{
+	.add-task-container:not(.dialog-mode) .add-task-section{
 		flex-direction: column;
 		gap: 0;
 	}
-	.devide-section {
+	.add-task-container:not(.dialog-mode) .devide-section {
 		display: none;
 	}
 	.add-task-container:not(.dialog-mode) .add-task-section {
