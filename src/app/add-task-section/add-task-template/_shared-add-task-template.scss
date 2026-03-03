@@ -464,7 +464,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 		right: 10px;
 		top: 50%;
 		transform: translateY(-50%);
-		display: flex;
+		display: none;
 		align-items: center;
 		gap: 8px;
 	}
@@ -489,6 +489,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .subtask-input:focus-within .subtask-actions {
+	display: flex;
+}
+.subtask-input input:not(:placeholder-shown) ~ .subtask-actions {
 	display: flex;
 }
 
@@ -588,6 +591,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 	.add-task-section{
 		flex-direction: column;
 		gap: 0;
+	}
+	.devide-section {
+		display: none;
 	}
 	.add-task-container:not(.dialog-mode) .add-task-section {
 		align-items: flex-start !important;
