@@ -1,59 +1,63 @@
-# Join
+# Join – Task Manager
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.13.
+Join is a task management application inspired by the Kanban system.
+It allows users to create, organize, and manage tasks efficiently using drag-and-drop functionality. Tasks can be assigned to users and categorized for better workflow organization.
 
-## Development server
+## Features
 
-To start a local development server, run:
+- Create, edit and delete tasks
+- Drag & Drop functionality (Kanban board)
+- Assign tasks to specific users
+- Categorize tasks
+- Responsive design
+- Firebase backend integration
 
-```bash
-ng serve
-```
+## Tech Stack
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- Angular
+- TypeScript
+- HTML5
+- CSS3
+- Firebase (Authentication & Database)
 
-## Code scaffolding
+## Kanban Workflow
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Tasks are organized into different workflow columns, such as:
 
-```bash
-ng generate component component-name
-```
+- To Do
+- In Progress
+- Awaiting Feedback
+- Done
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+This structure helps users track the progress of their tasks in a clear and visual way.
 
-```bash
-ng generate --help
-```
+## Installation & Setup
 
-## Building
+To run this project locally:
 
-To build the project run:
+`git clone <https://github.com/nadine-wirtgen/join.git>`
+`cd join`
+`npm install`
+`ng s -o`
 
-```bash
-ng build
-```
+Make sure you have Node.js and Angular CLI installed globally:
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+`npm install -g @angular/cli`
 
-## Running unit tests
+## Firebase Configuration
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+This project uses Firebase for backend services.
+To run it locally, you need to:
 
-```bash
-ng test
-```
+- Create a Firebase project.
+- Add your Firebase configuration inside the environment file.
+- Enable the required Firebase services (Authentication, Firestore or Realtime Database).
 
-## Running end-to-end tests
+## About the Project
 
-For end-to-end (e2e) testing, run:
+This project was developed as part of a web development training program.
+The focus was on building a structured Angular application, working with components, services, routing, and connecting a Firebase backend.
 
-```bash
-ng e2e
-```
+## Author
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Developed by Nadine Wirtgen, Patricia Linne, Frank Meckel and Altin Torba
