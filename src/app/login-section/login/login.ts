@@ -50,7 +50,7 @@ export class LoginComponent {
         if (foundContact) {
           this.contactService.setCurrentUser(foundContact.name, foundContact.email);
         } else {
-          console.warn('No contact found with this email');
+          
         }
 
         await this.router.navigate(['/summary'], {
@@ -60,7 +60,7 @@ export class LoginComponent {
         this.loginError = true;
       }
     } catch (error) {
-      console.error('Login error:', error);
+      
       this.loginError = true;
     }
   }

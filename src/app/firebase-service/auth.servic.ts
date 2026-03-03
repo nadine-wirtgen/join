@@ -1,12 +1,11 @@
 import { Auth, createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword, User } from '@angular/fire/auth';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  constructor(private auth: Auth) {
-    this.loggedInSubject.next(false);
-  }
+  private auth = inject(Auth);
+
   private loggedInSubject = new BehaviorSubject<boolean>(false);
   isLoggedIn$ = this.loggedInSubject.asObservable();
 

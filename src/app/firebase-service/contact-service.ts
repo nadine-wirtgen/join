@@ -22,7 +22,6 @@ export class ContactService implements OnDestroy {
   contactList: Contacts[] = [];
   selectedContact: Contacts | null = null;
 
-  // ✅ Aktuell eingeloggter User (NEU)
   currentUserName: string | null = null;
   currentUserEmail: string | null = null;
 
