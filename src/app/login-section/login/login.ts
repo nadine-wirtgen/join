@@ -29,14 +29,22 @@ export class LoginComponent {
    * On success, loads the corresponding contact and navigates to the summary page.
    */
   async login() {
+    const trimmedEmail = this.email.trim();
+    const trimmedPassword = this.password.trim();
+
+    if (!trimmedEmail || !trimmedPassword) {
+      this.loginError = true;
+      return;
+    }
+
     try {
-      const result = await this.auth.login(this.email, this.password);
+      const result = await this.auth.login(trimmedEmail, trimmedPassword);
 
       if (result.success) {
         this.loginError = false;
 
         const foundContact = this.contactService.contactList.find(
-          (contact) => contact.email === this.email,
+          (contact) => contact.email === trimmedEmail,
         );
 
         if (foundContact) {
