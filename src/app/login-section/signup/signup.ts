@@ -20,38 +20,61 @@ export class SignupComponent {
     private contactService: ContactService
   ) {}
 
-  // 🔹 Form Fields
+  
   name: string = '';
   email: string = '';
   password: string = '';
   confirmPassword: string = '';
   acceptedPrivacy: boolean = false;
 
-  // 🔹 UI States
   isLoading: boolean = false;
   signupSuccess: boolean = false;
   emailAlreadyInUse: boolean = false;
 
-  // 🔹 Focus States für Fehleranzeige
   nameFocused: boolean = false;
   emailFocused: boolean = false;
   passwordFocused: boolean = false;
   confirmFocused: boolean = false;
 
-  // 🔹 Passwort Sichtbarkeit
   passwordVisible: boolean = false;
   confirmPasswordVisible: boolean = false;
 
-  // 🔹 Regex für sicheres Passwort
   securePasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
 
+  /**
+   * Normalizes the name input so that it only contains letters and spaces.
+   * This prevents numbers or other symbols from being entered.
+   *
+   * @param {Event} event - The input event from the name field.
+   * @returns {void}
+   */
+  onNameInput(event: Event): void {
+    const target = event.target as HTMLInputElement | null;
+    if (!target) {
+      return;
+    }
 
-  // 🔹 Prüfen ob Passwort sicher ist
+    const cleaned = target.value.replace(/[^A-Za-zÄÖÜäöüß ]+/g, '');
+    if (cleaned !== target.value) {
+      target.value = cleaned;
+    }
+    this.name = cleaned;
+  }
+
+  /**
+   * Checks whether the current password meets the security requirements.
+   *
+   * @returns {boolean} True if the password is secure, otherwise false.
+   */
   get isPasswordSecure(): boolean {
     return this.securePasswordRegex.test(this.password);
   }
 
-  // 🔹 Prüfen ob Passwörter nicht übereinstimmen
+  /**
+   * Indicates whether the password and confirm password fields do not match.
+   *
+   * @returns {boolean} True if the passwords differ and confirmPassword is not empty.
+   */
   get passwordMismatch(): boolean {
     return (
       this.confirmPassword.length > 0 &&
@@ -59,7 +82,12 @@ export class SignupComponent {
     );
   }
 
-  // 🔹 Gesamte Formularvalidierung für Sign-Up Button
+  /**
+   * Validates the entire signup form based on name, email, password,
+   * confirm password and privacy acceptance.
+   *
+   * @returns {boolean} True if the form is valid, otherwise false.
+   */
   isFormValid(): boolean {
     const nameValid = this.name.trim().length >= 5;
     const emailValid =
@@ -78,16 +106,36 @@ export class SignupComponent {
     );
   }
 
-  // 🔹 Toggle Passwort Sichtbarkeit
+  /**
+   * Toggles the visibility of the password input field.
+   *
+   * @returns {void}
+   */
   togglePasswordVisibility() {
+    if (!this.password || this.password.length === 0) {
+      return;
+    }
     this.passwordVisible = !this.passwordVisible;
   }
 
+  /**
+   * Toggles the visibility of the confirm password input field.
+   *
+   * @returns {void}
+   */
   toggleConfirmPasswordVisibility() {
+    if (!this.confirmPassword || this.confirmPassword.length === 0) {
+      return;
+    }
     this.confirmPasswordVisible = !this.confirmPasswordVisible;
   }
 
-  // 🔹 Signup Methode
+  /**
+   * Handles the signup process: validates the form, calls the AuthService,
+   * optionally creates a contact entry and navigates to the login page on success.
+   *
+   * @returns {void}
+   */
   signup(): void {
     if (!this.isFormValid()) {
       return;
@@ -101,22 +149,43 @@ export class SignupComponent {
       .then(async (result) => {
         this.isLoading = false;
         if (result.success) {
-          await this.contactService.addContactToDataBase({
-            name: this.name,
-            email: this.email
-          });
-          this.signupSuccess = true;
-          setTimeout(() => {
-            this.signupSuccess = false;
-            this.router.navigate(['/login']);
-          }, 3000);
+          await this.handleSignupSuccess();
         } else {
-          if (result.error?.includes('auth/email-already-in-use')) {
-            this.emailAlreadyInUse = true;
-          } else {
-            alert('Fehler beim Erstellen des Accounts: ' + result.error);
-          }
+          this.handleSignupError(result.error);
         }
       });
+  }
+
+  /**
+   * Handles successful signup: creates a contact entry and redirects
+   * to the login page after a short delay.
+   *
+   * @returns {Promise<void>} A promise that resolves when handling is complete.
+   */
+  private async handleSignupSuccess(): Promise<void> {
+    await this.contactService.addContactToDataBase({
+      name: this.name,
+      email: this.email
+    });
+    this.signupSuccess = true;
+    setTimeout(() => {
+      this.signupSuccess = false;
+      this.router.navigate(['/login']);
+    }, 3000);
+  }
+
+  /**
+   * Handles signup errors by either setting the "email already in use"
+   * flag or displaying a generic error message.
+   *
+   * @param {string} [error] Optional error message returned from AuthService.
+   * @returns {void}
+   */
+  private handleSignupError(error?: string): void {
+    if (error?.includes('auth/email-already-in-use')) {
+      this.emailAlreadyInUse = true;
+    } else if (error) {
+      alert('Fehler beim Erstellen des Accounts: ' + error);
+    }
   }
 }
