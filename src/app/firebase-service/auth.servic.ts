@@ -12,7 +12,7 @@ export class AuthService {
 
 
   /**
-   * Komplettes Signup inkl. Profilname setzen und Fehlerbehandlung
+  * Complete signup including setting profile name and handling errors.
    */
   /**
    * Registers a new user with email, password, and display name.
@@ -34,7 +34,7 @@ export class AuthService {
   }
 
   /**
-   * Login mit Firebase Authentication
+    * Login with Firebase Authentication.
    */
   /**
    * Logs in a user with email and password using Firebase Authentication.
