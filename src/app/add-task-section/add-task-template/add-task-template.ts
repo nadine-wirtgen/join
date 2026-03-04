@@ -154,7 +154,6 @@ export class AddTaskTemplate implements OnInit {
   handleClickOutside(event: MouseEvent) {
     const target = event.target as HTMLElement;
 
-    // Kategorie Dropdown schließen
     if (!target.closest('.category-select')) {
       if (this.isCategoryDropdownOpen) {
         this.isCategoryDropdownOpen = false;
