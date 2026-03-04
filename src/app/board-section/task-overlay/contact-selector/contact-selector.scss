@@ -1,12 +1,10 @@
 .contact-selector {
   width: 100%;
 
-  /* ================== Assigned To Container ================== */
   .assigned-to-container {
     position: relative;
     width: 100%;
 
-    /* ================== Select Box ================== */
     .assigned-to-select {
       display: flex;
       align-items: center;
@@ -24,8 +22,8 @@
       }
 
       .contact-search-select {
-        flex: 1 1 auto;       /* Input kann schrumpfen */
-        min-width: 0;         /* wichtig für kleine Screens */
+        flex: 1 1 auto; 
+        min-width: 0; 
         border: none;
         outline: none;
         font-family: 'Inter', sans-serif;
@@ -43,7 +41,7 @@
       }
 
       .dropdown-arrow {
-        flex: 0 0 auto;      /* Icon bleibt fix */
+        flex: 0 0 auto; 
         width: 24px;
         height: 24px;
         margin-left: 4px;
@@ -56,7 +54,6 @@
       }
     }
 
-    /* ================== Avatare unterhalb ================== */
     .avatars-below {
       display: flex;
       gap: 6px;
@@ -80,7 +77,6 @@
       }
     }
 
-    /* ================== Dropdown Liste ================== */
     .assigned-to-list {
       position: absolute;
       top: calc(44% + 4px);
@@ -134,7 +130,7 @@
           flex: 1;
           font-family: 'Inter', sans-serif;
           font-size: 20px;
-          min-width: 0; /* wichtig, damit Text nicht überläuft */
+          min-width: 0; 
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
@@ -150,7 +146,6 @@
   }
 }
 
-/* ================== Scrollbar ================== */
 .assigned-to-list::-webkit-scrollbar {
   width: 4px;
 }
@@ -164,7 +159,6 @@
   background: #2A3647;
 }
 
-/* ================== Responsive ================== */
 @media (max-width: 768px) {
   .contact-search-select {
     font-size: 16px !important;

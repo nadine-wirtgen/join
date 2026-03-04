@@ -2,7 +2,6 @@
 
   <div class="assigned-to-container" (click)="$event.stopPropagation()">
 
-    <!-- Select Box -->
    <div class="assigned-to-select" (click)="toggleDropdown($event)" style="cursor:pointer;">
   <input
     type="text"
@@ -22,7 +21,6 @@
   />
 </div>
 
-    <!-- Avatar Preview -->
     <div *ngIf="selectedContacts.length > 0" class="avatars-below" (click)="$event.stopPropagation()">
       <div *ngFor="let contact of selectedContacts | slice:0:3" class="avatar" [style.backgroundColor]="getContactColor(contact)">
         {{ getInitials(contact.name) }}
@@ -32,7 +30,6 @@
       </div>
     </div>
 
-    <!-- Dropdown -->
     <div *ngIf="showDropdown" class="assigned-to-list" (click)="$event.stopPropagation()">
       <div *ngFor="let contact of filteredContacts" class="single-contact" 
            [class.active]="isContactSelected(contact)" 
