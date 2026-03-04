@@ -619,6 +619,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 @media (max-width: 1050px) {
 	.add-task-container.dialog-mode .add-task-section {
 		flex-direction: column !important;
+		gap: 0 !important;
 		border: none !important;
 		justify-content: flex-start !important;
 	}
@@ -626,7 +627,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 		order: 2;
 		width: 100%;
 		max-width: none;
-		margin-top: 24px;
+		margin-top: 0;
 		display: flex;
 	}
 	.add-task-container.dialog-mode .add-task-left {
