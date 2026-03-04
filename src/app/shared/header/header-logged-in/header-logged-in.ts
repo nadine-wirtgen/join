@@ -58,7 +58,7 @@ export class HeaderLoggedIn {
     this.setUserInitials();
   }
 
-  // 🔹 Initialen aus aktuellem Service-Wert holen
+ 
   private setUserInitials() {
     const name = this.contactService.currentUserName;
 
@@ -71,7 +71,7 @@ export class HeaderLoggedIn {
   }
 
   logout() {
-  			this.contactService.clearCurrentUser(); // setzt Name auf null
+  			this.contactService.clearCurrentUser(); 
   			this.userInitials = 'G';
   			this.showPopup = false;
 			sessionStorage.removeItem('loginAnimationPlayed');
