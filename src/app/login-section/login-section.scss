@@ -1,6 +1,14 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100dvh;
+  width: 100%;
+}
 .container {
   position: relative;
   width: 100%;
+  max-width:1440px;
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -65,7 +73,7 @@
 
 .container.animation-ended:not(.mobile) .logo {
   top: 20px;
-  left: 20px;
+  left: -10px;
   transform: translate(0, 0) scale(0.4);
 
   .logo-light {
@@ -79,7 +87,7 @@
 
 .container.mobile.animation-ended .logo {
   top: 16px;
-  left: 16px;
+  left: -100px;
   transform: translate(0, 0) scale(0.3);
 
   .logo-light {
@@ -97,7 +105,7 @@
   }
 }
 
-@media (max-width: 320px) {
+@media (max-width: 380px) {
   .logo {
     width: 120px;
   }
