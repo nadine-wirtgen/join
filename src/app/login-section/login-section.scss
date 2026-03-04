@@ -132,7 +132,7 @@
 
 .login-form-wrapper.show {
   opacity: 1;
-  gap: 15%;
+  gap: 5%;
 }
 
 .login-form {
@@ -143,7 +143,7 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  margin-top: 15px;
   box-sizing: border-box;
 }
 
