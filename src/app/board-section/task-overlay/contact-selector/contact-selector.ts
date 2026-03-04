@@ -44,7 +44,6 @@ export class ContactSelector implements OnInit, OnChanges, OnDestroy {
   ngOnInit() {
     this.syncSelectedContacts();
 
-    // Dokumenten-Klicklistener
     this.clickListener = this.renderer.listen('document', 'click', (event: MouseEvent) => {
       if (!this.elRef.nativeElement.contains(event.target)) {
         this.showDropdown = false;
