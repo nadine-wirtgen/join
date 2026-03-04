@@ -15,8 +15,6 @@
   box-sizing: content-box;
 }
 
- /* ----------------------------- */
- /* 🔹 Signup Form */
  .signup-form {
   position: relative;
   width: 100%;
@@ -211,8 +209,6 @@
   }
 }
 
-/* ----------------------------- */
-/* 🔹 Success Overlay */
 .success-overlay {
   position: absolute;
   bottom: 0;
@@ -269,12 +265,6 @@
 
   &:active {
     transform: scale(0.95);
-  }
-}
-
-@media (max-width: 768px) {
-  .signup-wrapper {
-    padding: 150px 16px 0px 16px;
   }
 }
 

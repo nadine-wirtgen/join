@@ -160,7 +160,7 @@ input[type="date"] {
 input[type="date"]::-webkit-calendar-picker-indicator {
     cursor: pointer;
 }
-/* ================== Priority Buttons ================== */
+
 
 .priority-buttons {
 	display: flex;
@@ -225,7 +225,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 	}
 }
 
-/* ================== Assigned To Multi‑Select ================== */
 
 .assigned-to-container {
 	position: relative;
@@ -373,7 +372,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 	}
 }
 
-/* Custom Category Dropdown */
 .category-dropdown-custom {
 	position: relative;
 	margin-top: 6px;
@@ -423,7 +421,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 	}
 }
 
-/* ================== Subtask Eingabe & Liste ================== */
 .subtask-input {
 	position: relative;
 	display: flex;
