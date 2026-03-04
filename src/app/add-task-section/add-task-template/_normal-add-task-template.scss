@@ -94,23 +94,21 @@
 		z-index: 10;
 	}
 
-	.text-button-div {
-		position: fixed;
-		left: 232px;
-		right: 0;
-    width: auto;
-		max-width: none;
-		bottom: 0;
-		margin: 0;
-		padding: 16px 20px 24px 20px;
-    padding-right: 40px;
+	.add-task-container:not(.dialog-mode) .text-button-div {
+		position: relative;
+		left: auto;
+		right: auto;
+		width: 100%;
+		max-width: 945px;
+		margin: 0 auto;
+		padding: 16px 0 24px 0;
 		gap: 16px;
-		justify-content: flex-start;
-		background-color: #f6f7f8;
-		z-index: 30;
+		justify-content: space-between;
+		background-color: transparent;
+		z-index: auto;
 	}
 
-	.text-button-div .action-buttons {
+	.add-task-container:not(.dialog-mode) .text-button-div .action-buttons {
 		margin-left: auto;
 	}
 }
@@ -146,11 +144,11 @@
 		padding-bottom: 160px;
 	}
 
-	.text-button-div{
+	.add-task-container:not(.dialog-mode) .text-button-div{
 		left: 0;
 		right: 0;
 		width: 100%;
-		padding-bottom: 80px;
+		padding-bottom: 70px;
 		flex-direction: row;
 		justify-content: flex-end;
 		background-color: #f6f7f8;
