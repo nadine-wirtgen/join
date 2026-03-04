@@ -3,6 +3,10 @@ import { CommonModule } from '@angular/common';
 import { Router, NavigationEnd, RouterModule } from '@angular/router';
 import { filter } from 'rxjs/operators';
 
+/**
+ * Component representing the login section.
+ * Handles animations, signup link visibility, and responsiveness.
+ */
 @Component({
   selector: 'app-login-section',
   standalone: true,
@@ -14,21 +18,44 @@ export class LoginSection implements OnInit {
 
   startAnimation = false;
   showSignupLink = true;
+  animationShouldPlay = false;
+  animationPlayed = false;
+  isMobile = false;
 
-  constructor(private router: Router) {}
+  /**
+   * Constructor for LoginSection component.
+   * @param router Angular Router instance for listening to route changes
+   */
+  constructor(private router: Router) { }
 
-  ngOnInit() {
-  
-    setTimeout(() => {
+  /**
+   * Lifecycle hook that is called after data-bound properties are initialized.
+   * Handles:
+   *  - Mobile detection
+   *  - Animation state management
+   *  - Signup link visibility based on the current route
+   */
+  ngOnInit(): void {
+    this.isMobile = window.innerWidth < 768;
+
+    const played = sessionStorage.getItem('loginAnimationPlayed') === 'true';
+    this.animationShouldPlay = !played;
+    this.animationPlayed = played;
+
+    if (!played) {
+      setTimeout(() => {
+        this.startAnimation = true;
+        this.animationPlayed = true;
+        sessionStorage.setItem('loginAnimationPlayed', 'true');
+      }, 400);
+    } else {
       this.startAnimation = true;
-    }, 1000);
+    }
 
-    // 🔹 Sichtbarkeit Signup-Link abhängig von Route
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        this.showSignupLink =
-          event.urlAfterRedirects === '/login';
+        this.showSignupLink = event.urlAfterRedirects === '/login';
       });
   }
 }

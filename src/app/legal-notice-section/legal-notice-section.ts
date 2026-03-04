@@ -10,7 +10,11 @@ import { Location } from '@angular/common';
 export class LegalNoticeSection {
   constructor(private location: Location) {}
 
-  closeHelp() {
-    this.location.back();
-  }
+/**
+ * Navigates back to the previous page.
+ * Typically used to close the help section.
+ */
+closeHelp(): void {
+  this.location.back();
+}
 }
