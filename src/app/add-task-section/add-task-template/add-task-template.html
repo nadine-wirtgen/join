@@ -2,10 +2,8 @@
   <h2 class="add-task-heading">Add Task</h2>
   <div class="add-task-section">
 
-    <!-- LEFT -->
     <div class="add-task-left">
 
-      <!-- Title -->
       <div class="form-group">
         <label for="title">Title<span class="required">*</span></label>
         <input
@@ -21,7 +19,6 @@
         </p>
       </div>
 
-      <!-- Description -->
       <div class="form-group assigned-to-fixed">
         <label for="description">Description</label>
         <textarea
@@ -32,7 +29,6 @@
         ></textarea>
       </div>
 
-      <!-- Due Date -->
       <div class="form-group">
         <label for="dueDate">Due date<span class="required">*</span></label>
         <input
@@ -53,10 +49,8 @@
 
     <div class="devide-section" aria-hidden="true"></div>
 
-    <!-- RIGHT -->
     <div class="add-task-right">
 
-      <!-- PRIORITY -->
       <div class="form-group">
         <label>Priority</label>
         <div class="priority-buttons">
@@ -111,7 +105,6 @@
         </div>
       </div>
 
-      <!-- ASSIGNED TO MULTISELECT -->
       <div class="form-group">
         <label>Assigned To</label>
         <app-assigned-to-select
@@ -120,7 +113,6 @@
         ></app-assigned-to-select>
       </div>
 
-      <!-- CATEGORY -->
       <div class="category-select form-group">
         <label>Category<span class="required">*</span></label>
         <div class="category-dropdown-custom" (click)="toggleCategoryDropdown()">
@@ -147,7 +139,6 @@
         <p class="error-message" *ngIf="categoryInvalid">This field is required</p>
       </div>
 
-      <!-- SUBTASKS -->
       <div class="form-group">
         <label>Subtasks</label>
         <div class="subtask-input" >
@@ -252,7 +243,6 @@
     </div>
   </div>
 
-  <!-- ACTION BUTTONS -->
   <div class="text-button-div">
     <p class="inline-required-hint"><span class="required">*</span>This field is required</p>
     <div class="action-buttons">
@@ -268,7 +258,6 @@
     </div>
   </div>
 
-  <!-- SUCCESS MESSAGE -->
   <div class="task-saved-message center-animate" *ngIf="taskSavedMessage">
     Task added to board! <img class="board-icon" src="assets/imgs/add-task/board-icon.png" alt="Success" />
   </div>

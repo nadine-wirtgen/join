@@ -1,8 +1,6 @@
 <div class="signup-wrapper">
 
-  <!-- 🔹 Signup Form -->
   <div class="signup-form">
-    <!-- Back Button orientiert sich an der Form -->
     <button class="back-btn" routerLink="/login" aria-label="Back to login" type="button">
       <img src="assets/icon/login/arrow_left.png" alt="Back" />
     </button>
@@ -13,8 +11,6 @@
     </div>
 
     <div class="signup-scroll-area">
-
-    <!-- 🔹 Name -->
     <div class="input-group-wrapper">
       <div class="input-group"
         [class.error]="nameModel.invalid && nameModel.touched && !nameFocused && nameModel.value?.length > 0">
@@ -40,7 +36,6 @@
       </div>
     </div>
 
-    <!-- 🔹 Email -->
     <div class="input-group-wrapper">
       <div class="input-group"
         [class.error]="emailModel.invalid && emailModel.touched && !emailFocused && emailModel.value?.length > 0">
@@ -66,7 +61,6 @@
       </div>
     </div>
 
-    <!-- 🔹 Password -->
     <div class="input-group-wrapper">
       <div class="input-group"
         [class.error]="!isPasswordSecure && passwordModel.touched && !passwordFocused && passwordModel.value?.length > 0">
@@ -96,7 +90,6 @@
       </div>
     </div>
 
-    <!-- 🔹 Confirm Password -->
     <div class="input-group-wrapper">
       <div class="input-group"
         [class.error]="confirmModel.touched && !confirmFocused && passwordMismatch && confirmModel.value?.length > 0">
@@ -128,7 +121,6 @@
 
     </div>
 
-    <!-- 🔹 Privacy -->
     <label class="privacy">
       <input type="checkbox" [(ngModel)]="acceptedPrivacy" name="privacy" />
       <img
@@ -143,7 +135,6 @@
       </span>
     </label>
 
-    <!-- 🔹 Sign Up Button -->
     <button
       type="button"
       [disabled]="!isFormValid() || isLoading"
@@ -151,7 +142,6 @@
       {{ isLoading ? 'Signing up...' : 'Sign up' }}
     </button>
 
-    <!-- 🔹 Success Overlay INSIDE FORM -->
     <div class="success-overlay" [class.show]="signupSuccess">
       You Signed Up successfully
     </div>
