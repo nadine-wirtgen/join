@@ -35,8 +35,7 @@
   gap: 6px;
   .login-error {
     opacity: 0;
-    white-space: nowrap;
-    width: 100px;
+    height: 10px;
     &:hover {
       cursor: default;
     }
@@ -44,6 +43,7 @@
 
   .visible {
     opacity: 1;
+    height: 100%;
     white-space: unset;
     font-size: 16px;
     font-weight: 400;
