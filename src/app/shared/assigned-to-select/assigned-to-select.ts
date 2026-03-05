@@ -132,32 +132,33 @@ export class AssignedToSelectComponent implements OnInit, OnDestroy, OnChanges {
    * Filters contacts by search term and sorts them alphabetically.
    * @returns filtered and sorted contacts
    */
-/**
- * Filters contacts by the current search term.
- * 
- * If the currently logged-in user exists in the filtered list,
- * they will always be placed at the top of the result.
- * 
- * All remaining contacts are sorted alphabetically by name.
- *
- * @returns Contacts[] Filtered and sorted contacts list
- */
-filteredContacts(): Contacts[] {
-  const term = this.contactSearchTerm.toLowerCase();
-  const currentUserName = this.contactService.currentUserName;
+  /**
+   * Filters contacts by the current search term.
+   *
+   * If the currently logged-in user exists in the filtered list,
+   * they will always be placed at the top of the result.
+   *
+   *
+   * @returns Contacts[] Filtered and sorted contacts list
+   */
+  filteredContacts(): Contacts[] {
+    const term = this.contactSearchTerm.toLowerCase();
+    const currentUserEmail = this.contactService.currentUserEmail;
 
-  const filtered = this.contacts.filter(c =>
-    c.name.toLowerCase().includes(term)
-  );
+    const filtered = this.contacts.filter((c) =>
+      c.name.toLowerCase().includes(term)
+    );
 
-  const currentUser = filtered.find(c => c.name === currentUserName);
+    const currentUser = currentUserEmail
+      ? filtered.find((c) => c.email === currentUserEmail)
+      : undefined;
 
-  const others = filtered
-    .filter(c => c.name !== currentUserName)
-    .sort((a, b) => a.name.localeCompare(b.name));
+    const others = filtered
+      .filter((c) => !currentUserEmail || c.email !== currentUserEmail)
+      .sort((a, b) => a.name.localeCompare(b.name));
 
-  return currentUser ? [currentUser, ...others] : others;
-}
+    return currentUser ? [currentUser, ...others] : others;
+  }
 
   /**
    * Returns initials for a contact name.
@@ -178,7 +179,8 @@ filteredContacts(): Contacts[] {
    * @returns boolean
    */
   isCurrentUser(contact: Contacts): boolean {
-    return contact.name === this.contactService.currentUserName;
+    return !!this.contactService.currentUserEmail &&
+      contact.email === this.contactService.currentUserEmail;
   }
 
   /**

@@ -95,7 +95,6 @@ export class HeaderLoggedIn implements OnInit, AfterViewInit {
     this.contactService.clearCurrentUser();
     this.userInitials = 'G';
     this.showPopup = false;
-    sessionStorage.removeItem('loginAnimationPlayed');
     this.auth.logout();
     this.router.navigate(['/login']);
   }

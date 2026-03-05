@@ -8,7 +8,9 @@ import { Location } from '@angular/common';
   styleUrls: ['./privacy-policy-section.scss'],
 })
 export class PrivacyPolicySection {
-  constructor(private location: Location) {}
+  constructor(
+    private location: Location,
+  ) {}
 
   closeHelp() {
     this.location.back();

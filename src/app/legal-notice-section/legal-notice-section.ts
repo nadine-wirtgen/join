@@ -8,7 +8,9 @@ import { Location } from '@angular/common';
   styleUrls: ['./legal-notice-section.scss'],
 })
 export class LegalNoticeSection {
-  constructor(private location: Location) {}
+  constructor(
+    private location: Location,
+  ) {}
 
 /**
  * Navigates back to the previous page.

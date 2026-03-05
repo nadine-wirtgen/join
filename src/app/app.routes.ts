@@ -12,6 +12,7 @@ import { ContactSection } from './contact-section/contact-section';
 import { HelpSection } from './help-section/help-section';
 import { LegalNoticeSection } from './legal-notice-section/legal-notice-section';
 import { PrivacyPolicySection } from './privacy-policy-section/privacy-policy-section';
+import { authGuard, roleGuard } from './auth-functional-guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -29,11 +30,11 @@ export const routes: Routes = [
     path: '',
     component: MainLayout,
     children: [
-      { path: 'summary', component: SummarySection },
-      { path: 'add-task', component: AddTaskSection },
-      { path: 'board', component: BoardSection },
-      { path: 'contacts', component: ContactSection },
-      { path: 'help', component: HelpSection },
+      { path: 'summary', component: SummarySection, canActivate: [authGuard] },
+      { path: 'add-task', component: AddTaskSection, canActivate: [authGuard] },
+      { path: 'board', component: BoardSection, canActivate: [authGuard] },
+      { path: 'contacts', component: ContactSection, canActivate: [authGuard] },
+      { path: 'help', component: HelpSection, canActivate: [authGuard] },
       { path: 'legal', component: LegalNoticeSection },
       { path: 'privacy', component: PrivacyPolicySection },
     ]
