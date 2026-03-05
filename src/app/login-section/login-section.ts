@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, NavigationEnd, RouterModule } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { AuthService } from '../firebase-service/auth.servic';
+import { ContactService } from '../firebase-service/contact-service';
 
 /**
  * Component representing the login section.
@@ -26,7 +28,11 @@ export class LoginSection implements OnInit {
    * Constructor for LoginSection component.
    * @param router Angular Router instance for listening to route changes
    */
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private auth: AuthService,
+    private contactService: ContactService,
+  ) { }
 
   /**
    * Lifecycle hook that is called after data-bound properties are initialized.
@@ -36,6 +42,9 @@ export class LoginSection implements OnInit {
    *  - Signup link visibility based on the current route
    */
   ngOnInit(): void {
+    this.contactService.clearCurrentUser();
+    this.auth.logout();
+
     this.isMobile = window.innerWidth < 768;
 
     const played = sessionStorage.getItem('loginAnimationPlayed') === 'true';

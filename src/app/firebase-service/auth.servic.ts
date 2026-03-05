@@ -79,4 +79,11 @@ export class AuthService {
   isLoggedIn(): boolean {
     return this.loggedInSubject.value;
   }
+
+  /**
+   * Returns the currently authenticated Firebase user, if any.
+   */
+  getCurrentUser(): User | null {
+    return this.auth.currentUser;
+  }
 }

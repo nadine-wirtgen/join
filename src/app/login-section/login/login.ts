@@ -42,16 +42,24 @@ export class LoginComponent {
 
       if (result.success) {
         this.loginError = false;
-
         const foundContact = this.contactService.contactList.find(
           (contact) => contact.email === trimmedEmail,
         );
 
-        if (foundContact) {
-          this.contactService.setCurrentUser(foundContact.name, foundContact.email);
-        } else {
-          
-        }
+        const firebaseUser = this.auth.getCurrentUser();
+
+        const resolvedName =
+          foundContact?.name ||
+          firebaseUser?.displayName ||
+          firebaseUser?.email ||
+          trimmedEmail;
+
+        const resolvedEmail =
+          foundContact?.email ||
+          firebaseUser?.email ||
+          trimmedEmail;
+
+        this.contactService.setCurrentUser(resolvedName, resolvedEmail);
 
         await this.router.navigate(['/summary'], {
           state: { fromLogin: true },

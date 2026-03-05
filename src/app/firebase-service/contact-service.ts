@@ -121,6 +121,9 @@ export class ContactService implements OnDestroy {
           phone: contact.phone,
         };
       }
+      if (this.currentUserEmail && contact.email === this.currentUserEmail) {
+        this.currentUserName = contact.name;
+      }
     } catch (error) {
       console.error('Fehler beim Update Contact:', error);
     }
