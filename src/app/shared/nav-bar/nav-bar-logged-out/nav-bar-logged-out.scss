@@ -4,7 +4,7 @@
   align-items: center;
   width: 232px;
   height: 100vh;
-  background-color: #2A3647;
+  background-color: #2a3647;
   padding: 24px 0;
   box-sizing: border-box;
 }
@@ -76,7 +76,7 @@
 }
 
 .navbar-footer-links a:hover {
-  color: #29ABE2;
+  color: #29abe2;
   background-color: transparent;
 }
 
@@ -111,7 +111,6 @@
 }
 
 @media (max-width: 768px) {
-
   .navbar {
     position: fixed;
     bottom: 0;
@@ -122,7 +121,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 0 16px;
-    background-color: #2A3647;
+    background-color: #2a3647;
     z-index: 1000;
     box-sizing: border-box;
   }
@@ -193,5 +192,32 @@
   .navbar-main-links.mobile-only.logged-out .footer-links a.active-footer {
     background-color: #000;
     color: white;
+  }
+
+  @media (max-width: 370px) {
+    .navbar-main-links.mobile-only.logged-out > .footer-link {
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 2px;
+      text-align: center;
+    }
+
+    .navbar-main-links.mobile-only.logged-out > .footer-link span {
+      font-size: 14px;
+    }
+
+    .navbar-main-links.mobile-only.logged-out .footer-links {
+      gap: 8px;
+    }
+
+    .navbar-main-links.mobile-only.logged-out .footer-links .footer-link {
+      width: 60px;
+      text-align: center;
+      white-space: normal;
+      word-break: break-word;
+      line-height: 1.1;
+      font-size: 14px;
+    }
   }
 }

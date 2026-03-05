@@ -86,7 +86,6 @@ header {
   flex-direction: column;
   gap: 15px;
   min-width: 180px;
-  z-index: 1000;
 }
 
 .header-popup.mobile-popup {
@@ -101,8 +100,6 @@ header {
   flex-direction: column;
   gap: 15px;
   min-width: 180px;
-  z-index: 1000;
-  animation: slideInRight 0.3s ease;
 }
 
 @keyframes slideInRight {
