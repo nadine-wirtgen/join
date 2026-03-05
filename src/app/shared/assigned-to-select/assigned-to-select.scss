@@ -15,14 +15,14 @@
     display: flex;
     align-items: center;
     min-height: 48px;
-    border: 1px solid #D1D1D1;
+    border: 1px solid #d1d1d1;
     border-radius: 10px;
     padding: 10px 12px;
     background-color: #fff;
     cursor: pointer;
     transition: border-color 0.2s;
     position: relative;
-    z-index: 20;
+    z-index: 19;
 
     .contact-search-select {
       flex: 1 1 auto;
@@ -31,11 +31,11 @@
       outline: none;
       background: transparent;
       font-size: 20px;
-      color: #2A3647;
+      color: #2a3647;
       cursor: pointer;
 
       &::placeholder {
-        color: #2A3647;
+        color: #2a3647;
         opacity: 1;
       }
     }
@@ -61,7 +61,7 @@
     max-height: 240px;
     overflow-y: auto;
     background: #fff;
-    border: 1px solid #D1D1D1;
+    border: 1px solid #d1d1d1;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     padding: 6px 0;
@@ -84,7 +84,7 @@
       }
 
       &.active {
-        background-color: #2A3647;
+        background-color: #2a3647;
         color: #fff;
       }
 
@@ -169,12 +169,12 @@
 }
 
 .assigned-to-list::-webkit-scrollbar-thumb {
-  background: #A8A8A8;
+  background: #a8a8a8;
   border-radius: 10px;
 }
 
 .assigned-to-list::-webkit-scrollbar-thumb:hover {
-  background: #2A3647;
+  background: #2a3647;
 }
 
 @media (max-width: 768px) {
@@ -185,8 +185,6 @@
   .single-contact .contact-name-text {
     font-size: 16px !important;
   }
-
-  
 }
 
 @media (max-width: 340px) {
@@ -194,6 +192,4 @@
     padding: 8px 10px;
     gap: 4px;
   }
-
- 
 }
