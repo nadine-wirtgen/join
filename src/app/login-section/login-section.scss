@@ -5,10 +5,11 @@
   height: 100dvh;
   width: 100%;
 }
+
 .container {
   position: relative;
   width: 100%;
-  max-width:1440px;
+  max-width: 1440px;
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -21,7 +22,6 @@
 
 .container.animation-ended:not(.mobile) {
   padding: 20px;
-  background-color: #f5f5f5;
 }
 
 .container.mobile {
@@ -37,8 +37,9 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 200px;
-  transform: translate(-50%, -50%);
+  width: clamp(120px, 18vw, 200px);
+  transform: translate(-50%, -50%) scale(1);
+  transform-origin: top left;
 }
 
 .logo img {
@@ -68,13 +69,47 @@
 }
 
 .logo.animate {
-  animation: logoMove 1.2s ease forwards;
+  animation: logoMoveDesktop 1.2s ease forwards;
+}
+
+.container.mobile .logo.animate {
+  animation: logoMoveMobile 1.2s ease forwards;
+}
+
+@keyframes logoMoveDesktop {
+
+  0% {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  100% {
+    top: 20px;
+    left: 20px;
+    transform: scale(0.38);
+  }
+}
+
+@keyframes logoMoveMobile {
+
+  0% {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  100% {
+    top: 16px;
+    left: 16px;
+    transform: scale(0.22);
+  }
 }
 
 .container.animation-ended:not(.mobile) .logo {
   top: 20px;
-  left: -10px;
-  transform: translate(0, 0) scale(0.4);
+  left: 20px;
+  transform: scale(0.38);
 
   .logo-light {
     opacity: 0;
@@ -87,8 +122,8 @@
 
 .container.mobile.animation-ended .logo {
   top: 16px;
-  left: -100px;
-  transform: translate(0, 0) scale(0.3);
+  left: 16px;
+  transform: scale(0.22);
 
   .logo-light {
     opacity: 0;
@@ -96,32 +131,6 @@
 
   .logo-dark {
     opacity: 1;
-  }
-}
-
-@media (max-width: 767px) {
-  .logo {
-    width: 160px;
-  }
-}
-
-@media (max-width: 380px) {
-  .logo {
-    width: 120px;
-  }
-}
-
-@keyframes logoMove {
-  0% {
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(1);
-  }
-
-  100% {
-    top: 20px;
-    left: 20px;
-    transform: translate(0, 0) scale(0.4);
   }
 }
 
@@ -135,7 +144,6 @@
   width: 100%;
   max-width: 420px;
   box-sizing: border-box;
-
 }
 
 .login-form-wrapper.show {
@@ -204,65 +212,79 @@
   transform: translateX(-50%);
   display: flex;
   gap: 24px;
-  font-size: 16px; 
+  font-size: 16px;
   opacity: 0;
   transition: opacity 1s ease;
   pointer-events: auto;
-  flex-wrap: nowrap;
   z-index: 30;
 }
 
-.legal-footer.show { opacity: 1; }
+.legal-footer.show {
+  opacity: 1;
+}
 
 .legal-footer a {
   color: #A8A8A8;
   text-decoration: none;
   white-space: nowrap;
-  font-size: 16px; 
 }
 
-.legal-footer a:hover { color: #29ABE2; }
+.legal-footer a:hover {
+  color: #29ABE2;
+}
+
 
 @media (max-width: 420px) {
   .login-form {
     padding: 20px 10px;
   }
 
-  .login-header h1 {
-    font-size: 20px;
+  .signup-link {
+    gap: 6px;
+    font-size: 18px;
+  }
+}
+
+
+@media (max-height: 420px) and (orientation: landscape) {
+  :host {
+    height: auto;
   }
 
-  .contact-input {
-    height: 45px;
-    padding: 0 10px;
+  .container {
+    height: auto;
+    min-height: auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 20px 16px;
   }
 
-  .contact-input-field {
-    font-size: 14px;
+  .logo {
+    position: relative;
+    top: auto;
+    left: auto;
+    align-self: flex-start;
+    transform: scale(0.45);
+    transform-origin: top left;
+    margin-bottom: 20px;
   }
 
-  .login-section-buttons {
-    gap: 8px;
-  }
-
-  .login-btn,
-  .guest-btn {
+    .login-form-wrapper {
     width: 100%;
-    padding: 10px;
-    font-size: 14px;
+    max-width: 420px;
   }
 
   .signup-link {
-    gap: 6px;
-    font-size: 20px;
+    position: static;
     margin-top: 12px;
   }
 
-  .signup-btn {
-    width: 91px;
-    height: 49px;
-    font-size: 16px;
-    font-weight: 700;
-    padding: 15px;
+  .legal-footer {
+    position: static;
+    transform: none;
+    margin-top: 20px;
   }
 }

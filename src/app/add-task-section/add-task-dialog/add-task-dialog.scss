@@ -44,7 +44,6 @@
   cursor: pointer;
 }
 
-
 @media (max-width: 780px) {
   .add-task-dialog-container {
     width: 100%;
@@ -52,5 +51,12 @@
     margin: auto;
   }
 
- 
+}
+
+@media (orientation: landscape) and (max-height: 600px) {
+  .scroll-wrapper {
+    height: 95vh;       
+    max-height: 95vh;   
+    overflow-y: auto;    
+  }
 }

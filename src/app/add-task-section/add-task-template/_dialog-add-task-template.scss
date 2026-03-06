@@ -200,3 +200,91 @@
     padding-right: 4px !important;
   }
 }
+
+.add-task-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.add-task-dialog-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  z-index: 1;
+}
+
+.add-task-dialog-container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1100px;
+  max-height: 100vh;
+  margin: auto;
+  overflow: visible;
+  background: #f6f7fb;
+  border-radius: 30px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+.dialog-close-btn {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 3;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+@media (max-width: 780px) {
+  .add-task-dialog-container {
+    width: 100%;
+    max-width: 100%;
+    margin: auto;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 600px) {
+  .add-task-container.dialog-mode {
+    display: flex;
+    flex-direction: column;
+    padding: 42px !important;
+    max-height: 77vh; 
+    overflow-y: auto; 
+    border-radius: 20px;
+  }
+
+  .add-task-container.dialog-mode .add-task-section {
+    flex: 1 1 auto;
+    overflow: visible !important;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 220px; 
+  }
+
+    .add-task-container.dialog-mode .text-button-div {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 50% !important;      
+    transform: translateX(-50%); 
+    width: 80%;
+    padding: 4px 20px;
+    background-color: #f6f7f8;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    z-index: 9999;
+  }
+}
